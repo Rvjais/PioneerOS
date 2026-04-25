@@ -1,0 +1,3 @@
+{
+  "/api/mash/dm/[userId]/route": "app/api/mash/dm/[userId]/route.js"
+}

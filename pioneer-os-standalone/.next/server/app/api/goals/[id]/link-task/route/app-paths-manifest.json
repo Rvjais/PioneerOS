@@ -1,0 +1,3 @@
+{
+  "/api/goals/[id]/link-task/route": "app/api/goals/[id]/link-task/route.js"
+}

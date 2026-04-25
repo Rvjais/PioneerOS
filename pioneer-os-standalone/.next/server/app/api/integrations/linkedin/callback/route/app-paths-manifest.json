@@ -1,0 +1,3 @@
+{
+  "/api/integrations/linkedin/callback/route": "app/api/integrations/linkedin/callback/route.js"
+}

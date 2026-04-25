@@ -1,0 +1,3 @@
+{
+  "/api/accounts/onboarding/[proposalId]/activate/route": "app/api/accounts/onboarding/[proposalId]/activate/route.js"
+}

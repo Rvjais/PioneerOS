@@ -1,0 +1,3 @@
+{
+  "/api/budget-alerts/[id]/pause/route": "app/api/budget-alerts/[id]/pause/route.js"
+}

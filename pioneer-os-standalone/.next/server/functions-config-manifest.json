@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "functions": {
+    "/_middleware": {
+      "runtime": "nodejs",
+      "matchers": [
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next\\/static|_next\\/image|favicon.ico|icons|manifest.json|api\\/ai).*))(\\.json)?[\\/#\\?]?$",
+          "originalSource": "/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|api/ai).*)"
+        }
+      ]
+    },
+    "/api/cron/ads/sync": {
+      "maxDuration": 300
+    },
+    "/api/cron/clients/health-scores": {
+      "maxDuration": 300
+    },
+    "/api/cron/credential-health": {
+      "maxDuration": 300
+    },
+    "/api/cron/hr-notifications": {
+      "maxDuration": 300
+    },
+    "/api/cron/invoice-overdue": {
+      "maxDuration": 300
+    },
+    "/api/cron/notifications/daily": {
+      "maxDuration": 300
+    },
+    "/api/cron/notifications/monthly": {
+      "maxDuration": 300
+    },
+    "/api/cron/notifications/weekly": {
+      "maxDuration": 300
+    },
+    "/api/cron/sync-integrations": {
+      "maxDuration": 300
+    },
+    "/api/cron/tactical-reminder": {
+      "maxDuration": 300
+    },
+    "/api/cron/whatsapp/schedules": {
+      "maxDuration": 300
+    }
+  }
+}

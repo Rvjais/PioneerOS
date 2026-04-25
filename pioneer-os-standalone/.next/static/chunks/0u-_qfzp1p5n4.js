@@ -1,0 +1,4 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="4fc21337-118d-b6d1-e811-a24a28d2958c")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,72254,e=>{"use strict";var i=e.i(843476),s=e.i(271645),t=e.i(618566);e.s(["default",0,function(){let e=(0,t.useRouter)();return(0,s.useEffect)(()=>{e.push("/sales/pipeline?pipeline=BRANDING_PIONEERS")},[e]),(0,i.jsx)("div",{className:"flex items-center justify-center h-64",children:(0,i.jsx)("div",{className:"animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"})})}])}]);
+
+//# debugId=4fc21337-118d-b6d1-e811-a24a28d2958c

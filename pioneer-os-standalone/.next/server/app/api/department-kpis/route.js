@@ -1,0 +1,13 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/department-kpis/route.js")
+R.c("server/chunks/[externals]_crypto_0o_ly.v._.js")
+R.c("server/chunks/[root-of-the-server]__13635sp._.js")
+R.c("server/chunks/node_modules_next_11synfn._.js")
+R.c("server/chunks/node_modules_next_dist_esm_build_templates_app-route_0hlg-rn.js")
+R.c("server/chunks/node_modules_0k94p8p._.js")
+R.c("server/chunks/[root-of-the-server]__0la1agp._.js")
+R.c("server/chunks/_0qquy0a._.js")
+R.c("server/chunks/node_modules_next_124cnn1._.js")
+R.c("server/chunks/node_modules_bcryptjs_index_0bjz0ul.js")
+R.c("server/chunks/_next-internal_server_app_api_department-kpis_route_actions_04r-oi7.js")
+R.m(779893)
+module.exports=R.m(779893).exports

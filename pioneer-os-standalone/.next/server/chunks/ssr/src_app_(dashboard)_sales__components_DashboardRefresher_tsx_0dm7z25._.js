@@ -1,0 +1,5 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="72007268-8ce6-eca7-0286-62a17cfad48d")}catch(e){}}();
+module.exports=[249782,a=>{"use strict";var b=a.i(572131);a.s(["default",0,function({interval:a=3e4,refreshKey:c}){let d=(0,b.useCallback)(()=>{window.location.reload()},[]);return(0,b.useEffect)(()=>{let b=setInterval(d,a);return()=>clearInterval(b)},[a,d]),(0,b.useEffect)(()=>{let a=()=>{d()};return window.addEventListener("dashboard-refresh",a),()=>window.removeEventListener("dashboard-refresh",a)},[d]),null}])}];
+
+//# debugId=72007268-8ce6-eca7-0286-62a17cfad48d
+//# sourceMappingURL=src_app_%28dashboard%29_sales__components_DashboardRefresher_tsx_0dm7z25._.js.map

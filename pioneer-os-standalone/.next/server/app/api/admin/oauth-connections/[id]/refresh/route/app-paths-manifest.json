@@ -1,0 +1,3 @@
+{
+  "/api/admin/oauth-connections/[id]/refresh/route": "app/api/admin/oauth-connections/[id]/refresh/route.js"
+}

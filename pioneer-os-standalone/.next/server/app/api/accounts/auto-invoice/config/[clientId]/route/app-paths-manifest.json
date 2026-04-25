@@ -1,0 +1,3 @@
+{
+  "/api/accounts/auto-invoice/config/[clientId]/route": "app/api/accounts/auto-invoice/config/[clientId]/route.js"
+}

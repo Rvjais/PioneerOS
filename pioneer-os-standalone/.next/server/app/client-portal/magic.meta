@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/client-portal/layout,_N_T_/client-portal/magic/layout,_N_T_/client-portal/magic/page,_N_T_/client-portal/magic"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/client-portal/magic/__PAGE__",
+    "/client-portal/magic",
+    "/client-portal",
+    "/_index",
+    "/_head"
+  ]
+}

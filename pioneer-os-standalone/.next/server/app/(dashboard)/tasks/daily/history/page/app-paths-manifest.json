@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/tasks/daily/history/page": "app/(dashboard)/tasks/daily/history/page.js"
+}

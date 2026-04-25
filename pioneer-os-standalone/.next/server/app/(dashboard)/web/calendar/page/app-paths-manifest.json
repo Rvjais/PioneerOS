@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/web/calendar/page": "app/(dashboard)/web/calendar/page.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/clients/[clientId]/tactical-data/route": "app/api/clients/[clientId]/tactical-data/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/web-clients/[id]/portal-access/route": "app/api/web-clients/[id]/portal-access/route.js"
+}

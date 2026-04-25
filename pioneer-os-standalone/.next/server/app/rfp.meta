@@ -1,0 +1,17 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/sales/rfp-manager",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/rfp/layout,_N_T_/rfp/page,_N_T_/rfp"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/rfp/__PAGE__",
+    "/rfp",
+    "/_index",
+    "/_head"
+  ]
+}

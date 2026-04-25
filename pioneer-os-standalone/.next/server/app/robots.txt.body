@@ -1,0 +1,11 @@
+User-Agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Disallow: /api/
+Disallow: /admin/
+Disallow: /portal/
+Disallow: /embed/
+Disallow: /client-portal/
+
+Sitemap: https://brandingpioneers.in/sitemap.xml

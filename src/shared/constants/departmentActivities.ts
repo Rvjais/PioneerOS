@@ -1,0 +1,632 @@
+/**
+ * Department-specific activity types for daily task planning
+ * These activities are used when logging daily tasks
+ */
+
+export const DEPARTMENT_ACTIVITIES: Record<string, { label: string; activities: { id: string; label: string }[] }> = {
+  SEO: {
+    label: 'SEO',
+    activities: [
+      { id: 'gbp_optimization', label: 'GBP Profile Optimization' },
+      { id: 'onpage_seo', label: 'On-Page SEO' },
+      { id: 'offpage_seo', label: 'Off-Page SEO' },
+      { id: 'technical_seo', label: 'Technical SEO Audit' },
+      { id: 'keyword_research', label: 'Keyword Research' },
+      { id: 'competitor_analysis', label: 'Competitor Analysis' },
+      { id: 'blog_writing', label: 'Blog Writing' },
+      { id: 'content_addition', label: 'Content Addition on Page' },
+      { id: 'meta_optimization', label: 'Meta Tags Optimization' },
+      { id: 'link_building', label: 'Link Building' },
+      { id: 'local_citations', label: 'Local Citations' },
+      { id: 'seo_report', label: 'SEO Report Making' },
+      { id: 'schema_markup', label: 'Schema Markup Implementation' },
+      { id: 'site_speed', label: 'Site Speed Optimization' },
+      { id: 'indexing_issues', label: 'Indexing Issues Resolution' },
+      { id: 'gsc_analysis', label: 'GSC Analysis' },
+      { id: 'backlink_audit', label: 'Backlink Audit' },
+    ],
+  },
+  WEB: {
+    label: 'Web Development',
+    activities: [
+      { id: 'landing_page', label: 'Landing Page Development' },
+      { id: 'website_dev', label: 'Website Development' },
+      { id: 'bug_fixing', label: 'Bug Fixing' },
+      { id: 'ui_design', label: 'UI/UX Design' },
+      { id: 'responsive_design', label: 'Responsive Design' },
+      { id: 'cms_update', label: 'CMS Content Update' },
+      { id: 'plugin_setup', label: 'Plugin Setup/Configuration' },
+      { id: 'hosting_setup', label: 'Hosting Setup' },
+      { id: 'domain_config', label: 'Domain Configuration' },
+      { id: 'ssl_setup', label: 'SSL Setup' },
+      { id: 'api_integration', label: 'API Integration' },
+      { id: 'database_work', label: 'Database Work' },
+      { id: 'performance_opt', label: 'Performance Optimization' },
+      { id: 'security_audit', label: 'Security Audit' },
+      { id: 'code_review', label: 'Code Review' },
+      { id: 'testing', label: 'Testing & QA' },
+      { id: 'deployment', label: 'Deployment' },
+      { id: 'documentation', label: 'Technical Documentation' },
+    ],
+  },
+  ADS: {
+    label: 'Paid Ads',
+    activities: [
+      { id: 'google_ads_setup', label: 'Google Ads Campaign Setup' },
+      { id: 'google_ads_opt', label: 'Google Ads Optimization' },
+      { id: 'meta_ads_setup', label: 'Meta Ads Campaign Setup' },
+      { id: 'meta_ads_opt', label: 'Meta Ads Optimization' },
+      { id: 'linkedin_ads', label: 'LinkedIn Ads Management' },
+      { id: 'youtube_ads', label: 'YouTube Ads' },
+      { id: 'ad_creative', label: 'Ad Creative Development' },
+      { id: 'ad_copywriting', label: 'Ad Copywriting' },
+      { id: 'audience_research', label: 'Audience Research' },
+      { id: 'keyword_bidding', label: 'Keyword Bidding Strategy' },
+      { id: 'remarketing', label: 'Remarketing Setup' },
+      { id: 'conversion_tracking', label: 'Conversion Tracking Setup' },
+      { id: 'ab_testing', label: 'A/B Testing' },
+      { id: 'budget_allocation', label: 'Budget Allocation' },
+      { id: 'ads_report', label: 'Ads Performance Report' },
+      { id: 'competitor_ads', label: 'Competitor Ads Analysis' },
+      { id: 'landing_page_opt', label: 'Landing Page Optimization' },
+      { id: 'pixel_setup', label: 'Pixel/Tag Setup' },
+    ],
+  },
+  SOCIAL: {
+    label: 'Social Media',
+    activities: [
+      { id: 'content_calendar', label: 'Content Calendar Planning' },
+      { id: 'post_creation', label: 'Post Creation' },
+      { id: 'story_creation', label: 'Story Creation' },
+      { id: 'reel_creation', label: 'Reel/Video Creation' },
+      { id: 'carousel_design', label: 'Carousel Design' },
+      { id: 'caption_writing', label: 'Caption Writing' },
+      { id: 'hashtag_research', label: 'Hashtag Research' },
+      { id: 'community_mgmt', label: 'Community Management' },
+      { id: 'comment_response', label: 'Comment Response' },
+      { id: 'dm_response', label: 'DM Response' },
+      { id: 'influencer_collab', label: 'Influencer Collaboration' },
+      { id: 'social_report', label: 'Social Media Report' },
+      { id: 'trend_analysis', label: 'Trend Analysis' },
+      { id: 'competitor_monitoring', label: 'Competitor Monitoring' },
+      { id: 'profile_optimization', label: 'Profile Optimization' },
+      { id: 'ugc_curation', label: 'UGC Curation' },
+      { id: 'live_session', label: 'Live Session' },
+      { id: 'platform_research', label: 'Platform Research' },
+    ],
+  },
+  HR: {
+    label: 'Human Resources',
+    activities: [
+      { id: 'recruitment', label: 'Recruitment/Screening' },
+      { id: 'interview', label: 'Interview Conducting' },
+      { id: 'onboarding', label: 'Employee Onboarding' },
+      { id: 'offboarding', label: 'Employee Offboarding' },
+      { id: 'payroll', label: 'Payroll Processing' },
+      { id: 'attendance_mgmt', label: 'Attendance Management' },
+      { id: 'leave_mgmt', label: 'Leave Management' },
+      { id: 'policy_update', label: 'Policy Update/Documentation' },
+      { id: 'training_coord', label: 'Training Coordination' },
+      { id: 'performance_review', label: 'Performance Review' },
+      { id: 'grievance_handling', label: 'Grievance Handling' },
+      { id: 'compliance', label: 'Compliance Work' },
+      { id: 'documentation', label: 'HR Documentation' },
+      { id: 'culture_initiative', label: 'Culture Initiative' },
+      { id: 'employee_engagement', label: 'Employee Engagement' },
+      { id: 'exit_interview', label: 'Exit Interview' },
+      { id: 'background_check', label: 'Background Verification' },
+      { id: 'hr_report', label: 'HR Report Preparation' },
+    ],
+  },
+  ACCOUNTS: {
+    label: 'Accounts & Finance',
+    activities: [
+      { id: 'invoice_creation', label: 'Invoice Creation' },
+      { id: 'invoice_followup', label: 'Invoice Follow-up' },
+      { id: 'payment_collection', label: 'Payment Collection' },
+      { id: 'vendor_payment', label: 'Vendor Payment Processing' },
+      { id: 'expense_recording', label: 'Expense Recording' },
+      { id: 'bank_reconciliation', label: 'Bank Reconciliation' },
+      { id: 'gst_filing', label: 'GST Filing' },
+      { id: 'tds_compliance', label: 'TDS Compliance' },
+      { id: 'financial_report', label: 'Financial Report' },
+      { id: 'budget_tracking', label: 'Budget Tracking' },
+      { id: 'client_onboarding', label: 'Client Onboarding (Finance)' },
+      { id: 'contract_review', label: 'Contract Review' },
+      { id: 'sla_management', label: 'SLA Management' },
+      { id: 'audit_preparation', label: 'Audit Preparation' },
+      { id: 'cash_flow_mgmt', label: 'Cash Flow Management' },
+      { id: 'subscription_mgmt', label: 'Subscription Management' },
+      { id: 'profitability_analysis', label: 'Profitability Analysis' },
+      { id: 'receivables_mgmt', label: 'Receivables Management' },
+    ],
+  },
+  SALES: {
+    label: 'Sales',
+    activities: [
+      { id: 'lead_generation', label: 'Lead Generation' },
+      { id: 'cold_calling', label: 'Cold Calling' },
+      { id: 'email_outreach', label: 'Email Outreach' },
+      { id: 'linkedin_outreach', label: 'LinkedIn Outreach' },
+      { id: 'discovery_call', label: 'Discovery Call' },
+      { id: 'proposal_creation', label: 'Proposal Creation' },
+      { id: 'pitch_preparation', label: 'Pitch Preparation' },
+      { id: 'demo_presentation', label: 'Demo/Presentation' },
+      { id: 'negotiation', label: 'Negotiation' },
+      { id: 'follow_up', label: 'Follow-up Call/Email' },
+      { id: 'crm_update', label: 'CRM Update' },
+      { id: 'market_research', label: 'Market Research' },
+      { id: 'competitor_intel', label: 'Competitor Intelligence' },
+      { id: 'client_meeting', label: 'Client Meeting' },
+      { id: 'contract_closure', label: 'Contract Closure' },
+      { id: 'upselling', label: 'Upselling/Cross-selling' },
+      { id: 'referral_outreach', label: 'Referral Outreach' },
+      { id: 'sales_report', label: 'Sales Report' },
+    ],
+  },
+  OPERATIONS: {
+    label: 'Operations',
+    activities: [
+      { id: 'client_coordination', label: 'Client Coordination' },
+      { id: 'team_coordination', label: 'Team Coordination' },
+      { id: 'project_planning', label: 'Project Planning' },
+      { id: 'resource_allocation', label: 'Resource Allocation' },
+      { id: 'timeline_management', label: 'Timeline Management' },
+      { id: 'quality_check', label: 'Quality Check' },
+      { id: 'process_improvement', label: 'Process Improvement' },
+      { id: 'vendor_management', label: 'Vendor Management' },
+      { id: 'escalation_handling', label: 'Escalation Handling' },
+      { id: 'client_feedback', label: 'Client Feedback Collection' },
+      { id: 'reporting', label: 'Operations Reporting' },
+      { id: 'tool_management', label: 'Tool/Software Management' },
+      { id: 'documentation', label: 'SOP Documentation' },
+      { id: 'training_delivery', label: 'Training Delivery' },
+      { id: 'capacity_planning', label: 'Capacity Planning' },
+      { id: 'risk_assessment', label: 'Risk Assessment' },
+      { id: 'issue_resolution', label: 'Issue Resolution' },
+      { id: 'meeting_facilitation', label: 'Meeting Facilitation' },
+    ],
+  },
+  INTERN: {
+    label: 'Intern',
+    activities: [
+      { id: 'assigned_task', label: 'Assigned Task Work' },
+      { id: 'learning_module', label: 'Learning Module Completion' },
+      { id: 'mentor_session', label: 'Mentor Session' },
+      { id: 'shadow_work', label: 'Shadow Work (Observing)' },
+      { id: 'practice_exercise', label: 'Practice Exercise' },
+      { id: 'project_work', label: 'Project Work' },
+      { id: 'documentation', label: 'Documentation/Notes' },
+      { id: 'research', label: 'Research Task' },
+      { id: 'presentation', label: 'Presentation Preparation' },
+      { id: 'feedback_session', label: 'Feedback Session' },
+      { id: 'skill_assessment', label: 'Skill Assessment' },
+      { id: 'report_writing', label: 'Report Writing' },
+      { id: 'tool_learning', label: 'Tool Learning' },
+      { id: 'team_assist', label: 'Team Assistance' },
+      { id: 'daily_standup', label: 'Daily Standup' },
+    ],
+  },
+  FREELANCER: {
+    label: 'Freelancer',
+    activities: [
+      { id: 'client_deliverable', label: 'Client Deliverable Work' },
+      { id: 'revision_work', label: 'Revision/Feedback Work' },
+      { id: 'project_delivery', label: 'Project Delivery' },
+      { id: 'invoice_submission', label: 'Invoice Submission' },
+      { id: 'work_report', label: 'Work Report Submission' },
+      { id: 'client_communication', label: 'Client Communication' },
+      { id: 'scope_discussion', label: 'Scope Discussion' },
+      { id: 'milestone_update', label: 'Milestone Update' },
+      { id: 'quality_review', label: 'Quality Review' },
+      { id: 'asset_handover', label: 'Asset Handover' },
+      { id: 'requirement_gathering', label: 'Requirement Gathering' },
+      { id: 'tool_setup', label: 'Tool/Software Setup' },
+      { id: 'research', label: 'Research' },
+      { id: 'content_creation', label: 'Content Creation' },
+      { id: 'design_work', label: 'Design Work' },
+      { id: 'development_work', label: 'Development Work' },
+    ],
+  },
+  MANAGER: {
+    label: 'Manager',
+    activities: [
+      { id: 'team_review', label: 'Team Performance Review' },
+      { id: 'one_on_one', label: '1-on-1 Meeting' },
+      { id: 'client_escalation', label: 'Client Escalation Handling' },
+      { id: 'resource_planning', label: 'Resource Planning' },
+      { id: 'hiring_review', label: 'Hiring/Interview Review' },
+      { id: 'strategy_planning', label: 'Strategy Planning' },
+      { id: 'budget_review', label: 'Budget Review' },
+      { id: 'process_audit', label: 'Process Audit' },
+      { id: 'team_coaching', label: 'Team Coaching' },
+      { id: 'stakeholder_meeting', label: 'Stakeholder Meeting' },
+      { id: 'report_review', label: 'Report Review' },
+      { id: 'approval_queue', label: 'Approval Queue Processing' },
+      { id: 'delegation', label: 'Task Delegation' },
+      { id: 'conflict_resolution', label: 'Conflict Resolution' },
+      { id: 'goal_setting', label: 'Goal Setting/OKR' },
+      { id: 'department_sync', label: 'Cross-Department Sync' },
+      { id: 'leadership_meeting', label: 'Leadership Meeting' },
+      { id: 'performance_calibration', label: 'Performance Calibration' },
+    ],
+  },
+  DESIGN: {
+    label: 'Design',
+    activities: [
+      { id: 'logo_design', label: 'Logo Design' },
+      { id: 'brand_identity', label: 'Brand Identity Design' },
+      { id: 'social_graphics', label: 'Social Media Graphics' },
+      { id: 'banner_design', label: 'Banner/Ad Design' },
+      { id: 'presentation_design', label: 'Presentation Design' },
+      { id: 'infographic', label: 'Infographic Design' },
+      { id: 'video_editing', label: 'Video Editing' },
+      { id: 'motion_graphics', label: 'Motion Graphics' },
+      { id: 'thumbnail_design', label: 'Thumbnail Design' },
+      { id: 'packaging_design', label: 'Packaging Design' },
+      { id: 'print_design', label: 'Print Material Design' },
+      { id: 'ui_mockup', label: 'UI Mockup' },
+      { id: 'photo_editing', label: 'Photo Editing/Retouching' },
+      { id: 'asset_creation', label: 'Asset Creation' },
+      { id: 'design_revision', label: 'Design Revision' },
+      { id: 'client_feedback', label: 'Client Feedback Implementation' },
+      { id: 'brand_guidelines', label: 'Brand Guidelines Creation' },
+      { id: 'creative_brainstorm', label: 'Creative Brainstorming' },
+    ],
+  },
+  GRAPHIC_DESIGNER: {
+    label: 'Graphic Designer',
+    activities: [
+      { id: 'static_post', label: 'Static Post Design' },
+      { id: 'carousel_design', label: 'Carousel Design' },
+      { id: 'story_design', label: 'Story Design' },
+      { id: 'banner_design', label: 'Banner/Ad Design' },
+      { id: 'logo_design', label: 'Logo Design' },
+      { id: 'brand_identity', label: 'Brand Identity' },
+      { id: 'infographic', label: 'Infographic Design' },
+      { id: 'presentation_design', label: 'Presentation Design' },
+      { id: 'print_design', label: 'Print Material Design' },
+      { id: 'packaging_design', label: 'Packaging Design' },
+      { id: 'thumbnail_design', label: 'Thumbnail Design' },
+      { id: 'photo_editing', label: 'Photo Editing' },
+      { id: 'graphic_revision', label: 'Graphic Revision' },
+      { id: 'client_revision', label: 'Client Revision Work' },
+      { id: 'concept_creation', label: 'Concept Creation' },
+      { id: 'mockup_design', label: 'Mockup Design' },
+      { id: 'asset_creation', label: 'Asset Creation' },
+    ],
+  },
+  VIDEO_EDITOR: {
+    label: 'Video Editor',
+    activities: [
+      { id: 'reel_editing', label: 'Reel Editing' },
+      { id: 'youtube_video', label: 'YouTube Video Editing' },
+      { id: 'shorts_editing', label: 'YouTube Shorts Editing' },
+      { id: 'motion_graphics', label: 'Motion Graphics' },
+      { id: 'gif_creation', label: 'GIF Creation' },
+      { id: 'animation', label: 'Animation' },
+      { id: 'intro_outro', label: 'Intro/Outro Creation' },
+      { id: 'color_grading', label: 'Color Grading' },
+      { id: 'audio_sync', label: 'Audio Sync/Edit' },
+      { id: 'subtitle_addition', label: 'Subtitle Addition' },
+      { id: 'video_revision', label: 'Video Revision' },
+      { id: 'client_revision', label: 'Client Revision Work' },
+      { id: 'thumbnail_design', label: 'Thumbnail Design' },
+      { id: 'promo_video', label: 'Promo Video' },
+      { id: 'testimonial_edit', label: 'Testimonial Video Edit' },
+      { id: 'product_video', label: 'Product Video Edit' },
+      { id: 'raw_footage_review', label: 'Raw Footage Review' },
+    ],
+  },
+  CONTENT_WRITER: {
+    label: 'Content Writer',
+    activities: [
+      { id: 'blog_writing', label: 'Blog Writing' },
+      { id: 'article_writing', label: 'Article Writing' },
+      { id: 'caption_writing', label: 'Caption Writing' },
+      { id: 'script_writing', label: 'Script Writing' },
+      { id: 'ad_copy', label: 'Ad Copy Writing' },
+      { id: 'website_copy', label: 'Website Copy' },
+      { id: 'email_copy', label: 'Email Copy' },
+      { id: 'seo_content', label: 'SEO Content' },
+      { id: 'product_description', label: 'Product Description' },
+      { id: 'content_revision', label: 'Content Revision' },
+      { id: 'client_revision', label: 'Client Revision Work' },
+      { id: 'research', label: 'Topic Research' },
+      { id: 'content_calendar', label: 'Content Calendar Planning' },
+      { id: 'hashtag_research', label: 'Hashtag Research' },
+    ],
+  },
+  AI: {
+    label: 'AI & Automation',
+    activities: [
+      { id: 'ai_agent_development', label: 'AI Agent Development' },
+      { id: 'chatbot_setup', label: 'Chatbot Setup' },
+      { id: 'workflow_automation', label: 'Workflow Automation' },
+      { id: 'data_analysis', label: 'Data Analysis' },
+      { id: 'prompt_engineering', label: 'Prompt Engineering' },
+      { id: 'ai_integration', label: 'AI Integration' },
+      { id: 'model_training', label: 'Model Training' },
+      { id: 'documentation', label: 'Documentation' },
+    ],
+  },
+}
+
+// Role-specific activity categories for tactical tracker
+export const ROLE_WORK_CATEGORIES: Record<string, { id: string; label: string }[]> = {
+  GRAPHIC_DESIGNER: [
+    { id: 'STATIC_POST', label: 'Static Post' },
+    { id: 'CAROUSEL', label: 'Carousel' },
+    { id: 'STORY', label: 'Story Design' },
+    { id: 'BANNER', label: 'Banner/Ad' },
+    { id: 'LOGO', label: 'Logo Design' },
+    { id: 'INFOGRAPHIC', label: 'Infographic' },
+    { id: 'PRESENTATION', label: 'Presentation' },
+    { id: 'PRINT', label: 'Print Design' },
+    { id: 'THUMBNAIL', label: 'Thumbnail' },
+    { id: 'REVISION', label: 'Revision' },
+  ],
+  VIDEO_EDITOR: [
+    { id: 'REEL', label: 'Reel' },
+    { id: 'YOUTUBE_VIDEO', label: 'YouTube Video' },
+    { id: 'SHORTS', label: 'YouTube Shorts' },
+    { id: 'MOTION_GRAPHICS', label: 'Motion Graphics' },
+    { id: 'GIF', label: 'GIF' },
+    { id: 'ANIMATION', label: 'Animation' },
+    { id: 'PROMO_VIDEO', label: 'Promo Video' },
+    { id: 'TESTIMONIAL', label: 'Testimonial Video' },
+    { id: 'REVISION', label: 'Video Revision' },
+  ],
+  SEO: [
+    { id: 'ONPAGE_SEO', label: 'On-Page SEO' },
+    { id: 'TECHNICAL_SEO', label: 'Technical SEO' },
+    { id: 'BLOG', label: 'Blog/Content' },
+    { id: 'GBP_UPDATE', label: 'GBP Update' },
+    { id: 'GBP_POST', label: 'GBP Post' },
+    { id: 'LINK_BUILDING', label: 'Link Building' },
+    { id: 'KEYWORD_RESEARCH', label: 'Keyword Research' },
+    { id: 'SITE_AUDIT', label: 'Site Audit' },
+    { id: 'REPORT', label: 'SEO Report' },
+  ],
+  SOCIAL: [
+    { id: 'POST', label: 'Post' },
+    { id: 'REEL', label: 'Reel' },
+    { id: 'STORY', label: 'Story' },
+    { id: 'CAROUSEL', label: 'Carousel' },
+    { id: 'COMMUNITY_MGMT', label: 'Community Management' },
+    { id: 'CONTENT_CALENDAR', label: 'Content Calendar' },
+    { id: 'REPORT', label: 'Social Report' },
+  ],
+  ADS: [
+    { id: 'GOOGLE_ADS', label: 'Google Ads' },
+    { id: 'META_ADS', label: 'Meta Ads' },
+    { id: 'LINKEDIN_ADS', label: 'LinkedIn Ads' },
+    { id: 'YOUTUBE_ADS', label: 'YouTube Ads' },
+    { id: 'CAMPAIGN_SETUP', label: 'Campaign Setup' },
+    { id: 'OPTIMIZATION', label: 'Optimization' },
+    { id: 'AD_CREATIVE', label: 'Ad Creative' },
+    { id: 'REPORT', label: 'Ads Report' },
+  ],
+  WEB: [
+    { id: 'LANDING_PAGE', label: 'Landing Page' },
+    { id: 'WEBSITE_DEV', label: 'Website Development' },
+    { id: 'BUG_FIX', label: 'Bug Fix' },
+    { id: 'UI_DESIGN', label: 'UI/UX Design' },
+    { id: 'CMS_UPDATE', label: 'CMS Update' },
+    { id: 'PLUGIN_SETUP', label: 'Plugin Setup' },
+    { id: 'PERFORMANCE', label: 'Performance Optimization' },
+  ],
+  DESIGN: [
+    { id: 'STATIC_POST', label: 'Static Post' },
+    { id: 'CAROUSEL', label: 'Carousel' },
+    { id: 'STORY', label: 'Story Design' },
+    { id: 'BANNER', label: 'Banner/Ad' },
+    { id: 'LOGO', label: 'Logo Design' },
+    { id: 'INFOGRAPHIC', label: 'Infographic' },
+    { id: 'PRESENTATION', label: 'Presentation' },
+    { id: 'PRINT', label: 'Print Design' },
+    { id: 'THUMBNAIL', label: 'Thumbnail' },
+    { id: 'REEL', label: 'Reel' },
+    { id: 'YOUTUBE_VIDEO', label: 'YouTube Video' },
+    { id: 'SHORTS', label: 'YouTube Shorts' },
+    { id: 'MOTION_GRAPHICS', label: 'Motion Graphics' },
+    { id: 'GIF', label: 'GIF' },
+    { id: 'ANIMATION', label: 'Animation' },
+    { id: 'REVISION', label: 'Revision' },
+  ],
+  OPERATIONS: [
+    { id: 'SOCIAL_VIDEOS', label: 'Social - Videos' },
+    { id: 'SOCIAL_POSTS', label: 'Social - Posts' },
+    { id: 'SOCIAL_STORIES', label: 'Social - Stories' },
+    { id: 'SOCIAL_CAROUSELS', label: 'Social - Carousels' },
+    { id: 'YOUTUBE', label: 'YouTube' },
+    { id: 'GBP', label: 'GBP' },
+    { id: 'GOOGLE_ADS', label: 'Google Ads' },
+    { id: 'META_ADS', label: 'Meta Ads' },
+    { id: 'LINKEDIN_ADS', label: 'LinkedIn Ads' },
+    { id: 'SEO_ONPAGE', label: 'SEO - On-Page' },
+    { id: 'SEO_TECHNICAL', label: 'SEO - Technical' },
+    { id: 'SEO_BLOG', label: 'SEO - Blog/Content' },
+    { id: 'SEO_LINKS', label: 'SEO - Link Building' },
+    { id: 'LINKEDIN', label: 'LinkedIn' },
+    { id: 'WEB', label: 'Web Development' },
+    { id: 'DESIGN', label: 'Design' },
+    { id: 'VIDEO_EDITING', label: 'Video Editing' },
+    { id: 'MOTION_GRAPHICS', label: 'Motion Graphics' },
+    { id: 'OTHER', label: 'Other' },
+  ],
+}
+
+// Get work categories based on user role or department
+export function getWorkCategoriesForUser(role: string, department: string | null): { id: string; label: string }[] {
+  // Check for specific roles first
+  if (ROLE_WORK_CATEGORIES[role]) {
+    return ROLE_WORK_CATEGORIES[role]
+  }
+
+  // Check department
+  if (department && ROLE_WORK_CATEGORIES[department]) {
+    return ROLE_WORK_CATEGORIES[department]
+  }
+
+  // Default categories
+  return [
+    { id: 'SOCIAL', label: 'Social Media' },
+    { id: 'YOUTUBE', label: 'YouTube' },
+    { id: 'SEO', label: 'SEO' },
+    { id: 'GBP', label: 'GBP' },
+    { id: 'ADS', label: 'Ads' },
+    { id: 'WEB', label: 'Web' },
+    { id: 'DESIGN', label: 'Design' },
+    { id: 'VIDEO', label: 'Video' },
+    { id: 'OTHER', label: 'Other' },
+  ]
+}
+
+// Common activities available to all departments
+export const COMMON_ACTIVITIES = [
+  { id: 'internal_meeting', label: 'Internal Meeting' },
+  { id: 'client_call', label: 'Client Call' },
+  { id: 'huddle', label: 'Morning Huddle' },
+  { id: 'training_session', label: 'Training Session' },
+  { id: 'learning', label: 'Self Learning' },
+  { id: 'team_collab', label: 'Team Collaboration' },
+  { id: 'admin_task', label: 'Admin Task' },
+  { id: 'break', label: 'Break' },
+  { id: 'other', label: 'Other' },
+]
+
+// Get activities for a department or role
+export function getActivitiesForDepartment(departmentOrRole: string) {
+  // Check if it's a role first (INTERN, FREELANCER, MANAGER)
+  if (['INTERN', 'FREELANCER', 'MANAGER'].includes(departmentOrRole)) {
+    const roleActivities = DEPARTMENT_ACTIVITIES[departmentOrRole]?.activities || []
+    return [...roleActivities, ...COMMON_ACTIVITIES]
+  }
+
+  // Otherwise treat as department
+  const deptActivities = DEPARTMENT_ACTIVITIES[departmentOrRole]?.activities || []
+  return [...deptActivities, ...COMMON_ACTIVITIES]
+}
+
+// Get activities based on user's role AND department
+export function getActivitiesForUser(role: string, department: string | null) {
+  // For freelancers, use their department-specific activities if available
+  // e.g., a SOCIAL freelancer gets design/video tasks, not generic freelancer tasks
+  if (role === 'FREELANCER' && department && DEPARTMENT_ACTIVITIES[department]) {
+    const deptActivities = DEPARTMENT_ACTIVITIES[department].activities
+    // Also include common freelancer activities like invoicing/reports
+    const freelancerExtras = (DEPARTMENT_ACTIVITIES['FREELANCER']?.activities || [])
+      .filter(a => ['invoice_submission', 'work_report', 'asset_handover'].includes(a.id))
+    return [...deptActivities, ...freelancerExtras, ...COMMON_ACTIVITIES]
+  }
+
+  // For interns, use their department-specific activities if available
+  if (role === 'INTERN' && department && DEPARTMENT_ACTIVITIES[department]) {
+    const deptActivities = DEPARTMENT_ACTIVITIES[department].activities
+    const internExtras = (DEPARTMENT_ACTIVITIES['INTERN']?.activities || [])
+      .filter(a => ['daily_standup', 'tool_learning', 'mentor_session'].includes(a.id))
+    return [...deptActivities, ...internExtras, ...COMMON_ACTIVITIES]
+  }
+
+  // For manager/admin roles, use manager activities
+  if (['MANAGER', 'SUPER_ADMIN'].includes(role)) {
+    const roleActivities = DEPARTMENT_ACTIVITIES['MANAGER']?.activities || []
+    return [...roleActivities, ...COMMON_ACTIVITIES]
+  }
+
+  // For employees, use department-specific activities
+  if (department && DEPARTMENT_ACTIVITIES[department]) {
+    const deptActivities = DEPARTMENT_ACTIVITIES[department].activities
+    return [...deptActivities, ...COMMON_ACTIVITIES]
+  }
+
+  // Fallback to common activities
+  return COMMON_ACTIVITIES
+}
+
+// Get all departments
+export function getAllDepartments() {
+  return Object.keys(DEPARTMENT_ACTIVITIES)
+}
+
+// Accounts Task Types for daily planner
+export const ACCOUNTS_TASK_TYPES = [
+  { id: 'CLIENT_INVOICE', label: 'Client Invoice', color: 'bg-green-100 text-green-700', notifyClient: true },
+  { id: 'CLIENT_PAYMENT', label: 'Payment Received', color: 'bg-emerald-100 text-emerald-700' },
+  { id: 'COMPLIANCE', label: 'Compliance Task', color: 'bg-indigo-100 text-indigo-700' },
+  { id: 'RECONCILIATION', label: 'Bank Reconciliation', color: 'bg-blue-100 text-blue-700' },
+  { id: 'TDS_FILING', label: 'TDS Filing', color: 'bg-amber-100 text-amber-700' },
+  { id: 'VENDOR_PAYMENT', label: 'Vendor Payment', color: 'bg-purple-100 text-purple-700' },
+]
+
+// Compliance Types for accounts tasks
+export const COMPLIANCE_TYPES = [
+  { id: 'GST_FILING', label: 'GST Filing' },
+  { id: 'TDS_RETURN', label: 'TDS Return' },
+  { id: 'PT_FILING', label: 'Professional Tax' },
+  { id: 'PF_FILING', label: 'PF Filing' },
+  { id: 'ESI_FILING', label: 'ESI Filing' },
+  { id: 'AUDIT_PREP', label: 'Audit Preparation' },
+]
+
+// Department list for HR tasks
+export const DEPARTMENT_LIST = [
+  { id: 'WEB', label: 'Web Development' },
+  { id: 'SEO', label: 'SEO' },
+  { id: 'ADS', label: 'Paid Ads' },
+  { id: 'SOCIAL', label: 'Social Media' },
+  { id: 'DESIGN', label: 'Design' },
+  { id: 'CONTENT', label: 'Content' },
+  { id: 'VIDEO', label: 'Video' },
+  { id: 'AI', label: 'AI & Automation' },
+  { id: 'HR', label: 'Human Resources' },
+  { id: 'ACCOUNTS', label: 'Accounts & Finance' },
+  { id: 'SALES', label: 'Sales' },
+  { id: 'OPERATIONS', label: 'Operations' },
+]
+
+// Priority levels
+export const TASK_PRIORITIES = [
+  { id: 'LOW', label: 'Low', color: 'bg-slate-100 text-slate-700' },
+  { id: 'MEDIUM', label: 'Medium', color: 'bg-blue-100 text-blue-700' },
+  { id: 'HIGH', label: 'High', color: 'bg-amber-100 text-amber-700' },
+  { id: 'URGENT', label: 'Urgent', color: 'bg-red-100 text-red-700' },
+]
+
+// Task statuses
+export const TASK_STATUSES = [
+  { id: 'PLANNED', label: 'Planned', color: 'bg-slate-100 text-slate-700' },
+  { id: 'IN_PROGRESS', label: 'In Progress', color: 'bg-blue-100 text-blue-700' },
+  { id: 'COMPLETED', label: 'Completed', color: 'bg-green-100 text-green-700' },
+  { id: 'BREAKDOWN', label: 'Breakdown', color: 'bg-red-100 text-red-700' },
+]
+
+// Helper to check if current time is before huddle (11 AM)
+export function isBeforeHuddle(): boolean {
+  const now = new Date()
+  return now.getHours() < 11
+}
+
+// Helper to check if today is Monday (weekly planning day)
+export function isWeeklyPlanningDay(): boolean {
+  return new Date().getDay() === 1 // Monday = 1
+}
+
+// Helper to format time for display
+export function formatTaskTime(date: Date | string | null): string {
+  if (!date) return '-'
+  const d = new Date(date)
+  return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+}
+
+// Calculate total hours from tasks
+export function calculateTotalHours(tasks: Array<{ actualHours?: number | null; plannedHours?: number }>): { planned: number; actual: number } {
+  return tasks.reduce(
+    (acc, task) => ({
+      planned: acc.planned + (task.plannedHours || 0),
+      actual: acc.actual + (task.actualHours || 0),
+    }),
+    { planned: 0, actual: 0 }
+  )
+}

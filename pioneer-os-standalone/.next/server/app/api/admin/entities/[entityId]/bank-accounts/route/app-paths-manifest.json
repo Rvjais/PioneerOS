@@ -1,0 +1,3 @@
+{
+  "/api/admin/entities/[entityId]/bank-accounts/route": "app/api/admin/entities/[entityId]/bank-accounts/route.js"
+}

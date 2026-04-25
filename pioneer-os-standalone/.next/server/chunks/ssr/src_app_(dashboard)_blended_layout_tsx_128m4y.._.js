@@ -1,0 +1,5 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="25c8333e-eaf6-51ce-efaf-500f34086015")}catch(e){}}();
+module.exports=[405087,a=>{"use strict";var b=a.i(907997),c=a.i(794431),d=a.i(999472);a.i(570396);var e=a.i(673727),f=a.i(385351);async function g({children:a}){let h=await (0,c.getServerSession)(d.authOptions);h||(0,e.redirect)("/login");let i=await f.prisma.user.findUnique({where:{id:h.user.id},include:{customRoles:{include:{customRole:!0}}}});i||(0,e.redirect)("/login");let j=[];for(let a of(i.department&&j.push(i.department),i.customRoles))try{JSON.parse(a.customRole.departments||"[]").forEach(a=>{j.includes(a)||j.push(a)})}catch{}if(j.length<=1){let a=i.department?.toLowerCase()||"/";(0,e.redirect)(`/${a}`)}return(0,b.jsx)(b.Fragment,{children:a})}a.s(["default",0,g])},85204,a=>{a.n(a.i(405087))}];
+
+//# debugId=25c8333e-eaf6-51ce-efaf-500f34086015
+//# sourceMappingURL=src_app_%28dashboard%29_blended_layout_tsx_128m4y.._.js.map

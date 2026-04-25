@@ -1,0 +1,3 @@
+{
+  "/api/onboard/[token]/complete/route": "app/api/onboard/[token]/complete/route.js"
+}

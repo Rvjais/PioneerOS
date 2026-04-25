@@ -1,0 +1,3 @@
+{
+  "/api/admin/sync-client-assignments/route": "app/api/admin/sync-client-assignments/route.js"
+}

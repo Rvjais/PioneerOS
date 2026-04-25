@@ -1,0 +1,3 @@
+{
+  "/api/tasks/daily/[taskId]/complete/route": "app/api/tasks/daily/[taskId]/complete/route.js"
+}

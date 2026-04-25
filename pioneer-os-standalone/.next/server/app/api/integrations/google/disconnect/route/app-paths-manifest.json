@@ -1,0 +1,3 @@
+{
+  "/api/integrations/google/disconnect/route": "app/api/integrations/google/disconnect/route.js"
+}

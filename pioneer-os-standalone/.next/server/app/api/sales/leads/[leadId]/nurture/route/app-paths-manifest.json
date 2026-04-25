@@ -1,0 +1,3 @@
+{
+  "/api/sales/leads/[leadId]/nurture/route": "app/api/sales/leads/[leadId]/nurture/route.js"
+}

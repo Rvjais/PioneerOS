@@ -1,0 +1,5 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="2825dda6-c9db-f751-685c-21f36663a214")}catch(e){}}();
+module.exports=[679278,a=>{"use strict";var b=a.i(187924);a.s(["default",0,function({error:a,reset:c}){return(0,b.jsxs)("div",{className:"p-6 text-center",children:[(0,b.jsx)("div",{className:"text-4xl mb-4",children:"⚠️"}),(0,b.jsx)("h2",{className:"text-xl font-bold text-white mb-2",children:"Something went wrong"}),(0,b.jsx)("p",{className:"text-slate-400 mb-6",children:a.message||"An unexpected error occurred"}),(0,b.jsx)("button",{onClick:c,className:"px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600",children:"Try Again"})]})}])}];
+
+//# debugId=2825dda6-c9db-f751-685c-21f36663a214
+//# sourceMappingURL=src_app_%28dashboard%29_invoices_error_tsx_0nk0bkr._.js.map

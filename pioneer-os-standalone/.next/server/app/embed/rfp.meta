@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/embed/layout,_N_T_/embed/rfp/layout,_N_T_/embed/rfp/page,_N_T_/embed/rfp"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/embed/rfp/__PAGE__",
+    "/embed/rfp",
+    "/embed",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "/assessment/[token]/page": "app/assessment/[token]/page.js"
+}

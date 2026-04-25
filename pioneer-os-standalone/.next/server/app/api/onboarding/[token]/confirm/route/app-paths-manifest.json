@@ -1,0 +1,3 @@
+{
+  "/api/onboarding/[token]/confirm/route": "app/api/onboarding/[token]/confirm/route.js"
+}

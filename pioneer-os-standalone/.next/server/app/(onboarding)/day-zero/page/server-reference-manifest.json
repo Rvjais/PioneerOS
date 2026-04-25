@@ -1,0 +1,17 @@
+{
+  "node": {
+    "4021edc128670a304c460a19402acddd28b20de163": {
+      "workers": {
+        "app/(onboarding)/day-zero/page": {
+          "moduleId": 389527,
+          "async": false,
+          "exportedName": "signNdaAction",
+          "filename": "src/app/(onboarding)/day-zero/actions.ts"
+        }
+      },
+      "exportedName": "signNdaAction",
+      "filename": "src/app/(onboarding)/day-zero/actions.ts"
+    }
+  },
+  "edge": {}
+}

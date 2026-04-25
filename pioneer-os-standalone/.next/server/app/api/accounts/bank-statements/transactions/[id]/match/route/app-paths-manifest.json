@@ -1,0 +1,3 @@
+{
+  "/api/accounts/bank-statements/transactions/[id]/match/route": "app/api/accounts/bank-statements/transactions/[id]/match/route.js"
+}

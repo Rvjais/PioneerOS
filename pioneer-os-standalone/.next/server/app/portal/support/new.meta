@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/portal/layout,_N_T_/portal/support/layout,_N_T_/portal/support/new/layout,_N_T_/portal/support/new/page,_N_T_/portal/support/new"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/portal/support/new/__PAGE__",
+    "/portal/support/new",
+    "/portal/support",
+    "/portal",
+    "/_index",
+    "/_head"
+  ]
+}

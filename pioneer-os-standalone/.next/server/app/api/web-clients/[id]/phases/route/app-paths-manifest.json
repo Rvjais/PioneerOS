@@ -1,0 +1,3 @@
+{
+  "/api/web-clients/[id]/phases/route": "app/api/web-clients/[id]/phases/route.js"
+}

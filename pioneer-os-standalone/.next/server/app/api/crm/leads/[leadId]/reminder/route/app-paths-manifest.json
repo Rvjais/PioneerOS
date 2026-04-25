@@ -1,0 +1,3 @@
+{
+  "/api/crm/leads/[leadId]/reminder/route": "app/api/crm/leads/[leadId]/reminder/route.js"
+}

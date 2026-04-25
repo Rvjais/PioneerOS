@@ -1,0 +1,3 @@
+{
+  "/api/web/amc/[id]/logs/route": "app/api/web/amc/[id]/logs/route.js"
+}

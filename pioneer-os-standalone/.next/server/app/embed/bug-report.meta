@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/embed/layout,_N_T_/embed/bug-report/layout,_N_T_/embed/bug-report/page,_N_T_/embed/bug-report"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/embed/bug-report/__PAGE__",
+    "/embed/bug-report",
+    "/embed",
+    "/_index",
+    "/_head"
+  ]
+}

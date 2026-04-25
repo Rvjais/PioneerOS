@@ -1,0 +1,3 @@
+{
+  "/api/tasks/daily/stats/route": "app/api/tasks/daily/stats/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/accounts/finance-overview/page": "app/(dashboard)/accounts/finance-overview/page.js"
+}

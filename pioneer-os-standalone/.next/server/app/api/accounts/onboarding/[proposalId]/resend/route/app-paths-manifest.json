@@ -1,0 +1,3 @@
+{
+  "/api/accounts/onboarding/[proposalId]/resend/route": "app/api/accounts/onboarding/[proposalId]/resend/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/onboarding/[token]/payment/route": "app/api/onboarding/[token]/payment/route.js"
+}

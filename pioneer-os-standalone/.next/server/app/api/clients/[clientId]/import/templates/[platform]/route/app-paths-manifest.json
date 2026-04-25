@@ -1,0 +1,3 @@
+{
+  "/api/clients/[clientId]/import/templates/[platform]/route": "app/api/clients/[clientId]/import/templates/[platform]/route.js"
+}

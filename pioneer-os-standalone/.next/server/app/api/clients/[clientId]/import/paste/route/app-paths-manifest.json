@@ -1,0 +1,3 @@
+{
+  "/api/clients/[clientId]/import/paste/route": "app/api/clients/[clientId]/import/paste/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/testimonials/user/[userId]/badges/route": "app/api/testimonials/user/[userId]/badges/route.js"
+}

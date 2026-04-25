@@ -1,0 +1,5 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="e9c03b5f-ca49-7da9-371d-234443c827c0")}catch(e){}}();
+module.exports=[548302,a=>{"use strict";var b=a.i(907997);a.s(["default",0,function(){return(0,b.jsxs)("div",{className:"p-6 space-y-6 animate-pulse",children:[(0,b.jsx)("div",{className:"h-8 bg-white/10 rounded w-48"}),(0,b.jsx)("div",{className:"grid grid-cols-1 md:grid-cols-4 gap-4",children:[1,2,3,4].map(a=>(0,b.jsx)("div",{className:"h-24 bg-white/5 rounded-xl border border-white/5"},`skeleton-${a}`))}),(0,b.jsx)("div",{className:"h-96 bg-white/5 rounded-xl border border-white/5"})]})}])},714804,a=>{a.n(a.i(548302))}];
+
+//# debugId=e9c03b5f-ca49-7da9-371d-234443c827c0
+//# sourceMappingURL=src_app_%28dashboard%29_invoices_loading_tsx_12ytnqq._.js.map

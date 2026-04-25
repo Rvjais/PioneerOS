@@ -1,0 +1,3 @@
+{
+  "/api/integrations/linkedin/disconnect/route": "app/api/integrations/linkedin/disconnect/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/clients/[clientId]/reports/google-analytics/page": "app/(dashboard)/clients/[clientId]/reports/google-analytics/page.js"
+}

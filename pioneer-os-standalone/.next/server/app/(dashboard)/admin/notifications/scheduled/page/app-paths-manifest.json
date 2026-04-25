@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/admin/notifications/scheduled/page": "app/(dashboard)/admin/notifications/scheduled/page.js"
+}

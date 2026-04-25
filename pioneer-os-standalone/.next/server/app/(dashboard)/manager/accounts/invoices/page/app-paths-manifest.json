@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/manager/accounts/invoices/page": "app/(dashboard)/manager/accounts/invoices/page.js"
+}

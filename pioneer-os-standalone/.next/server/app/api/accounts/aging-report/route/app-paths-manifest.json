@@ -1,0 +1,3 @@
+{
+  "/api/accounts/aging-report/route": "app/api/accounts/aging-report/route.js"
+}

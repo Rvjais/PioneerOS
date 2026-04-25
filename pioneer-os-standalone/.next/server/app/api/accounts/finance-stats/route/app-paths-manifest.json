@@ -1,0 +1,3 @@
+{
+  "/api/accounts/finance-stats/route": "app/api/accounts/finance-stats/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/rfp/[token]/route": "app/api/rfp/[token]/route.js"
+}

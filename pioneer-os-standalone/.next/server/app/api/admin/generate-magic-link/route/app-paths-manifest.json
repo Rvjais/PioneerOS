@@ -1,0 +1,3 @@
+{
+  "/api/admin/generate-magic-link/route": "app/api/admin/generate-magic-link/route.js"
+}

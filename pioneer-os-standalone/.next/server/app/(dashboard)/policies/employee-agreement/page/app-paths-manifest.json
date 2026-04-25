@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/policies/employee-agreement/page": "app/(dashboard)/policies/employee-agreement/page.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/web-clients/[id]/convert-recurring/route": "app/api/web-clients/[id]/convert-recurring/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/magic-link/[token]/route": "app/api/magic-link/[token]/route.js"
+}

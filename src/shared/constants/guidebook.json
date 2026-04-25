@@ -1,0 +1,443 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-19",
+  "chapters": [
+    {
+      "id": 1,
+      "title": "Welcome to Pioneer",
+      "sections": [
+        {
+          "id": "1.1",
+          "title": "Our Mission & Vision",
+          "content": "Pioneer is a healthcare-focused digital marketing agency committed to transforming how medical professionals connect with patients. Our vision is to become India's most trusted healthcare marketing partner by 2027."
+        },
+        {
+          "id": "1.2",
+          "title": "Core Values",
+          "content": "1. Patient First - Every campaign must prioritize patient welfare. 2. Radical Transparency - No hidden metrics or inflated reports. 3. Continuous Learning - 6 hours of mandatory learning per month. 4. Pioneer Spirit - We innovate, we adapt, we lead."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Day 0 Protocol",
+      "sections": [
+        {
+          "id": "2.1",
+          "title": "Document Verification",
+          "content": "All new employees must complete Day 0 verification within 48 hours of joining. Required documents: Aadhar Card, PAN Card, Last 3 months salary slips (if applicable), Educational certificates, and 2 passport-size photographs."
+        },
+        {
+          "id": "2.2",
+          "title": "NDA & Policy Charter",
+          "content": "The Perpetual NDA is a binding agreement that extends 2 years beyond employment. The Policy Charter acknowledgment confirms you have read and understood all 20 chapters of this guidebook. Dashboard access is locked until both are digitally signed."
+        },
+        {
+          "id": "2.3",
+          "title": "Biometric Registration",
+          "content": "Visit HR within 24 hours to register your biometric data. This is linked to attendance, task logging eligibility, and payroll processing. No punch-in = no task logging for that day."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Attendance & Leave Policy",
+      "sections": [
+        {
+          "id": "3.1",
+          "title": "Working Hours",
+          "content": "Standard working hours are 10:00 AM to 7:00 PM, Monday through Saturday. The 11:00 AM Huddle is mandatory with camera-on policy. Late arrivals (after 10:15 AM) result in a 0.5 day deduction after 3 occurrences per month."
+        },
+        {
+          "id": "3.2",
+          "title": "Leave Types",
+          "content": "Earned Leave (EL): 18 days per year, accrued monthly. Sick Leave (SL): 6 days per year, requires medical certificate for 2+ consecutive days. Casual Leave (CL): 6 days per year. Work From Home (WFH): Maximum 2 days per month, requires manager approval 24 hours in advance."
+        },
+        {
+          "id": "3.3",
+          "title": "Smoke Break Policy",
+          "content": "Smoke breaks are limited to 2 per day, maximum 10 minutes each. Breaks must be taken at the designated area on the terrace. Excessive breaks will be flagged by the system and deducted from Casual Leave."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "The Unit-Based Incentive System",
+      "sections": [
+        {
+          "id": "4.1",
+          "title": "What is a Unit?",
+          "content": "A 'Unit' is a standardized measure of work output. Each task type has a pre-defined unit value in INR. Units are only counted when a task is marked as 'Verified' by a manager or the QA team."
+        },
+        {
+          "id": "4.2",
+          "title": "Unit Value Table",
+          "content": "Super Landing Page: 1 unit = ₹2,000. Standard Landing Page: 1 unit = ₹800. SEO Audit Report: 1 unit = ₹1,500. Monthly SEO Report: 1 unit = ₹400. Ad Campaign Setup: 1 unit = ₹1,000. Social Media Calendar: 1 unit = ₹600. Content Writing (1000 words): 1 unit = ₹500."
+        },
+        {
+          "id": "4.3",
+          "title": "Logging a Super Landing Page",
+          "content": "To log a Super Landing Page: 1. Go to Tasks > New Task. 2. Select Task Type: 'Super Landing Page'. 3. Link to the Client from the dropdown. 4. Add the live URL in the description. 5. Submit for verification. 6. Once verified, ₹2,000 is added to your incentive pot."
+        },
+        {
+          "id": "4.4",
+          "title": "Incentive Payout Schedule",
+          "content": "Incentives are calculated on the 1st of each month and paid with the salary on the 7th. The 'Attrition Kill-Switch' rule: If any assigned client terminates their contract, all team members' incentives for that month are zeroed for that specific client's work."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "The RBC Loyalty Program",
+      "sections": [
+        {
+          "id": "5.1",
+          "title": "What is RBC?",
+          "content": "RBC (Retention Bonus Component) is Pioneer's loyalty program. 8% of your monthly CTC is held in a 'Loyalty Pot'. This pot is released in full after completing 1 year of service."
+        },
+        {
+          "id": "5.2",
+          "title": "Forfeiture Rules",
+          "content": "If you resign before completing 1 year, the entire RBC pot is forfeited. If you are terminated for cause (misconduct, policy violation), the RBC pot is forfeited regardless of tenure. Layoffs or mutual separations after 6 months result in 50% pot release."
+        },
+        {
+          "id": "5.3",
+          "title": "Tracking Your RBC",
+          "content": "Your current RBC pot balance is visible on the Hub dashboard. You receive a WhatsApp notification at 6-month and 11-month milestones. The full pot is automatically added to your 13th-month salary."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Client Management",
+      "sections": [
+        {
+          "id": "6.1",
+          "title": "Client Tiers",
+          "content": "Enterprise: Retainer > ₹1,00,000/month. Dedicated account manager, priority support, quarterly strategic reviews. Premium: Retainer ₹50,000-₹1,00,000/month. Monthly tactical reviews, standard SLA. Standard: Retainer < ₹50,000/month. Bi-monthly reviews, email support."
+        },
+        {
+          "id": "6.2",
+          "title": "The 15-Step Client Intake Wizard",
+          "content": "All new clients must complete the Clinical Intake Wizard before any work begins. Steps include: Business basics, Medical specialty deep-dive, Patient demographics, Competitor analysis, Brand voice guidelines, Budget allocation, KPI definitions, and Strategy map approval."
+        },
+        {
+          "id": "6.3",
+          "title": "Client Communication Protocol",
+          "content": "All client communication must be logged. WhatsApp groups must include at least one manager. Never promise timelines without manager approval. Escalations must be reported within 2 hours via the Escalation form."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "The STOP Meeting Framework",
+      "sections": [
+        {
+          "id": "7.1",
+          "title": "Strategic Meetings",
+          "content": "Frequency: Quarterly. Attendees: Leadership, Department Heads. Purpose: Set agency-wide goals, budget allocation, new service launches. Duration: 2-3 hours."
+        },
+        {
+          "id": "7.2",
+          "title": "Tactical Meetings",
+          "content": "Frequency: Monthly per client. Attendees: Account manager, assigned team, client. Purpose: Performance review, lead quality assessment, strategy adjustments. Duration: 45-60 minutes. Note: Client 'mood' and lead quality scores are logged directly to the Client profile."
+        },
+        {
+          "id": "7.3",
+          "title": "Operations Meetings",
+          "content": "Frequency: Weekly per department. Attendees: Department members, lead. Purpose: Sprint planning, blocker resolution, knowledge sharing. Duration: 30 minutes."
+        },
+        {
+          "id": "7.4",
+          "title": "The 11 AM Huddle",
+          "content": "Frequency: Daily at 11:00 AM sharp. Attendees: All operations staff. Duration: 15 minutes max. Rules: Camera must be ON. Punctuality is tracked. 3+ late arrivals per week = HP deduction. Agenda: Yesterday's wins, today's priorities, blockers."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Department SOPs",
+      "sections": [
+        {
+          "id": "8.1",
+          "title": "Web Development",
+          "content": "All websites must be mobile-first. Use the Pioneer starter template from the internal repo. Staging review required before live deployment. All forms must have HIPAA-compliant data handling. Performance target: Lighthouse score > 90."
+        },
+        {
+          "id": "8.2",
+          "title": "SEO",
+          "content": "Monthly audits are mandatory for all clients. Use SEMrush for keyword research, Ahrefs for backlink analysis. Local SEO (GMB optimization) is priority for healthcare clients. Content must be medically reviewed before publishing."
+        },
+        {
+          "id": "8.3",
+          "title": "Paid Ads",
+          "content": "Healthcare ad copy must avoid claims that violate Google Ads policies. Lead forms must include consent checkboxes. Daily budget monitoring is mandatory. ROAS target: minimum 3x for Enterprise clients."
+        },
+        {
+          "id": "8.4",
+          "title": "Social Media",
+          "content": "Content calendar must be approved 1 week in advance. Patient testimonials require written consent. Use the Pioneer brand kit for all visuals. Engagement responses within 2 hours during business hours."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Tool Mastery",
+      "sections": [
+        {
+          "id": "9.1",
+          "title": "AIFILMZ",
+          "content": "AIFILMZ is our AI video generation tool. Use it for: Patient testimonial templates, Doctor introduction videos, Procedure explanation clips. Quota: 10 videos per client per month. Export in 1080p for social media, 4K for website."
+        },
+        {
+          "id": "9.2",
+          "title": "AITELZ",
+          "content": "AITELZ is the AI telephone receptionist. Setup requires: Clinic hours, appointment types, doctor availability sync. Training the AI: Upload FAQs specific to the medical specialty. Monitor the 'Missed Intent' log weekly."
+        },
+        {
+          "id": "9.3",
+          "title": "WACRS",
+          "content": "WACRS (WhatsApp CRM System) handles patient communication. Features: Broadcast lists, appointment reminders, follow-up sequences. Compliance: Never send marketing messages without opt-in. Use templates approved by WhatsApp Business."
+        },
+        {
+          "id": "9.4",
+          "title": "ReviewMagnet",
+          "content": "ReviewMagnet automates Google review collection. Setup: QR codes at reception, SMS triggers post-appointment. Goal: 10+ new reviews per client per month. Respond to all reviews within 24 hours using approved templates."
+        },
+        {
+          "id": "9.5",
+          "title": "RAIN CRM",
+          "content": "RAIN CRM tracks the patient journey from lead to consultation. Stages: New Lead > Contacted > Appointment Booked > Showed > Converted. Integration: Syncs with Google Ads, Facebook Leads, and website forms. Daily lead assignment rotation for fair distribution."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "The Arcade Program",
+      "sections": [
+        {
+          "id": "10.1",
+          "title": "XP (Experience Points)",
+          "content": "XP is earned through: Task completion (+10-50 XP based on complexity), Client appreciation (+50 XP), Peer recognition (+25 XP), Learning completion (+30 XP per hour), Achievements (+100-500 XP). XP determines your leaderboard position and influences appraisal scores."
+        },
+        {
+          "id": "10.2",
+          "title": "HP (Health Points)",
+          "content": "Everyone starts with 100 HP. HP is lost through: Client escalations (-10 HP), Missed deadlines (-5 HP), Huddle absences (-3 HP), Policy violations (-20 HP). HP below 50 triggers a performance review. HP at 0 = automatic PIP (Performance Improvement Plan)."
+        },
+        {
+          "id": "10.3",
+          "title": "Achievements",
+          "content": "Achievements are milestone badges: 'First Blood' - First task verified. 'Century' - 100 tasks completed. 'Client Whisperer' - 5 client appreciations. 'Scholar' - 50 hours of learning. 'Perfect Week' - All tasks on time for 7 days. 'Streak Master' - 30-day attendance streak."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Appraisal & Growth",
+      "sections": [
+        {
+          "id": "11.1",
+          "title": "Appraisal Cycle",
+          "content": "Appraisals are conducted bi-annually in April and October. The review period is the preceding 6 months. Self-assessment forms are due 2 weeks before the review date."
+        },
+        {
+          "id": "11.2",
+          "title": "The Appraisal Algorithm",
+          "content": "Your raise percentage is calculated using: Learning Hours Score (20% weight) - Did you complete 36 hours in 6 months? Charter Score (15% weight) - Policy adherence rating. Peer Review (20% weight) - Anonymous 360 feedback. Manager Review (25% weight) - Direct supervisor assessment. Task Completion Rate (10% weight) - Verified tasks vs assigned. Client Retention (10% weight) - Did your clients stay?"
+        },
+        {
+          "id": "11.3",
+          "title": "Promotion Criteria",
+          "content": "Promotions require: Minimum 18 months in current role. Average appraisal score > 80%. At least 2 mentored juniors. 1 process improvement implemented. No HP drops below 60 in the review period."
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Mandatory Learning",
+      "sections": [
+        {
+          "id": "12.1",
+          "title": "The 6-Hour Rule",
+          "content": "Every employee must complete 6 hours of learning per month. Learning can include: Pioneer Academy courses, External certifications, Industry webinars, Book summaries. All learning must be logged with a 'Key Takeaways' summary."
+        },
+        {
+          "id": "12.2",
+          "title": "AI Verification",
+          "content": "The Oracle AI analyzes your learning summaries. Red flags: Copy-pasted content, hallucinated courses, generic summaries. Verified summaries contribute to your Learning Hours Score. Flagged summaries require re-submission."
+        },
+        {
+          "id": "12.3",
+          "title": "Recommended Learning Paths",
+          "content": "Web Team: Google Analytics, Core Web Vitals, React/Next.js. SEO Team: SEMrush certification, Google Search Console mastery. Ads Team: Meta Blueprint, Google Ads certification. Social Team: Content strategy, Video editing basics."
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Compliance & Ethics",
+      "sections": [
+        {
+          "id": "13.1",
+          "title": "Data Privacy",
+          "content": "All client data is confidential. Never share login credentials. Use password managers approved by IT. Patient data requires HIPAA-level handling. Violations result in immediate termination."
+        },
+        {
+          "id": "13.2",
+          "title": "POSH Policy",
+          "content": "Pioneer maintains zero tolerance for harassment. POSH complaints are encrypted and handled by the Internal Committee. Complainants are protected from retaliation. Anonymous reporting is available via the POSH portal."
+        },
+        {
+          "id": "13.3",
+          "title": "Conflict of Interest",
+          "content": "Freelancing for competitors is prohibited. Personal projects in healthcare marketing require written approval. Gifts from vendors above ₹5,000 must be declared. All outside employment must be disclosed."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Communication Guidelines",
+      "sections": [
+        {
+          "id": "14.1",
+          "title": "Internal Communication",
+          "content": "Slack is for quick queries and updates. Email for formal requests and documentation. Tag appropriately - don't spam @channel. Response SLA: Internal messages within 2 hours during work hours."
+        },
+        {
+          "id": "14.2",
+          "title": "Client Communication",
+          "content": "Always CC your manager on client emails. Use professional language - no slang or emojis unless the client initiates. Document all verbal agreements in writing. Never commit to deadlines without team consultation."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Resignation & Exit",
+      "sections": [
+        {
+          "id": "15.1",
+          "title": "Notice Period",
+          "content": "Standard notice period is 30 days. Senior roles (Leads and above) require 60 days. Notice period buyout is available at 2x daily salary rate."
+        },
+        {
+          "id": "15.2",
+          "title": "Knowledge Transfer",
+          "content": "During notice period, you must: Document all ongoing projects, Record handover videos for the Academy, Complete client transition meetings, Return all company assets."
+        },
+        {
+          "id": "15.3",
+          "title": "Exit Interview",
+          "content": "Exit interviews are conducted by HR. Feedback is anonymous and used for improvement. Full & Final settlement within 45 days of last working day. Experience letter provided upon asset clearance."
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Remote Work Policy",
+      "sections": [
+        {
+          "id": "16.1",
+          "title": "WFH Guidelines",
+          "content": "Maximum 2 WFH days per month. Request via the Leave portal 24 hours in advance. Must be reachable during work hours. Camera ON for all meetings. No WFH during client onboarding weeks."
+        },
+        {
+          "id": "16.2",
+          "title": "Freelancer Access",
+          "content": "Freelancers get limited dashboard access. Work units must be logged daily. Payment requests submitted weekly. No access to client contact information. All work reviewed before client delivery."
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "TDS & Payroll",
+      "sections": [
+        {
+          "id": "17.1",
+          "title": "Salary Structure",
+          "content": "CTC breakdown: Basic (40%), HRA (20%), Special Allowance (32%), RBC (8%). TDS is deducted as per IT slabs. Investment proofs due by January 15th each year."
+        },
+        {
+          "id": "17.2",
+          "title": "Payroll Schedule",
+          "content": "Salary credited on the 7th of each month. Incentives calculated on the 1st. Reimbursements processed on the 15th. Payslips available in the Settings > Documents section."
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Office Guidelines",
+      "sections": [
+        {
+          "id": "18.1",
+          "title": "Sector 32 Office",
+          "content": "Address: 4th Floor, Pioneer Tower, Sector 32, Gurgaon. Parking available in basement (bike) and adjacent lot (car). Cafeteria on 2nd floor - subsidized meals. Quiet zones on 5th floor for focused work."
+        },
+        {
+          "id": "18.2",
+          "title": "Dress Code",
+          "content": "Business casual Monday-Friday. Smart casuals on Saturday. Client meeting days: Formal attire. Pioneer merchandise available at reception."
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Health & Wellness",
+      "sections": [
+        {
+          "id": "19.1",
+          "title": "Insurance",
+          "content": "Group health insurance covers: Employee + Spouse + 2 Children. Sum insured: ₹5,00,000. Cashless treatment at 500+ network hospitals. Pre-existing conditions covered after 2 years."
+        },
+        {
+          "id": "19.2",
+          "title": "Wellness Programs",
+          "content": "Weekly yoga sessions on Friday 6 PM. Mental health support via EAP (Employee Assistance Program). Annual health checkup covered. Standing desks available on request."
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "The Pioneer Spirit",
+      "sections": [
+        {
+          "id": "20.1",
+          "title": "Our Culture",
+          "content": "We are builders, not maintainers. Every idea gets heard. Failure is a lesson, not a punishment. We celebrate loudly and critique privately. The patient is always at the center of our work."
+        },
+        {
+          "id": "20.2",
+          "title": "Pioneer Events",
+          "content": "Monthly Town Halls: Company updates and Q&A. Quarterly Offsites: Team building and strategy. Annual Awards: Pioneer of the Year, Rising Star, Client Champion. Festivals: Diwali party, Holi celebration, Christmas potluck."
+        }
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "How many WFH days do I have left?",
+      "answer": "You are entitled to 2 WFH days per month. Check your attendance portal for remaining balance. WFH requests must be submitted 24 hours in advance.",
+      "chapterRef": "16.1"
+    },
+    {
+      "question": "What is the policy for client loss?",
+      "answer": "If a client terminates their contract, the 'Attrition Kill-Switch' is activated. All team members assigned to that client will have their incentives for that client's work zeroed for the month. This encourages proactive client relationship management.",
+      "chapterRef": "4.4"
+    },
+    {
+      "question": "How do I log a Super Landing Page?",
+      "answer": "Go to Tasks > New Task, select 'Super Landing Page' as task type, link the client, add the live URL, and submit for verification. Once verified, ₹2,000 is added to your incentive pot.",
+      "chapterRef": "4.3"
+    },
+    {
+      "question": "What is the smoke break policy?",
+      "answer": "Smoke breaks are limited to 2 per day, maximum 10 minutes each. Use the designated terrace area only. Excessive breaks are flagged and deducted from Casual Leave.",
+      "chapterRef": "3.3"
+    },
+    {
+      "question": "When do I get my RBC pot?",
+      "answer": "Your RBC (Retention Bonus Component) pot is released in full after completing 1 year of service. It's added to your 13th-month salary. Resignation before 1 year forfeits the entire pot.",
+      "chapterRef": "5.1"
+    }
+  ]
+}

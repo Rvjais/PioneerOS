@@ -1,0 +1,5 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="f5544290-8887-aff3-62b5-c5b5ef9e0345")}catch(e){}}();
+module.exports=[153681,a=>{"use strict";var b=a.i(907997);a.s(["default",0,function(){return(0,b.jsxs)("div",{className:"p-6 space-y-6 animate-pulse",children:[(0,b.jsx)("div",{className:"h-8 bg-white/10 rounded w-48"}),(0,b.jsx)("div",{className:"grid grid-cols-1 md:grid-cols-4 gap-4",children:[1,2,3,4].map(a=>(0,b.jsx)("div",{className:"h-24 bg-white/5 rounded-xl border border-white/5"},`skeleton-${a}`))}),(0,b.jsx)("div",{className:"h-96 bg-white/5 rounded-xl border border-white/5"})]})}])},788191,a=>{a.n(a.i(153681))}];
+
+//# debugId=f5544290-8887-aff3-62b5-c5b5ef9e0345
+//# sourceMappingURL=src_app_%28dashboard%29_mash_loading_tsx_0~53fae._.js.map

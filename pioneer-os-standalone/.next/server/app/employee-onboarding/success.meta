@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/employee-onboarding/layout,_N_T_/employee-onboarding/success/layout,_N_T_/employee-onboarding/success/page,_N_T_/employee-onboarding/success"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/employee-onboarding/success/__PAGE__",
+    "/employee-onboarding/success",
+    "/employee-onboarding",
+    "/_index",
+    "/_head"
+  ]
+}

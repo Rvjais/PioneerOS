@@ -1,0 +1,29 @@
+{
+  "node": {
+    "60c2632beb8780146834496ceb2c6ade04dc03c34d": {
+      "workers": {
+        "app/(onboarding)/profile-wizard/page": {
+          "moduleId": 40672,
+          "async": false,
+          "exportedName": "saveWizardStep",
+          "filename": "src/app/(onboarding)/profile-wizard/actions.ts"
+        }
+      },
+      "exportedName": "saveWizardStep",
+      "filename": "src/app/(onboarding)/profile-wizard/actions.ts"
+    },
+    "4047567ad130d8ca6382ce84dc1398ee4b8698f9a4": {
+      "workers": {
+        "app/(onboarding)/profile-wizard/page": {
+          "moduleId": 40672,
+          "async": false,
+          "exportedName": "submitForVerification",
+          "filename": "src/app/(onboarding)/profile-wizard/actions.ts"
+        }
+      },
+      "exportedName": "submitForVerification",
+      "filename": "src/app/(onboarding)/profile-wizard/actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,4 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="53c1cda8-1bfd-73f6-27ed-3fcfc996bda8")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,940773,e=>{"use strict";var i=e.i(843476),s=e.i(271645),t=e.i(618566);e.s(["default",0,function(){let e=(0,t.useRouter)();return(0,s.useEffect)(()=>{e.push("/sales/pipeline?pipeline=BRAINMINDS")},[e]),(0,i.jsx)("div",{className:"flex items-center justify-center h-64",children:(0,i.jsx)("div",{className:"animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"})})}])}]);
+
+//# debugId=53c1cda8-1bfd-73f6-27ed-3fcfc996bda8

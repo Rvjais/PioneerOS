@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/accounts/onboarding/[proposalId]/review/page": "app/(dashboard)/accounts/onboarding/[proposalId]/review/page.js"
+}

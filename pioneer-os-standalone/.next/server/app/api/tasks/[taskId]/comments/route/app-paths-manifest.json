@@ -1,0 +1,3 @@
+{
+  "/api/tasks/[taskId]/comments/route": "app/api/tasks/[taskId]/comments/route.js"
+}

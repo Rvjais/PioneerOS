@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/google-drive/callback/route.js")
+R.c("server/chunks/[root-of-the-server]__0ljhhp_._.js")
+R.c("server/chunks/node_modules_0g3z49t._.js")
+R.c("server/chunks/[root-of-the-server]__03al1gy._.js")
+R.c("server/chunks/_0v_p7yw._.js")
+R.c("server/chunks/[root-of-the-server]__0la1agp._.js")
+R.c("server/chunks/node_modules_next_11synfn._.js")
+R.c("server/chunks/_next-internal_server_app_api_google-drive_callback_route_actions_11ahm-_.js")
+R.m(611738)
+module.exports=R.m(611738).exports

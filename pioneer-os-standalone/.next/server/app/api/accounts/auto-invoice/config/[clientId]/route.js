@@ -1,0 +1,13 @@
+var R=require("../../../../../../chunks/[turbopack]_runtime.js")("server/app/api/accounts/auto-invoice/config/[clientId]/route.js")
+R.c("server/chunks/[root-of-the-server]__0knigdi._.js")
+R.c("server/chunks/[root-of-the-server]__13635sp._.js")
+R.c("server/chunks/node_modules_next_124cnn1._.js")
+R.c("server/chunks/node_modules_bcryptjs_index_0bjz0ul.js")
+R.c("server/chunks/[root-of-the-server]__0la1agp._.js")
+R.c("server/chunks/_0qquy0a._.js")
+R.c("server/chunks/node_modules_zod_v4_classic_external_131y~ke.js")
+R.c("server/chunks/node_modules_0k94p8p._.js")
+R.c("server/chunks/node_modules_next_11synfn._.js")
+R.c("server/chunks/0zjb_server_app_api_accounts_auto-invoice_config_[clientId]_route_actions_0l-pi3u.js")
+R.m(902446)
+module.exports=R.m(902446).exports

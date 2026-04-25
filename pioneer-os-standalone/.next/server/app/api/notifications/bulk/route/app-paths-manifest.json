@@ -1,0 +1,3 @@
+{
+  "/api/notifications/bulk/route": "app/api/notifications/bulk/route.js"
+}

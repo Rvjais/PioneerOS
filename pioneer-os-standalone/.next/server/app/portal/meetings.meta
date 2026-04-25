@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/portal/layout,_N_T_/portal/meetings/layout,_N_T_/portal/meetings/page,_N_T_/portal/meetings"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/portal/meetings/__PAGE__",
+    "/portal/meetings",
+    "/portal",
+    "/_index",
+    "/_head"
+  ]
+}

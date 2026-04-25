@@ -1,0 +1,3 @@
+{
+  "/api/web-portal/sitemap/[pageId]/route": "app/api/web-portal/sitemap/[pageId]/route.js"
+}
