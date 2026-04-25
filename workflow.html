@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pioneer-OS Complete Workflow Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .sidebar-item:hover { background-color: rgba(59, 130, 246, 0.1); }
+        .gradient-text { background: linear-gradient(135deg, #3B82F6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .glow-blue { box-shadow: 0 0 60px rgba(59,130,246,0.3); }
+        .grid-bg { background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px); background-size: 40px 40px; }
+        .flow-line { stroke-dasharray: 8,4; animation: flowDash 1s linear infinite; }
+        @keyframes flowDash { to { stroke-dashoffset: -12; } }
+        .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.5; transform: scale(1.2); } }
+        .slide-up { animation: slideUp 0.6s ease-out forwards; opacity: 0; }
+        @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+        .node-box { transition: all 0.2s; }
+        .node-box:hover { filter: brightness(1.1); transform: scale(1.02); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Mobile Menu Toggle -->
+    <div class="lg:hidden fixed bottom-6 right-6 z-50">
+        <button onclick="toggleSidebar()" class="bg-blue-600 text-white p-4 rounded-full shadow-lg glow-blue">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Minimap -->
+    <div class="hidden xl:block fixed top-6 right-6 z-40 w-48 h-32 bg-white/90 rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+        <div class="p-2">
+            <p class="text-xs font-semibold text-slate-500 mb-2">Quick Nav</p>
+            <div class="space-y-1">
+                <a href="#summary" class="block text-xs text-blue-600 hover:underline">Summary</a>
+                <a href="#auth-flow" class="block text-xs text-blue-600 hover:underline">Auth Flow</a>
+                <a href="#task-flow" class="block text-xs text-blue-600 hover:underline">Task Lifecycle</a>
+                <a href="#hr-flow" class="block text-xs text-blue-600 hover:underline">HR Operations</a>
+                <a href="#client-flow" class="block text-xs text-blue-600 hover:underline">Client Lifecycle</a>
+                <a href="#sales-flow" class="block text-xs text-blue-600 hover:underline">Sales Pipeline</a>
+                <a href="#finance-flow" class="block text-xs text-blue-600 hover:underline">Finance</a>
+                <a href="#portal-flow" class="block text-xs text-blue-600 hover:underline">Client Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="hidden lg:block w-72 h-screen sticky top-0 bg-white border-r border-slate-200 overflow-y-auto p-6 transition-all duration-300 z-30">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">P</div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-slate-900">Pioneer-OS</h1>
+                    <p class="text-xs text-slate-400">Workflow Docs v1</p>
+                </div>
+            </div>
+
+            <nav class="space-y-1">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 ml-2">Overview</p>
+                <a href="#summary" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-chart-pie w-5"></i> Summary</a>
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2 ml-2">Core Workflows</p>
+                <a href="#auth-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-key w-5"></i> Authentication</a>
+                <a href="#task-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-tasks w-5"></i> Task Lifecycle</a>
+                <a href="#hr-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-user-friends w-5"></i> HR Operations</a>
+                <a href="#client-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-building w-5"></i> Client Lifecycle</a>
+                <a href="#sales-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-handshake w-5"></i> Sales Pipeline</a>
+                <a href="#finance-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-file-invoice-dollar w-5"></i> Finance & Invoicing</a>
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2 ml-2">Platforms</p>
+                <a href="#portal-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-external-link-alt w-5"></i> Client Portal</a>
+                <a href="#mash-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-comments w-5"></i> MASH Chat</a>
+                <a href="#arcade-flow" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-gamepad w-5"></i> Arcade & Culture</a>
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-6 mb-2 ml-2">Reference</p>
+                <a href="#roles-matrix" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-users-cog w-5"></i> Role Matrix</a>
+                <a href="#api-summary" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-code w-5"></i> API Endpoints</a>
+                <a href="#db-models" class="sidebar-item flex items-center gap-3 p-2 rounded-md text-slate-600 transition-all hover:text-blue-600"><i class="fas fa-database w-5"></i> Data Models</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 max-w-6xl mx-auto p-4 md:p-10 grid-bg">
+
+            <!-- Section: Executive Summary -->
+            <section id="summary" class="mb-20 slide-up">
+                <div class="bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden glow-blue">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                    <div class="relative z-10">
+                        <span class="inline-block bg-blue-500/30 text-blue-100 px-4 py-1 rounded-full text-sm font-medium border border-blue-400/30 mb-4">
+                            <i class="fas fa-rocket mr-2"></i>Next.js 15+ Enterprise ERP System
+                        </span>
+                        <h2 class="text-4xl md:text-5xl font-extrabold mt-2 mb-6">Pioneer-OS Dashboard</h2>
+                        <p class="text-blue-100 text-lg max-w-2xl leading-relaxed mb-10">
+                            Complete workflow documentation covering all 250+ pages, 500+ API endpoints, 150+ database models, and 15+ user roles across all agency operations modules.
+                        </p>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                                <div class="text-3xl font-bold">250+</div>
+                                <div class="text-blue-200 text-sm">Dashboard Pages</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                                <div class="text-3xl font-bold">500+</div>
+                                <div class="text-blue-200 text-sm">API Endpoints</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                                <div class="text-3xl font-bold">150+</div>
+                                <div class="text-blue-200 text-sm">DB Models</div>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                                <div class="text-3xl font-bold">15+</div>
+                                <div class="text-blue-200 text-sm">User Roles</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Cards -->
+                <div class="grid md:grid-cols-4 gap-4 mt-8">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm card-hover">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600"><i class="fas fa-tasks"></i></div>
+                            <span class="font-semibold">Tasks</span>
+                        </div>
+                        <p class="text-2xl font-bold text-slate-800">Create, Track, Review, Complete</p>
+                        <p class="text-sm text-slate-400 mt-1">Full lifecycle with timer & notifications</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm card-hover">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600"><i class="fas fa-user-friends"></i></div>
+                            <span class="font-semibold">HR</span>
+                        </div>
+                        <p class="text-2xl font-bold text-slate-800">Onboarding, Leave, Payroll</p>
+                        <p class="text-sm text-slate-400 mt-1">Full people operations suite</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm card-hover">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600"><i class="fas fa-handshake"></i></div>
+                            <span class="font-semibold">Sales</span>
+                        </div>
+                        <p class="text-2xl font-bold text-slate-800">Leads, Pipeline, Deals</p>
+                        <p class="text-sm text-slate-400 mt-1">CRM with auto-assignment</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm card-hover">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600"><i class="fas fa-file-invoice-dollar"></i></div>
+                            <span class="font-semibold">Finance</span>
+                        </div>
+                        <p class="text-2xl font-bold text-slate-800">Invoicing, Payments, Reports</p>
+                        <p class="text-sm text-slate-400 mt-1">Auto-billing & bank reconciliation</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Authentication Flow -->
+            <section id="auth-flow" class="mb-20 slide-up" style="animation-delay:0.1s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-key"></i></span>
+                    Authentication Flow
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1100 320" class="w-full min-w-[900px]">
+                        <defs>
+                            <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3B82F6"/>
+                                <stop offset="100%" style="stop-color:#1D4ED8"/>
+                            </linearGradient>
+                            <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#10B981"/>
+                                <stop offset="100%" style="stop-color:#059669"/>
+                            </linearGradient>
+                            <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#8B5CF6"/>
+                                <stop offset="100%" style="stop-color:#6D28D9"/>
+                            </linearGradient>
+                            <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#F59E0B"/>
+                                <stop offset="100%" style="stop-color:#D97706"/>
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Flow Lines -->
+                        <path d="M180 80 L260 80" stroke="#CBD5E1" stroke-width="2" class="flow-line"/>
+                        <path d="M400 80 L480 80" stroke="#CBD5E1" stroke-width="2" class="flow-line"/>
+                        <path d="M620 80 L700 80" stroke="#CBD5E1" stroke-width="2" class="flow-line"/>
+                        <path d="M840 80 L920 80" stroke="#CBD5E1" stroke-width="2" class="flow-line"/>
+
+                        <!-- Step 1: Login Page -->
+                        <g class="node-box">
+                            <rect x="20" y="40" width="160" height="80" rx="12" fill="url(#blueGrad)" opacity="0.9"/>
+                            <text x="100" y="70" text-anchor="middle" fill="white" font-size="14" font-weight="600">Login Page</text>
+                            <text x="100" y="90" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">/login</text>
+                        </g>
+
+                        <!-- Step 2: Choose Method -->
+                        <g class="node-box">
+                            <rect x="260" y="40" width="140" height="80" rx="12" fill="white" stroke="#3B82F6" stroke-width="2"/>
+                            <text x="330" y="70" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="600">Choose Method</text>
+                            <text x="330" y="88" text-anchor="middle" fill="#64748B" font-size="10">Magic Link | Password</text>
+                        </g>
+
+                        <!-- Magic Link Branch -->
+                        <g class="node-box">
+                            <rect x="480" y="40" width="140" height="80" rx="12" fill="white" stroke="#10B981" stroke-width="2"/>
+                            <text x="550" y="70" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="600">Magic Link</text>
+                            <text x="550" y="88" text-anchor="middle" fill="#64748B" font-size="10">Email/WhatsApp/EmpID</text>
+                        </g>
+
+                        <!-- Step 4: Validate Token -->
+                        <g class="node-box">
+                            <rect x="700" y="40" width="140" height="80" rx="12" fill="white" stroke="#8B5CF6" stroke-width="2"/>
+                            <text x="770" y="70" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="600">Validate Token</text>
+                            <text x="770" y="88" text-anchor="middle" fill="#64748B" font-size="10">30-min JWT expiry</text>
+                        </g>
+
+                        <!-- Step 5: Create Session -->
+                        <g class="node-box">
+                            <rect x="920" y="40" width="140" height="80" rx="12" fill="url(#greenGrad)" opacity="0.9"/>
+                            <text x="990" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="600">Session Created</text>
+                            <text x="990" y="88" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">NextAuth JWT</text>
+                        </g>
+
+                        <!-- Role Detection Branch -->
+                        <g class="node-box">
+                            <rect x="330" y="160" width="160" height="80" rx="12" fill="white" stroke="#F59E0B" stroke-width="2"/>
+                            <text x="410" y="190" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="600">Role Detection</text>
+                            <text x="410" y="210" text-anchor="middle" fill="#64748B" font-size="10">UnifiedSidebar.tsx</text>
+                        </g>
+
+                        <!-- Role Arrows -->
+                        <path d="M410 120 L410 160" stroke="#CBD5E1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="425" y="145" fill="#64748B" font-size="10">Password</text>
+
+                        <!-- Role Options -->
+                        <g class="node-box">
+                            <rect x="80" y="280" width="100" height="60" rx="8" fill="#DBEAFE"/>
+                            <text x="130" y="310" text-anchor="middle" fill="#1D4ED8" font-size="10" font-weight="600">HR</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="200" y="280" width="100" height="60" rx="8" fill="#DCFCE7"/>
+                            <text x="250" y="310" text-anchor="middle" fill="#15803D" font-size="10" font-weight="600">ACCOUNTS</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="320" y="280" width="100" height="60" rx="8" fill="#FEF3C7"/>
+                            <text x="370" y="310" text-anchor="middle" fill="#B45309" font-size="10" font-weight="600">SALES</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="440" y="280" width="100" height="60" rx="8" fill="#F3E8FF"/>
+                            <text x="490" y="310" text-anchor="middle" fill="#7C3AED" font-size="10" font-weight="600">SEO/ADS</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="560" y="280" width="100" height="60" rx="8" fill="#FFE4E6"/>
+                            <text x="610" y="310" text-anchor="middle" fill="#BE123C" font-size="10" font-weight="600">SOCIAL</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="680" y="280" width="100" height="60" rx="8" fill="#CFFAFE"/>
+                            <text x="730" y="310" text-anchor="middle" fill="#0E7490" font-size="10" font-weight="600">WEB</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="800" y="280" width="100" height="60" rx="8" fill="#FCE7F3"/>
+                            <text x="850" y="310" text-anchor="middle" fill="#BE185D" font-size="10" font-weight="600">DESIGN</text>
+                        </g>
+                        <g class="node-box">
+                            <rect x="920" y="280" width="100" height="60" rx="8" fill="#E5E7EB"/>
+                            <text x="970" y="310" text-anchor="middle" fill="#374151" font-size="10" font-weight="600">DEFAULT</text>
+                        </g>
+
+                        <!-- Role Lines -->
+                        <path d="M330 240 L130 280" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M330 240 L250 280" stroke="#86EFAC" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M330 240 L370 280" stroke="#FDE68A" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M410 240 L490 280" stroke="#C4B5FD" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M490 240 L610 280" stroke="#FECDD3" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M570 240 L730 280" stroke="#A5F3FC" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M650 240 L850 280" stroke="#FBCFE8" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <path d="M730 240 L970 280" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+                        <!-- Labels -->
+                        <text x="100" y="30" fill="#64748B" font-size="10" text-anchor="middle">Entry Point</text>
+                        <text x="550" y="30" fill="#64748B" font-size="10" text-anchor="middle">Token Flow</text>
+                        <text x="990" y="30" fill="#64748B" font-size="10" text-anchor="middle">Session</text>
+                    </svg>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <h4 class="font-semibold text-blue-900 mb-2"><i class="fas fa-magic mr-2"></i>Magic Link Flow</h4>
+                        <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                            <li>User enters email/phone/empID</li>
+                            <li>API generates 30-min JWT token</li>
+                            <li>Token sent via WhatsApp/Email</li>
+                            <li>User clicks link → validates token</li>
+                            <li>NextAuth session created</li>
+                        </ol>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                        <h4 class="font-semibold text-green-900 mb-2"><i class="fas fa-shield-alt mr-2"></i>Password Flow</h4>
+                        <ol class="text-sm text-green-800 space-y-1 list-decimal list-inside">
+                            <li>User enters credentials</li>
+                            <li>Server validates bcrypt hash</li>
+                            <li>Creates secure session cookie</li>
+                            <li>Redirects to dashboard</li>
+                            <li>Role detected from DB</li>
+                        </ol>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                        <h4 class="font-semibold text-purple-900 mb-2"><i class="fas fa-users mr-2"></i>Role Assignment</h4>
+                        <ol class="text-sm text-purple-800 space-y-1 list-decimal list-inside">
+                            <li>Fetch user from Prisma</li>
+                            <li>Check role & department</li>
+                            <li>UnifiedSidebar selects nav</li>
+                            <li>11 department-specific navs</li>
+                            <li>RBAC applied to all APIs</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Task Lifecycle -->
+            <section id="task-flow" class="mb-20 slide-up" style="animation-delay:0.15s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-tasks"></i></span>
+                    Task Lifecycle Workflow
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1200 380" class="w-full min-w-[1000px]">
+                        <!-- Background Grid -->
+                        <defs>
+                            <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f1f5f9" stroke-width="0.5"/>
+                            </pattern>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+                            </marker>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#smallGrid)"/>
+
+                        <!-- Status Colors -->
+                        <linearGradient id="todoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#64748B"/>
+                            <stop offset="100%" style="stop-color:#475569"/>
+                        </linearGradient>
+                        <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3B82F6"/>
+                            <stop offset="100%" style="stop-color:#1D4ED8"/>
+                        </linearGradient>
+                        <linearGradient id="reviewGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#F59E0B"/>
+                            <stop offset="100%" style="stop-color:#D97706"/>
+                        </linearGradient>
+                        <linearGradient id="revisionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#EF4444"/>
+                            <stop offset="100%" style="stop-color:#DC2626"/>
+                        </linearGradient>
+                        <linearGradient id="doneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10B981"/>
+                            <stop offset="100%" style="stop-color:#059669"/>
+                        </linearGradient>
+
+                        <!-- Main Flow Line -->
+                        <path d="M120 70 L1080 70" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/>
+
+                        <!-- TODO Node -->
+                        <g class="node-box">
+                            <circle cx="100" cy="70" r="40" fill="url(#todoGrad)"/>
+                            <text x="100" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="700">TODO</text>
+                            <text x="100" y="80" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Created</text>
+                            <text x="100" y="140" text-anchor="middle" fill="#64748B" font-size="10">POST /api/tasks</text>
+                            <text x="100" y="155" text-anchor="middle" fill="#94A3B8" font-size="9">Title, desc, assignee</text>
+                        </g>
+
+                        <!-- Arrow 1 -->
+                        <path d="M145 70 L195 70" stroke="#3B82F6" stroke-width="2" class="flow-line"/>
+                        <text x="170" y="60" text-anchor="middle" fill="#64748B" font-size="9">Assign → Start</text>
+
+                        <!-- IN_PROGRESS Node -->
+                        <g class="node-box">
+                            <circle cx="260" cy="70" r="40" fill="url(#progressGrad)"/>
+                            <text x="260" y="65" text-anchor="middle" fill="white" font-size="10" font-weight="700">IN</text>
+                            <text x="260" y="80" text-anchor="middle" fill="white" font-size="10" font-weight="700">PROGRESS</text>
+                            <text x="260" y="140" text-anchor="middle" fill="#3B82F6" font-size="10">Timer Running</text>
+                            <text x="260" y="155" text-anchor="middle" fill="#94A3B8" font-size="9">WorkEntry created</text>
+                        </g>
+
+                        <!-- Arrow 2 -->
+                        <path d="M305 70 L355 70" stroke="#F59E0B" stroke-width="2" class="flow-line"/>
+                        <text x="330" y="60" text-anchor="middle" fill="#64748B" font-size="9">Submit for QC</text>
+
+                        <!-- REVIEW Node -->
+                        <g class="node-box">
+                            <circle cx="420" cy="70" r="40" fill="url(#reviewGrad)"/>
+                            <text x="420" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="700">REVIEW</text>
+                            <text x="420" y="80" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">QC Check</text>
+                            <text x="420" y="140" text-anchor="middle" fill="#D97706" font-size="10">Reviewer assigned</text>
+                            <text x="420" y="155" text-anchor="middle" fill="#94A3B8" font-size="9">Notifications sent</text>
+                        </g>
+
+                        <!-- Revision Loop -->
+                        <path d="M460 70 Q500 130 420 150 Q340 130 380 70" stroke="#EF4444" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+                        <text x="420" y="175" text-anchor="middle" fill="#EF4444" font-size="9">Revision Loop</text>
+
+                        <!-- Arrow 3 -->
+                        <path d="M465 70 L515 70" stroke="#10B981" stroke-width="2" class="flow-line"/>
+                        <text x="490" y="60" text-anchor="middle" fill="#64748B" font-size="9">Approve</text>
+
+                        <!-- COMPLETED Node -->
+                        <g class="node-box">
+                            <circle cx="580" cy="70" r="40" fill="url(#doneGrad)"/>
+                            <text x="580" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="700">DONE</text>
+                            <text x="580" y="80" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Completed</text>
+                            <text x="580" y="140" text-anchor="middle" fill="#059669" font-size="10">Notification sent</text>
+                            <text x="580" y="155" text-anchor="middle" fill="#94A3B8" font-size="9">Stats updated</text>
+                        </g>
+
+                        <!-- Data Flow Box -->
+                        <g>
+                            <rect x="650" y="20" width="280" height="200" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+                            <text x="790" y="45" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="700">Task Data Flow</text>
+
+                            <text x="670" y="70" fill="#64748B" font-size="10">① POST /api/tasks</text>
+                            <text x="670" y="85" fill="#94A3B8" font-size="9">Creates Task + Notification</text>
+
+                            <text x="670" y="105" fill="#64748B" font-size="10">② Timer API</text>
+                            <text x="670" y="120" fill="#94A3B8" font-size="9">Creates WorkEntry records</text>
+
+                            <text x="670" y="140" fill="#64748B" font-size="10">③ PATCH /api/tasks/:id</text>
+                            <text x="670" y="155" fill="#94A3B8" font-size="9">Status transitions</text>
+
+                            <text x="670" y="175" fill="#64748B" font-size="10">④ Notifications</text>
+                            <text x="670" y="190" fill="#94A3B8" font-size="9">WhatsApp + In-App + Email</text>
+
+                            <text x="670" y="210" fill="#64748B" font-size="10">⑤ RBAC Filtering</text>
+                            <text x="670" y="225" fill="#94A3B8" font-size="9">Role-based data access</text>
+                        </g>
+
+                        <!-- RBAC Legend -->
+                        <g>
+                            <rect x="950" y="20" width="220" height="180" rx="12" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+                            <text x="1060" y="45" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="700">RBAC Rules</text>
+
+                            <rect x="965" y="55" width="12" height="12" rx="2" fill="#10B981"/>
+                            <text x="985" y="65" fill="#374151" font-size="10">Admin: All tasks</text>
+
+                            <rect x="965" y="75" width="12" height="12" rx="2" fill="#3B82F6"/>
+                            <text x="985" y="85" fill="#374151" font-size="10">Manager: Dept + Own</text>
+
+                            <rect x="965" y="95" width="12" height="12" rx="2" fill="#F59E0B"/>
+                            <text x="985" y="105" fill="#374151" font-size="10">Employee: Own + Dept</text>
+
+                            <rect x="965" y="115" width="12" height="12" rx="2" fill="#EF4444"/>
+                            <text x="985" y="125" fill="#374151" font-size="10">Freelancer: Assigned Only</text>
+
+                            <rect x="965" y="135" width="12" height="12" rx="2" fill="#8B5CF6"/>
+                            <text x="985" y="145" fill="#374151" font-size="10">Intern: Assigned Only</text>
+
+                            <rect x="965" y="155" width="12" height="12" rx="2" fill="#64748B"/>
+                            <text x="985" y="165" fill="#374151" font-size="10">Auditor: Read Only</text>
+                        </g>
+
+                        <!-- Cancelled Path -->
+                        <path d="M460 30 L580 30" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4,2"/>
+                        <text x="520" y="25" text-anchor="middle" fill="#94A3B8" font-size="9">Cancel</text>
+                        <circle cx="580" cy="30" r="3" fill="#94A3B8"/>
+                    </svg>
+                </div>
+
+                <!-- Task API Summary -->
+                <div class="grid md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-slate-800 text-white p-4 rounded-xl">
+                        <p class="text-green-400 font-mono text-sm mb-2">POST /api/tasks</p>
+                        <p class="text-slate-300 text-xs">Create task with validation, notification triggers</p>
+                    </div>
+                    <div class="bg-slate-800 text-white p-4 rounded-xl">
+                        <p class="text-blue-400 font-mono text-sm mb-2">GET /api/tasks</p>
+                        <p class="text-slate-300 text-xs">List with RBAC filtering, pagination, sorting</p>
+                    </div>
+                    <div class="bg-slate-800 text-white p-4 rounded-xl">
+                        <p class="text-orange-400 font-mono text-sm mb-2">PATCH /api/tasks/:id</p>
+                        <p class="text-slate-300 text-xs">Update status, reassign, timer controls</p>
+                    </div>
+                    <div class="bg-slate-800 text-white p-4 rounded-xl">
+                        <p class="text-purple-400 font-mono text-sm mb-2">POST /api/tasks/:id/timer</p>
+                        <p class="text-slate-300 text-xs">Start/stop work tracking, create entries</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: HR Operations Flow -->
+            <section id="hr-flow" class="mb-20 slide-up" style="animation-delay:0.2s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center"><i class="fas fa-user-friends"></i></span>
+                    HR Operations Workflow
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1100 450" class="w-full min-w-[900px]">
+                        <!-- Leave Management Flow -->
+                        <text x="20" y="30" fill="#1E293B" font-size="14" font-weight="700">Leave Management</text>
+
+                        <!-- Flow Nodes -->
+                        <g class="node-box">
+                            <rect x="20" y="45" width="120" height="70" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+                            <text x="80" y="72" text-anchor="middle" fill="#1D4ED8" font-size="11" font-weight="600">Apply Leave</text>
+                            <text x="80" y="88" text-anchor="middle" fill="#64748B" font-size="9">POST /hr/leave</text>
+                        </g>
+
+                        <path d="M145 80 L195 80" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+                        <text x="170" y="70" text-anchor="middle" fill="#64748B" font-size="9">Validate</text>
+
+                        <g class="node-box">
+                            <rect x="200" y="45" width="120" height="70" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                            <text x="260" y="72" text-anchor="middle" fill="#B45309" font-size="11" font-weight="600">HR Review</text>
+                            <text x="260" y="88" text-anchor="middle" fill="#64748B" font-size="9">Approve/Reject</text>
+                        </g>
+
+                        <path d="M325 80 L375 80" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+                        <text x="350" y="70" text-anchor="middle" fill="#64748B" font-size="9">Decision</text>
+
+                        <g class="node-box">
+                            <rect x="380" y="45" width="100" height="70" rx="10" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+                            <text x="430" y="72" text-anchor="middle" fill="#15803D" font-size="11" font-weight="600">Approved</text>
+                            <text x="430" y="88" text-anchor="middle" fill="#64748B" font-size="9">Balance Deducted</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="380" y="130" width="100" height="60" rx="10" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+                            <text x="430" y="155" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="600">Rejected</text>
+                            <text x="430" y="175" text-anchor="middle" fill="#64748B" font-size="9">Notification Sent</text>
+                        </g>
+
+                        <path d="M350 115 L350 130" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+                        <text x="365" y="125" fill="#64748B" font-size="9">No</text>
+
+                        <!-- Attendance Flow -->
+                        <text x="20" y="220" fill="#1E293B" font-size="14" font-weight="700">Attendance & Payroll</text>
+
+                        <g class="node-box">
+                            <rect x="20" y="235" width="130" height="70" rx="10" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+                            <text x="85" y="262" text-anchor="middle" fill="#4338CA" font-size="11" font-weight="600">Punch In/Out</text>
+                            <text x="85" y="278" text-anchor="middle" fill="#64748B" font-size="9">POST /hr/attendance</text>
+                        </g>
+
+                        <path d="M155 270 L205 270" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="210" y="235" width="130" height="70" rx="10" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/>
+                            <text x="275" y="262" text-anchor="middle" fill="#BE185D" font-size="11" font-weight="600">Late Detection</text>
+                            <text x="275" y="278" text-anchor="middle" fill="#64748B" font-size="9">Auto Flag Late</text>
+                        </g>
+
+                        <path d="M345 270 L395 270" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="400" y="235" width="130" height="70" rx="10" fill="#CFFAFE" stroke="#06B6D4" stroke-width="2"/>
+                            <text x="465" y="262" text-anchor="middle" fill="#0E7490" font-size="11" font-weight="600">Payroll Calc</text>
+                            <text x="465" y="278" text-anchor="middle" fill="#64748B" font-size="9">Monthly Processing</text>
+                        </g>
+
+                        <path d="M535 270 L585 270" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="590" y="235" width="130" height="70" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+                            <text x="655" y="262" text-anchor="middle" fill="#047857" font-size="11" font-weight="600">Payslip Gen</text>
+                            <text x="655" y="278" text-anchor="middle" fill="#64748B" font-size="9">PDF + Notifications</text>
+                        </g>
+
+                        <!-- Onboarding Flow -->
+                        <text x="750" y="30" fill="#1E293B" font-size="14" font-weight="700">Employee Onboarding</text>
+
+                        <g class="node-box">
+                            <rect x="750" y="45" width="120" height="60" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                            <text x="810" y="70" text-anchor="middle" fill="#B45309" font-size="10" font-weight="600">Initiation</text>
+                            <text x="810" y="85" text-anchor="middle" fill="#64748B" font-size="9">HR Creates User</text>
+                        </g>
+
+                        <path d="M875 75 L925 75" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="930" y="45" width="120" height="60" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+                            <text x="990" y="70" text-anchor="middle" fill="#1D4ED8" font-size="10" font-weight="600">KYC Check</text>
+                            <text x="990" y="85" text-anchor="middle" fill="#64748B" font-size="9">Document Upload</text>
+                        </g>
+
+                        <path d="M990 105 L990 135" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="930" y="140" width="120" height="60" rx="10" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+                            <text x="990" y="165" text-anchor="middle" fill="#15803D" font-size="10" font-weight="600">Checklist</text>
+                            <text x="990" y="180" text-anchor="middle" fill="#64748B" font-size="9">Tasks Assigned</text>
+                        </g>
+
+                        <path d="M990 200 L990 230" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="930" y="235" width="120" height="60" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+                            <text x="990" y="260" text-anchor="middle" fill="#047857" font-size="10" font-weight="600">Active</text>
+                            <text x="990" y="275" text-anchor="middle" fill="#64748B" font-size="9">System Access</text>
+                        </g>
+
+                        <!-- Performance Section -->
+                        <text x="750" y="330" fill="#1E293B" font-size="14" font-weight="700">Performance & Culture</text>
+
+                        <g class="node-box">
+                            <rect x="750" y="345" width="110" height="60" rx="10" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="2"/>
+                            <text x="805" y="370" text-anchor="middle" fill="#7C3AED" font-size="10" font-weight="600">Appraisal</text>
+                            <text x="805" y="385" text-anchor="middle" fill="#64748B" font-size="9">Reviews/PIP</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="880" y="345" width="110" height="60" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+                            <text x="935" y="370" text-anchor="middle" fill="#B45309" font-size="10" font-weight="600">Arcade XP</text>
+                            <text x="935" y="385" text-anchor="middle" fill="#64748B" font-size="9">Points System</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="1010" y="345" width="70" height="60" rx="10" fill="#DCFCE7" stroke="#10B981" stroke-width="2"/>
+                            <text x="1045" y="370" text-anchor="middle" fill="#15803D" font-size="10" font-weight="600">Awards</text>
+                            <text x="1045" y="385" text-anchor="middle" fill="#64748B" font-size="9">Badges</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-2"><i class="fas fa-calendar-check text-blue-500 mr-2"></i>Leave Types</h4>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Sick Leave (auto-deducted)</li>
+                            <li>• Casual Leave (balance-based)</li>
+                            <li>• Privilege/Paid Leave</li>
+                            <li>• LOP (Loss of Pay)</li>
+                            <li>• Maternity/Paternity</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-2"><i class="fas fa-clock text-orange-500 mr-2"></i>Attendance Rules</h4>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Auto punch-out at 10 PM</li>
+                            <li>• Late grace period: 15 mins</li>
+                            <li>• Half-day calculation</li>
+                            <li>• Overtime tracking</li>
+                            <li>• Work-from-home support</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-2"><i class="fas fa-users-cog text-purple-500 mr-2"></i>User Roles</h4>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• EMPLOYEE, FREELANCER, INTERN</li>
+                            <li>• HR, MANAGER, OPERATIONS_HEAD</li>
+                            <li>• SUPER_ADMIN, ADMIN</li>
+                            <li>• BLENDED_USER, OM</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Client Lifecycle -->
+            <section id="client-flow" class="mb-20 slide-up" style="animation-delay:0.25s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-building"></i></span>
+                    Client Lifecycle Management
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1200 320" class="w-full min-w-[1000px]">
+                        <!-- Client Status Colors -->
+                        <linearGradient id="leadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366F1"/>
+                            <stop offset="100%" style="stop-color:#4F46E5"/>
+                        </linearGradient>
+                        <linearGradient id="nurtureGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#F59E0B"/>
+                            <stop offset="100%" style="stop-color:#D97706"/>
+                        </linearGradient>
+                        <linearGradient id="wonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10B981"/>
+                            <stop offset="100%" style="stop-color:#059669"/>
+                        </linearGradient>
+                        <linearGradient id="activeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#06B6D4"/>
+                            <stop offset="100%" style="stop-color:#0891B2"/>
+                        </linearGradient>
+                        <linearGradient id="riskGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#EF4444"/>
+                            <stop offset="100%" style="stop-color:#DC2626"/>
+                        </linearGradient>
+
+                        <!-- Main Pipeline -->
+                        <path d="M80 100 L1120 100" stroke="#E2E8F0" stroke-width="6" stroke-linecap="round"/>
+
+                        <!-- Lead -->
+                        <g class="node-box">
+                            <circle cx="80" cy="100" r="45" fill="url(#leadGrad)"/>
+                            <text x="80" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="700">LEAD</text>
+                            <text x="80" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">New Inquiry</text>
+                            <text x="80" y="170" text-anchor="middle" fill="#4F46E5" font-size="10">POST /clients</text>
+                            <text x="80" y="185" text-anchor="middle" fill="#94A3B8" font-size="9">Source, Contact</text>
+                        </g>
+
+                        <path d="M130 100 L195 100" stroke="#6366F1" stroke-width="3" class="flow-line"/>
+                        <text x="162" y="85" text-anchor="middle" fill="#64748B" font-size="9">Qualify</text>
+
+                        <!-- Nurturing -->
+                        <g class="node-box">
+                            <circle cx="250" cy="100" r="45" fill="url(#nurtureGrad)"/>
+                            <text x="250" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="700">NURTURING</text>
+                            <text x="250" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Proposal</text>
+                            <text x="250" y="170" text-anchor="middle" fill="#D97706" font-size="10">RFP Review</text>
+                            <text x="250" y="185" text-anchor="middle" fill="#94A3B8" font-size="9">Proposal Sent</text>
+                        </g>
+
+                        <path d="M300 100 L365 100" stroke="#F59E0B" stroke-width="3" class="flow-line"/>
+                        <text x="332" y="85" text-anchor="middle" fill="#64748B" font-size="9">Negotiate</text>
+
+                        <!-- Won -->
+                        <g class="node-box">
+                            <circle cx="420" cy="100" r="45" fill="url(#wonGrad)"/>
+                            <text x="420" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="700">WON</text>
+                            <text x="420" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Deal Closed</text>
+                            <text x="420" y="170" text-anchor="middle" fill="#059669" font-size="10">Contract Signed</text>
+                            <text x="420" y="185" text-anchor="middle" fill="#94A3B8" font-size="9">Deal Value Set</text>
+                        </g>
+
+                        <path d="M470 100 L535 100" stroke="#10B981" stroke-width="3" class="flow-line"/>
+                        <text x="502" y="85" text-anchor="middle" fill="#64748B" font-size="9">Onboard</text>
+
+                        <!-- Active -->
+                        <g class="node-box">
+                            <circle cx="590" cy="100" r="45" fill="url(#activeGrad)"/>
+                            <text x="590" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="700">ACTIVE</text>
+                            <text x="590" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Services Live</text>
+                            <text x="590" y="170" text-anchor="middle" fill="#0891B2" font-size="10">Auto-Invoice</text>
+                            <text x="590" y="185" text-anchor="middle" fill="#94A3B8" font-size="9">Monthly Billing</text>
+                        </g>
+
+                        <!-- Active Arrow to Ongoing -->
+                        <path d="M640 100 L705 100" stroke="#06B6D4" stroke-width="3" class="flow-line"/>
+                        <text x="672" y="85" text-anchor="middle" fill="#64748B" font-size="9">Monitor</text>
+
+                        <!-- Ongoing (larger circle) -->
+                        <g class="node-box">
+                            <circle cx="760" cy="100" r="50" fill="url(#activeGrad)"/>
+                            <text x="760" y="95" text-anchor="middle" fill="white" font-size="11" font-weight="700">ONGOING</text>
+                            <text x="760" y="110" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Services Delivered</text>
+                            <text x="760" y="175" text-anchor="middle" fill="#0891B2" font-size="10">Task Assignment</text>
+                            <text x="760" y="190" text-anchor="middle" fill="#94A3B8" font-size="9">Work Tracking</text>
+                        </g>
+
+                        <!-- At Risk Branch -->
+                        <path d="M815 100 L870 100 L870 55" stroke="#EF4444" stroke-width="2" class="flow-line"/>
+                        <path d="M870 55 L950 55" stroke="#EF4444" stroke-width="2" class="flow-line"/>
+                        <circle cx="950" cy="55" r="5" fill="#EF4444"/>
+
+                        <g class="node-box">
+                            <rect x="870" y="20" width="120" height="50" rx="8" fill="url(#riskGrad)" opacity="0.9"/>
+                            <text x="930" y="42" text-anchor="middle" fill="white" font-size="10" font-weight="600">AT RISK</text>
+                            <text x="930" y="57" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Health &lt; 40%</text>
+                        </g>
+
+                        <!-- At Risk Arrow to Lost -->
+                        <path d="M870 45 L760 45 L760 65" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,2"/>
+                        <text x="810" y="40" text-anchor="middle" fill="#94A3B8" font-size="9">Recover</text>
+
+                        <!-- Terminated Branch from Ongoing -->
+                        <path d="M815 100 L870 100 L870 155" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+                        <path d="M870 155 L950 155" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,2"/>
+                        <circle cx="950" cy="155" r="5" fill="#94A3B8"/>
+
+                        <g class="node-box">
+                            <rect x="870" y="120" width="120" height="50" rx="8" fill="#64748B" opacity="0.9"/>
+                            <text x="930" y="142" text-anchor="middle" fill="white" font-size="10" font-weight="600">TERMINATED</text>
+                            <text x="930" y="157" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Contract Ended</text>
+                        </g>
+
+                        <!-- Lost from Nurturing -->
+                        <path d="M250 150 L250 190 L180 190 L180 225" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,2"/>
+                        <g class="node-box">
+                            <rect x="110" y="210" width="100" height="45" rx="8" fill="#94A3B8" opacity="0.8"/>
+                            <text x="160" y="232" text-anchor="middle" fill="white" font-size="10" font-weight="600">LOST</text>
+                            <text x="160" y="247" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Not Converted</text>
+                        </g>
+
+                        <!-- Client Health Meter -->
+                        <g>
+                            <rect x="1020" y="60" width="160" height="120" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+                            <text x="1100" y="85" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="700">Client Health</text>
+
+                            <text x="1040" y="105" fill="#10B981" font-size="10">●●</text>
+                            <text x="1070" y="105" fill="#10B981" font-size="10">●</text>
+                            <text x="1100" y="105" fill="#10B981" font-size="10">●</text>
+                            <text x="1130" y="105" fill="#E2E8F0" font-size="10">●</text>
+                            <text x="1160" y="105" fill="#E2E8F0" font-size="10">●</text>
+                            <text x="1100" y="122" text-anchor="middle" fill="#10B981" font-size="11" font-weight="600">75% Good</text>
+
+                            <rect x="1040" y="135" width="120" height="8" rx="4" fill="#E2E8F0"/>
+                            <rect x="1040" y="135" width="90" height="8" rx="4" fill="#10B981"/>
+                            <text x="1100" y="155" text-anchor="middle" fill="#64748B" font-size="9">Payment: On Time</text>
+
+                            <rect x="1040" y="162" width="120" height="8" rx="4" fill="#E2E8F0"/>
+                            <rect x="1040" y="162" width="105" height="8" rx="4" fill="#06B6D4"/>
+                            <text x="1100" y="182" text-anchor="middle" fill="#64748B" font-size="9">Tasks: 90% On-Time</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                        <h4 class="font-semibold text-indigo-900 mb-2"><i class="fas fa-funnel-dollar mr-2"></i>Lead Sources</h4>
+                        <ul class="text-sm text-indigo-800 space-y-1">
+                            <li>• Website Inquiry</li>
+                            <li>• Referral</li>
+                            <li>• Cold Outreach</li>
+                            <li>• Social Media</li>
+                        </ul>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-100">
+                        <h4 class="font-semibold text-amber-900 mb-2"><i class="fas fa-file-contract mr-2"></i>Contract Types</h4>
+                        <ul class="text-sm text-amber-800 space-y-1">
+                            <li>• Retainer (Monthly)</li>
+                            <li>• Project-Based</li>
+                            <li>• Hourly</li>
+                            <li>• Performance-Based</li>
+                        </ul>
+                    </div>
+                    <div class="bg-cyan-50 p-4 rounded-xl border border-cyan-100">
+                        <h4 class="font-semibold text-cyan-900 mb-2"><i class="fas fa-hand-holding-usd mr-2"></i>Billing</h4>
+                        <ul class="text-sm text-cyan-800 space-y-1">
+                            <li>• Auto Invoice Gen</li>
+                            <li>• Manual Override</li>
+                            <li>• Partial Payments</li>
+                            <li>• Credit Notes</li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                        <h4 class="font-semibold text-red-900 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Risk Factors</h4>
+                        <ul class="text-sm text-red-800 space-y-1">
+                            <li>• Delayed Payments</li>
+                            <li>• Missed SLAs</li>
+                            <li>• Low Health Score</li>
+                            <li>• Churn Signals</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Sales Pipeline -->
+            <section id="sales-flow" class="mb-20 slide-up" style="animation-delay:0.3s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fas fa-handshake"></i></span>
+                    Sales Pipeline & CRM
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1100 280" class="w-full min-w-[900px]">
+                        <!-- Pipeline Stages -->
+                        <text x="20" y="30" fill="#1E293B" font-size="14" font-weight="700">Sales Pipeline Stages</text>
+
+                        <!-- Stage 1: Lead Received -->
+                        <g class="node-box">
+                            <rect x="20" y="45" width="140" height="80" rx="12" fill="#6366F1"/>
+                            <text x="90" y="75" text-anchor="middle" fill="white" font-size="12" font-weight="700">Lead Received</text>
+                            <text x="90" y="95" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Auto-assign to AE</text>
+                            <text x="90" y="140" text-anchor="middle" fill="#4F46E5" font-size="10">POST /sales/leads</text>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M165 85 L215 85" stroke="#6366F1" stroke-width="3" class="flow-line"/>
+
+                        <!-- Stage 2: RFP -->
+                        <g class="node-box">
+                            <rect x="220" y="45" width="140" height="80" rx="12" fill="#8B5CF6"/>
+                            <text x="290" y="75" text-anchor="middle" fill="white" font-size="12" font-weight="700">RFP Review</text>
+                            <text x="290" y="95" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Requirements Gathered</text>
+                            <text x="290" y="140" text-anchor="middle" fill="#7C3AED" font-size="10">Scope Documented</text>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M365 85 L415 85" stroke="#8B5CF6" stroke-width="3" class="flow-line"/>
+
+                        <!-- Stage 3: Proposal -->
+                        <g class="node-box">
+                            <rect x="420" y="45" width="140" height="80" rx="12" fill="#EC4899"/>
+                            <text x="490" y="75" text-anchor="middle" fill="white" font-size="12" font-weight="700">Proposal</text>
+                            <text x="490" y="95" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Pricing & Timeline</text>
+                            <text x="490" y="140" text-anchor="middle" fill="#DB2777" font-size="10">Sent to Client</text>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M565 85 L615 85" stroke="#EC4899" stroke-width="3" class="flow-line"/>
+
+                        <!-- Stage 4: Negotiating -->
+                        <g class="node-box">
+                            <rect x="620" y="45" width="140" height="80" rx="12" fill="#F59E0B"/>
+                            <text x="690" y="75" text-anchor="middle" fill="white" font-size="12" font-weight="700">Negotiating</text>
+                            <text x="690" y="95" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Terms Discussion</text>
+                            <text x="690" y="140" text-anchor="middle" fill="#D97706" font-size="10">Multiple Rounds</text>
+                        </g>
+
+                        <!-- Arrow -->
+                        <path d="M765 85 L815 85" stroke="#F59E0B" stroke-width="3" class="flow-line"/>
+
+                        <!-- Stage 5: Won/Lost -->
+                        <g class="node-box">
+                            <rect x="820" y="45" width="120" height="70" rx="12" fill="#10B981"/>
+                            <text x="880" y="72" text-anchor="middle" fill="white" font-size="12" font-weight="700">WON</text>
+                            <text x="880" y="90" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Deal Closed</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="820" y="125" width="120" height="50" rx="12" fill="#94A3B8"/>
+                            <text x="880" y="150" text-anchor="middle" fill="white" font-size="12" font-weight="700">LOST</text>
+                            <text x="880" y="165" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Lost to Competitor</text>
+                        </g>
+
+                        <!-- Lost Arrow -->
+                        <path d="M765 110 L820 125" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,2"/>
+                        <text x="790" y="118" fill="#64748B" font-size="9">Lost</text>
+
+                        <!-- Won to Client Creation -->
+                        <path d="M880 115 L880 150" stroke="#10B981" stroke-width="2"/>
+                        <path d="M880 150 L950 175" stroke="#10B981" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="950" y="155" width="130" height="50" rx="10" fill="#06B6D4"/>
+                            <text x="1015" y="178" text-anchor="middle" fill="white" font-size="11" font-weight="700">Client Created</text>
+                            <text x="1015" y="193" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">Onboarding Begins</text>
+                        </g>
+
+                        <!-- Deal Value & Probability -->
+                        <g>
+                            <rect x="20" y="200" width="300" height="65" rx="10" fill="#F8FAFC" stroke="#E2E8F0"/>
+                            <text x="40" y="225" fill="#1E293B" font-size="12" font-weight="700">Deal Analytics</text>
+                            <text x="40" y="245" fill="#64748B" font-size="10">Deal Value: $50,000</text>
+                            <text x="40" y="260" fill="#64748B" font-size="10">Win Probability: 75%</text>
+                            <text x="180" y="245" fill="#64748B" font-size="10">Expected: $37,500</text>
+                            <text x="180" y="260" fill="#64748B" font-size="10">Stage: Negotiating</text>
+                        </g>
+
+                        <!-- Commission Info -->
+                        <g>
+                            <rect x="340" y="200" width="250" height="65" rx="10" fill="#F8FAFC" stroke="#E2E8F0"/>
+                            <text x="360" y="225" fill="#1E293B" font-size="12" font-weight="700">Commission Tracking</text>
+                            <text x="360" y="245" fill="#64748B" font-size="10">AE Commission: 5%</text>
+                            <text x="360" y="260" fill="#64748B" font-size="10">Manager Override: Available</text>
+                            <text x="500" y="245" fill="#10B981" font-size="10">$2,500 potential</text>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Section: Finance & Invoicing -->
+            <section id="finance-flow" class="mb-20 slide-up" style="animation-delay:0.35s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fas fa-file-invoice-dollar"></i></span>
+                    Finance & Invoice Management
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1100 350" class="w-full min-w-[900px]">
+                        <!-- Invoice Generation -->
+                        <text x="20" y="30" fill="#1E293B" font-size="14" font-weight="700">Invoice Lifecycle</text>
+
+                        <!-- Manual Invoice -->
+                        <g class="node-box">
+                            <rect x="20" y="45" width="130" height="70" rx="10" fill="#3B82F6"/>
+                            <text x="85" y="72" text-anchor="middle" fill="white" font-size="11" font-weight="600">Manual</text>
+                            <text x="85" y="88" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Create Invoice</text>
+                            <text x="85" y="130" text-anchor="middle" fill="#1D4ED8" font-size="10">POST /accounts/invoices</text>
+                        </g>
+
+                        <!-- Auto Invoice -->
+                        <g class="node-box">
+                            <rect x="20" y="150" width="130" height="70" rx="10" fill="#10B981"/>
+                            <text x="85" y="177" text-anchor="middle" fill="white" font-size="11" font-weight="600">Auto-Generate</text>
+                            <text x="85" y="193" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Monthly Cron</text>
+                            <text x="85" y="235" text-anchor="middle" fill="#059669" font-size="10">Based on Contract</text>
+                        </g>
+
+                        <!-- Arrow Down from Manual to Auto Trigger -->
+                        <path d="M85 115 L85 150" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,2"/>
+
+                        <!-- Both converge to Invoice Created -->
+                        <path d="M155 80 L200 80" stroke="#3B82F6" stroke-width="2" class="flow-line"/>
+                        <path d="M155 185 L200 185" stroke="#10B981" stroke-width="2" class="flow-line"/>
+                        <path d="M200 80 L200 185" stroke="#E2E8F0" stroke-width="2"/>
+                        <path d="M200 132 L250 132" stroke="#94A3B8" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="250" y="105" width="130" height="55" rx="10" fill="#F59E0B"/>
+                            <text x="315" y="130" text-anchor="middle" fill="white" font-size="11" font-weight="600">Invoice Created</text>
+                            <text x="315" y="148" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Number, Date, Due</text>
+                        </g>
+
+                        <!-- Send Invoice -->
+                        <path d="M385 132 L435 132" stroke="#F59E0B" stroke-width="2" class="flow-line"/>
+                        <text x="410" y="122" text-anchor="middle" fill="#64748B" font-size="9">Send</text>
+
+                        <g class="node-box">
+                            <rect x="440" y="105" width="130" height="55" rx="10" fill="#8B5CF6"/>
+                            <text x="505" y="130" text-anchor="middle" fill="white" font-size="11" font-weight="600">Invoice Sent</text>
+                            <text x="505" y="148" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Email + Portal</text>
+                        </g>
+
+                        <!-- Payment Options -->
+                        <path d="M575 132 L625 132" stroke="#8B5CF6" stroke-width="2" class="flow-line"/>
+                        <text x="600" y="122" text-anchor="middle" fill="#64748B" font-size="9">Await</text>
+
+                        <g class="node-box">
+                            <rect x="630" y="105" width="100" height="55" rx="10" fill="#06B6D4"/>
+                            <text x="680" y="130" text-anchor="middle" fill="white" font-size="11" font-weight="600">PAID</text>
+                            <text x="680" y="148" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Full Payment</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="630" y="170" width="100" height="55" rx="10" fill="#F97316"/>
+                            <text x="680" y="195" text-anchor="middle" fill="white" font-size="11" font-weight="600">PARTIAL</text>
+                            <text x="680" y="213" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Split Payment</text>
+                        </g>
+
+                        <g class="node-box">
+                            <rect x="630" y="55" width="100" height="40" rx="10" fill="#EF4444"/>
+                            <text x="680" y="80" text-anchor="middle" fill="white" font-size="11" font-weight="600">OVERDUE</text>
+                        </g>
+
+                        <!-- Overdue Path -->
+                        <path d="M575 100 L630 70" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,2"/>
+                        <text x="598" y="82" fill="#EF4444" font-size="9">Remind</text>
+
+                        <!-- Partial to Full -->
+                        <path d="M680 225 L680 280" stroke="#F97316" stroke-width="2" class="flow-line"/>
+                        <text x="695" y="255" fill="#64748B" font-size="9">Remaining</text>
+
+                        <!-- Bank Reconciliation -->
+                        <g class="node-box">
+                            <rect x="250" y="240" width="400" height="90" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+                            <text x="450" y="265" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="700">Bank Statement Reconciliation</text>
+
+                            <text x="270" y="290" fill="#64748B" font-size="10">1. Import Statement (API/Manual)</text>
+                            <text x="270" y="308" fill="#64748B" font-size="10">2. Auto-match with Invoices</text>
+                            <text x="500" y="290" fill="#10B981" font-size="10">✓ Match Found</text>
+                            <text x="500" y="308" fill="#64748B" font-size="10">3. Update Invoice Status</text>
+                        </g>
+
+                        <!-- Financial Reports -->
+                        <g>
+                            <rect x="780" y="45" width="300" height="180" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+                            <text x="930" y="70" text-anchor="middle" fill="#1E293B" font-size="12" font-weight="700">Financial Reports</text>
+
+                            <text x="800" y="95" fill="#64748B" font-size="10">• Aging Report (AR/AP)</text>
+                            <text x="800" y="115" fill="#64748B" font-size="10">• Revenue by Client</text>
+                            <text x="800" y="135" fill="#64748B" font-size="10">• Client Profitability</text>
+                            <text x="800" y="155" fill="#64748B" font-size="10">• Employee Cost vs Revenue</text>
+                            <text x="800" y="175" fill="#64748B" font-size="10">• Monthly P&L Summary</text>
+                            <text x="800" y="195" fill="#64748B" font-size="10">• Tax Reports (GST/TDS)</text>
+
+                            <rect x="950" y="90" width="110" height="40" rx="8" fill="#10B981"/>
+                            <text x="1005" y="112" text-anchor="middle" fill="white" font-size="11" font-weight="600">Export</text>
+                            <text x="1005" y="125" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">PDF/Excel</text>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Section: Client Portal -->
+            <section id="portal-flow" class="mb-20 slide-up" style="animation-delay:0.4s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fas fa-external-link-alt"></i></span>
+                    Client Portal Experience
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <svg viewBox="0 0 1100 300" class="w-full min-w-[900px]">
+                        <!-- Login Flow -->
+                        <text x="20" y="30" fill="#1E293B" font-size="14" font-weight="700">Client Portal Login</text>
+
+                        <g class="node-box">
+                            <rect x="20" y="45" width="120" height="60" rx="10" fill="#3B82F6"/>
+                            <text x="80" y="72" text-anchor="middle" fill="white" font-size="11" font-weight="600">Portal URL</text>
+                            <text x="80" y="88" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">client.pioneer-os.com</text>
+                        </g>
+
+                        <path d="M145 75 L195 75" stroke="#3B82F6" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="200" y="45" width="120" height="60" rx="10" fill="#10B981"/>
+                            <text x="260" y="72" text-anchor="middle" fill="white" font-size="11" font-weight="600">Magic Link</text>
+                            <text x="260" y="88" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">No Password</text>
+                        </g>
+
+                        <path d="M325 75 L375 75" stroke="#10B981" stroke-width="2" class="flow-line"/>
+
+                        <g class="node-box">
+                            <rect x="380" y="45" width="120" height="60" rx="10" fill="#8B5CF6"/>
+                            <text x="440" y="72" text-anchor="middle" fill="white" font-size="11" font-weight="600">Dashboard</text>
+                            <text x="440" y="88" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Role-Based View</text>
+                        </g>
+
+                        <!-- Portal Features -->
+                        <g>
+                            <rect x="530" y="20" width="550" height="260" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+
+                            <text x="550" y="45" fill="#1E293B" font-size="12" font-weight="700">Portal Features</text>
+
+                            <!-- Feature Cards Row 1 -->
+                            <g class="node-box">
+                                <rect x="550" y="55" width="165" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="632" y="80" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Ads Performance</text>
+                                <text x="632" y="98" text-anchor="middle" fill="#64748B" font-size="9">Campaign metrics, Budget spend</text>
+                                <circle cx="570" cy="75" r="4" fill="#3B82F6"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="730" y="55" width="165" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="812" y="80" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Invoice History</text>
+                                <text x="812" y="98" text-anchor="middle" fill="#64748B" font-size="9">Download, Pay Online</text>
+                                <circle cx="750" cy="75" r="4" fill="#10B981"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="910" y="55" width="155" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="987" y="80" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Task Status</text>
+                                <text x="987" y="98" text-anchor="middle" fill="#64748B" font-size="9">Deliverable Tracking</text>
+                                <circle cx="930" cy="75" r="4" fill="#F59E0B"/>
+                            </g>
+
+                            <!-- Feature Cards Row 2 -->
+                            <g class="node-box">
+                                <rect x="550" y="135" width="165" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="632" y="160" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Shared Credentials</text>
+                                <text x="632" y="178" text-anchor="middle" fill="#64748B" font-size="9">Passwords, API Keys</text>
+                                <circle cx="570" cy="155" r="4" fill="#8B5CF6"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="730" y="135" width="165" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="812" y="160" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Feedback</text>
+                                <text x="812" y="178" text-anchor="middle" fill="#64748B" font-size="9">Ratings, Comments</text>
+                                <circle cx="750" cy="155" r="4" fill="#EC4899"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="910" y="135" width="155" height="70" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="987" y="160" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Approvals</text>
+                                <text x="987" y="178" text-anchor="middle" fill="#64748B" font-size="9">Content, Designs</text>
+                                <circle cx="930" cy="155" r="4" fill="#06B6D4"/>
+                            </g>
+
+                            <!-- Feature Cards Row 3 -->
+                            <g class="node-box">
+                                <rect x="550" y="215" width="165" height="50" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="632" y="240" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Support Tickets</text>
+                                <circle cx="570" cy="235" r="4" fill="#EF4444"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="730" y="215" width="165" height="50" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="812" y="240" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Reports</text>
+                                <circle cx="750" cy="235" r="4" fill="#14B8A6"/>
+                            </g>
+
+                            <g class="node-box">
+                                <rect x="910" y="215" width="155" height="50" rx="8" fill="white" stroke="#E2E8F0"/>
+                                <text x="987" y="240" text-anchor="middle" fill="#1E293B" font-size="11" font-weight="600">Documents</text>
+                                <circle cx="930" cy="235" r="4" fill="#F97316"/>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Section: MASH Chat System -->
+            <section id="mash-flow" class="mb-20 slide-up" style="animation-delay:0.45s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-comments"></i></span>
+                    MASH Real-Time Chat System
+                </h3>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">Channel Structure</h4>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <p class="font-semibold text-indigo-900"><i class="fas fa-bullhorn mr-2"></i>Company Announcements</p>
+                                    <p class="text-sm text-indigo-700">#company - Company-wide broadcasts</p>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded-lg border border-green-100">
+                                    <p class="font-semibold text-green-900"><i class="fas fa-search mr-2"></i>SEO Team</p>
+                                    <p class="text-sm text-green-700">#team-seo - Content approvals & updates</p>
+                                </div>
+                                <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
+                                    <p class="font-semibold text-orange-900"><i class="fas fa-ad mr-2"></i>Ads Team</p>
+                                    <p class="text-sm text-orange-700">#team-ads - Campaign coordination</p>
+                                </div>
+                                <div class="p-3 bg-pink-50 rounded-lg border border-pink-100">
+                                    <p class="font-semibold text-pink-900"><i class="fas fa-hashtag mr-2"></i>Social Team</p>
+                                    <p class="text-sm text-pink-700">#team-social - Content calendar</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <p class="font-semibold text-blue-900"><i class="fas fa-code mr-2"></i>Web Dev</p>
+                                    <p class="text-sm text-blue-700">#team-web - Development updates</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold mb-4">Message Types</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                    <span>Text Messages</span>
+                                    <span class="text-xs bg-slate-200 px-2 py-1 rounded">Regular</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                    <span>File Attachments</span>
+                                    <span class="text-xs bg-slate-200 px-2 py-1 rounded">Media</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                    <span>Direct Messages</span>
+                                    <span class="text-xs bg-blue-100 px-2 py-1 rounded">DM</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                    <span>@Mentions</span>
+                                    <span class="text-xs bg-purple-100 px-2 py-1 rounded">Alert</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                    <span>Pinned Messages</span>
+                                    <span class="text-xs bg-amber-100 px-2 py-1 rounded">Announcement</span>
+                                </div>
+                            </div>
+
+                            <h4 class="font-semibold mt-6 mb-4">API Endpoints</h4>
+                            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                                <p class="text-green-400">GET /api/mash/channels</p>
+                                <p class="text-blue-400">GET /api/mash/messages</p>
+                                <p class="text-orange-400">POST /api/mash/messages</p>
+                                <p class="text-purple-400">POST /api/mash/direct</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Arcade & Culture -->
+            <section id="arcade-flow" class="mb-20 slide-up" style="animation-delay:0.5s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-gamepad"></i></span>
+                    Arcade & Gamification
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-6 rounded-2xl text-white">
+                        <h4 class="text-xl font-bold mb-4">Arcade Point System</h4>
+                        <p class="text-purple-100 mb-6">Earn XP through performance, certifications, and positive client feedback. Redeem for rewards.</p>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between bg-white/10 rounded-lg p-3">
+                                <span>Task Completion</span>
+                                <span class="font-bold">+50 XP</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-white/10 rounded-lg p-3">
+                                <span>On-Time Delivery</span>
+                                <span class="font-bold">+100 XP</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-white/10 rounded-lg p-3">
+                                <span>Client Praise</span>
+                                <span class="font-bold">+200 XP</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-white/10 rounded-lg p-3">
+                                <span>Certification</span>
+                                <span class="font-bold">+500 XP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-2xl text-white">
+                        <h4 class="text-xl font-bold mb-4">Achievements & Badges</h4>
+                        <p class="text-amber-100 mb-6">Unlock badges for milestones and showcase your expertise.</p>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">🏆</div>
+                                <p class="text-sm">Top Performer</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">⭐</div>
+                                <p class="text-sm">5-Star Rating</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">🎯</div>
+                                <p class="text-sm">On-Time Hero</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">🚀</div>
+                                <p class="text-sm">Quick Learner</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">💎</div>
+                                <p class="text-sm">Quality Star</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">🎓</div>
+                                <p class="text-sm">Certified</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Role-Based Access Matrix -->
+            <section id="roles-matrix" class="mb-20 slide-up" style="animation-delay:0.55s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center"><i class="fas fa-users-cog"></i></span>
+                    Role-Based Access Control Matrix
+                </h3>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-900 text-white">
+                            <tr>
+                                <th class="p-4 text-left font-semibold">Feature</th>
+                                <th class="p-4 text-center font-semibold">Employee</th>
+                                <th class="p-4 text-center font-semibold">Manager</th>
+                                <th class="p-4 text-center font-semibold">HR</th>
+                                <th class="p-4 text-center font-semibold">Admin</th>
+                                <th class="p-4 text-center font-semibold">Super Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">View Own Tasks</td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">View Dept Tasks</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">Create Tasks</td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">Manage Users</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">View Payroll</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">Financial Reports</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">System Settings</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-medium">Audit Logs</td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-minus text-slate-300"></i></td>
+                                <td class="p-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section: API Summary -->
+            <section id="api-summary" class="mb-20 slide-up" style="animation-delay:0.6s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center"><i class="fas fa-code"></i></span>
+                    Key API Endpoints Summary
+                </h3>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-blue-600"><i class="fas fa-key mr-2"></i>Authentication</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">POST /api/auth/magic-link</p>
+                            <p class="text-slate-600">POST /api/auth/verify</p>
+                            <p class="text-slate-600">GET /api/auth/session</p>
+                            <p class="text-slate-600">POST /api/auth/logout</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-orange-600"><i class="fas fa-tasks mr-2"></i>Tasks</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">GET /api/tasks</p>
+                            <p class="text-slate-600">POST /api/tasks</p>
+                            <p class="text-slate-600">PATCH /api/tasks/:id</p>
+                            <p class="text-slate-600">POST /api/tasks/:id/timer</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-pink-600"><i class="fas fa-user-friends mr-2"></i>HR</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">GET /api/hr/attendance</p>
+                            <p class="text-slate-600">POST /api/hr/leave</p>
+                            <p class="text-slate-600">GET /api/hr/employees</p>
+                            <p class="text-slate-600">POST /api/hr/payroll</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-green-600"><i class="fas fa-building mr-2"></i>Clients</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">GET /api/clients</p>
+                            <p class="text-slate-600">POST /api/clients</p>
+                            <p class="text-slate-600">PATCH /api/clients/:id</p>
+                            <p class="text-slate-600">GET /api/clients/:id/health</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-amber-600"><i class="fas fa-handshake mr-2"></i>Sales</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">GET /api/sales/leads</p>
+                            <p class="text-slate-600">POST /api/sales/leads</p>
+                            <p class="text-slate-600">PATCH /api/sales/deals/:id</p>
+                            <p class="text-slate-600">POST /api/sales/commission</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold mb-3 text-emerald-600"><i class="fas fa-file-invoice-dollar mr-2"></i>Accounts</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p class="text-slate-600">GET /api/accounts/invoices</p>
+                            <p class="text-slate-600">POST /api/accounts/invoices</p>
+                            <p class="text-slate-600">POST /api/accounts/reconcile</p>
+                            <p class="text-slate-600">GET /api/accounts/reports</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Database Models -->
+            <section id="db-models" class="mb-20 slide-up" style="animation-delay:0.65s">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-lg bg-violet-100 text-violet-600 flex items-center justify-center"><i class="fas fa-database"></i></span>
+                    Key Database Models
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 rounded-xl p-5 text-white font-mono text-sm overflow-x-auto">
+                        <p class="text-green-400 mb-3">// Core User Models</p>
+                        <p class="text-blue-400">model <span class="text-yellow-300">User</span> {</p>
+                        <p class="pl-4 text-slate-300">id, empId, firstName, lastName</p>
+                        <p class="pl-4 text-slate-300">email, passwordHash, role</p>
+                        <p class="pl-4 text-slate-300">department, status</p>
+                        <p class="pl-4 text-slate-300">tasks[], attendances[]</p>
+                        <p class="pl-4 text-slate-300">leaveRequests[]</p>
+                        <p class="text-blue-400">}</p>
+
+                        <p class="text-green-400 mt-4 mb-3">// Client Management</p>
+                        <p class="text-blue-400">model <span class="text-yellow-300">Client</span> {</p>
+                        <p class="pl-4 text-slate-300">id, name, email, phone</p>
+                        <p class="pl-4 text-slate-300">healthScore, monthlyFee</p>
+                        <p class="pl-4 text-slate-300">status (LEAD/ACTIVE/AT_RISK)</p>
+                        <p class="pl-4 text-slate-300">contracts[], invoices[]</p>
+                        <p class="text-blue-400">}</p>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-xl p-5 text-white font-mono text-sm overflow-x-auto">
+                        <p class="text-green-400 mb-3">// Work & Projects</p>
+                        <p class="text-blue-400">model <span class="text-yellow-300">Task</span> {</p>
+                        <p class="pl-4 text-slate-300">id, title, description</p>
+                        <p class="pl-4 text-slate-300">status, priority, type</p>
+                        <p class="pl-4 text-slate-300">assigneeId, reviewerId</p>
+                        <p class="pl-4 text-slate-300">clientId, department</p>
+                        <p class="pl-4 text-slate-300">dueDate, timerStartedAt</p>
+                        <p class="text-blue-400">}</p>
+
+                        <p class="text-green-400 mt-4 mb-3">// Financial</p>
+                        <p class="text-blue-400">model <span class="text-yellow-300">Invoice</span> {</p>
+                        <p class="pl-4 text-slate-300">id, number, amount</p>
+                        <p class="pl-4 text-slate-300">status, dueDate, paidDate</p>
+                        <p class="pl-4 text-slate-300">clientId, items[]</p>
+                        <p class="pl-4 text-slate-300">payments[]</p>
+                        <p class="text-blue-400">}</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white">
+                    <h4 class="font-bold mb-4">Additional Models (150+ total)</h4>
+                    <div class="grid md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                            <p class="text-blue-400 font-semibold mb-2">HR & People</p>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• Attendance</li>
+                                <li>• LeaveRequest</li>
+                                <li>• Payroll</li>
+                                <li>• Appraisal</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-green-400 font-semibold mb-2">Sales & CRM</p>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• Lead</li>
+                                <li>• Deal</li>
+                                <li>• Contact</li>
+                                <li>• Commission</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-orange-400 font-semibold mb-2">Operations</p>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• Project</li>
+                                <li>• BugReport</li>
+                                <li>• WorkEntry</li>
+                                <li>• Checklist</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-purple-400 font-semibold mb-2">Communication</p>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• ChatChannel</li>
+                                <li>• Message</li>
+                                <li>• DirectMessage</li>
+                                <li>• Notification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="border-t border-slate-200 pt-10 pb-20 text-center">
+                <p class="text-slate-500 text-sm">Pioneer-OS Complete Workflow Documentation</p>
+                <p class="text-slate-400 text-xs mt-1">Generated from comprehensive codebase analysis • April 2026</p>
+                <p class="text-slate-300 text-xs mt-2 italic">250+ Pages • 500+ Endpoints • 150+ Models • 15+ Roles</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            if (!sidebar.classList.contains('hidden')) {
+                sidebar.classList.add('fixed', 'inset-0', 'z-40', 'bg-white', 'w-full');
+            } else {
+                sidebar.classList.remove('fixed', 'inset-0', 'z-40', 'bg-white', 'w-full');
+            }
+        }
+
+        // Auto-close mobile sidebar on link click
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.slide-up').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
