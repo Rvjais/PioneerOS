@@ -60,7 +60,7 @@ export function Modal({
   }
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[100]">
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -73,8 +73,8 @@ export function Modal({
         <div className="flex min-h-full items-center justify-center p-4">
           <div
             className={cn(
-              'relative w-full transform overflow-hidden rounded-2xl glass-card dark:bg-slate-900 shadow-none transition-all',
-              'border border-white/10 dark:border-slate-700',
+              'relative w-full transform overflow-hidden rounded-2xl bg-slate-900 shadow-2xl transition-all',
+              'border border-white/20',
               sizeClasses[size],
               className
             )}

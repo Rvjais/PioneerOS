@@ -1,3 +1,5 @@
+'use client'
+
 import { AdminStats, ROLES, roleColors } from './types'
 
 interface RolesTabProps {

@@ -111,20 +111,9 @@ export async function requireAuth(
     return { session: session as AuthResult['session'], user }
   }
 
-  // Check roles - handle impersonation: if impersonating, check the original admin's role
+  // Check roles
   if (options.roles && options.roles.length > 0) {
-    const sessionUser = session.user as {
-      role: string
-      isImpersonating?: boolean
-      originalRole?: string
-    }
-
-    // Use original role if impersonating, otherwise use current user's role
-    const roleToCheck = sessionUser.isImpersonating && sessionUser.originalRole
-      ? sessionUser.originalRole
-      : user.role
-
-    if (!options.roles.includes(roleToCheck as UserRole)) {
+    if (!options.roles.includes(user.role as UserRole)) {
       return {
         error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }),
       }

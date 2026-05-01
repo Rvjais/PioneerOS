@@ -71,34 +71,71 @@ export function QuickAddModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-slate-800 rounded-2xl border border-white/10 p-6">
-        <div className="p-6 border-b border-white/10 -m-6 mb-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">{title}</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-slate-700/50 rounded-lg transition-colors"
-            >
-              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50,
+      padding: '16px'
+    }} suppressHydrationWarning>
+      <div style={{
+        backgroundColor: '#1e293b',
+        borderRadius: '16px',
+        padding: '24px',
+        width: '100%',
+        maxWidth: '32rem',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        border: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 700 }}>{title}</h2>
+          <button
+            onClick={onClose}
+            style={{
+              padding: '8px',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              color: '#94a3b8'
+            }}
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-200 rounded-lg text-red-400 text-sm">
+            <div style={{
+              padding: '12px',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '8px',
+              color: '#f87171',
+              fontSize: '14px'
+            }}>
               {error}
             </div>
           )}
 
           {fields.map((field) => (
             <div key={field.name}>
-              <label className="block text-sm font-medium text-white mb-1">
+              <label style={{ display: 'block', color: 'white', fontSize: '14px', fontWeight: 500, marginBottom: '4px' }}>
                 {field.label}
-                {field.required && <span className="text-red-500 ml-1">*</span>}
+                {field.required && <span style={{ color: '#ef4444', marginLeft: '4px' }}>*</span>}
                 {field.tooltip && <InfoTip text={field.tooltip} />}
               </label>
 
@@ -111,13 +148,20 @@ export function QuickAddModal({
                       setFieldErrors({ ...fieldErrors, [field.name]: '' })
                     }
                   }}
-                  className={`w-full px-4 py-2.5 bg-slate-700 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white ${
-                    fieldErrors[field.name] ? 'border-red-500' : 'border-white/10'
-                  }`}
+                  style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    backgroundColor: '#334155',
+                    border: `1px solid ${fieldErrors[field.name] ? '#ef4444' : 'rgba(255,255,255,0.1)'}`,
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
                 >
-                  <option value="">Select...</option>
+                  <option value="" style={{ backgroundColor: '#1e293b' }}>Select...</option>
                   {field.options?.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
+                    <option key={opt.value} value={opt.value} style={{ backgroundColor: '#1e293b' }}>
                       {opt.label}
                     </option>
                   ))}
@@ -133,29 +177,56 @@ export function QuickAddModal({
                     }
                   }}
                   placeholder={field.placeholder}
-                  className={`w-full px-4 py-2.5 bg-slate-700 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white ${
-                    fieldErrors[field.name] ? 'border-red-500' : 'border-white/10'
-                  }`}
+                  style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    backgroundColor: '#334155',
+                    border: `1px solid ${fieldErrors[field.name] ? '#ef4444' : 'rgba(255,255,255,0.1)'}`,
+                    borderRadius: '12px',
+                    color: 'white',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
                 />
               )}
               {fieldErrors[field.name] && (
-                <p className="text-red-500 text-sm mt-1">{fieldErrors[field.name]}</p>
+                <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>{fieldErrors[field.name]}</p>
               )}
             </div>
           ))}
 
-          <div className="flex gap-3 pt-4">
+          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-slate-700 text-white rounded-xl hover:bg-slate-600 transition-colors"
+              style={{
+                flex: 1,
+                padding: '10px 16px',
+                backgroundColor: '#334155',
+                color: 'white',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50"
+              style={{
+                flex: 1,
+                padding: '10px 16px',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1,
+                fontSize: '14px',
+                fontWeight: 500
+              }}
             >
               {loading ? 'Adding...' : submitLabel}
             </button>
@@ -165,6 +236,7 @@ export function QuickAddModal({
     </div>
   )
 }
+
 
 // Pre-configured modals for common use cases
 export const EMPLOYEE_FIELDS: Field[] = [

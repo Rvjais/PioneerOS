@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react'
 import { formatDateDDMMYYYY } from '@/shared/utils/cn'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
-import { useSession } from 'next-auth/react'
 import { QuickAddModal, EMPLOYEE_FIELDS } from '@/client/components/QuickAddModal'
 import { formatRoleLabel } from '@/shared/utils/utils'
 import { UserAvatar } from '@/client/components/ui/UserAvatar'
+import { ConfirmModal } from '@/client/components/ui/Modal'
 import Link from 'next/link'
 
 interface User {
@@ -21,8 +21,8 @@ interface User {
   department: string
   employeeType: string
   status: string
-  joiningDate: Date
-  createdAt: Date
+  joiningDate: string | Date
+  createdAt: string | Date
   profile?: {
     profilePicture: string | null
   } | null
@@ -37,19 +37,296 @@ const DEPARTMENTS = ['OPERATIONS', 'SEO', 'SOCIAL', 'DESIGN', 'ADS', 'WEB', 'SAL
 const STATUSES = ['ACTIVE', 'PROBATION', 'PIP', 'INACTIVE']
 const EMPLOYEE_TYPES = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN', 'FREELANCER']
 
+// Safe Edit User Modal - uses local state to avoid re-render crashes
+function EditUserModal({ user, onClose, onSave, saving }: {
+  user: User
+  onClose: () => void
+  onSave: (data: { firstName: string; lastName: string | null; email: string | null; phone: string; role: string; department: string; employeeType: string; status: string }) => void
+  saving: boolean
+}) {
+  const [firstName, setFirstName] = useState(user.firstName)
+  const [lastName, setLastName] = useState(user.lastName || '')
+  const [email, setEmail] = useState(user.email || '')
+  const [phone, setPhone] = useState(user.phone)
+  const [role, setRole] = useState(user.role)
+  const [department, setDepartment] = useState(user.department)
+  const [employeeType, setEmployeeType] = useState(user.employeeType)
+  const [status, setStatus] = useState(user.status)
+
+  const handleSave = () => {
+    onSave({
+      firstName,
+      lastName: lastName || null,
+      email: email || null,
+      phone,
+      role,
+      department,
+      employeeType,
+      status,
+    })
+  }
+
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50,
+      padding: '16px'
+    }}>
+      <div 
+        style={{ position: 'fixed', inset: 0 }} 
+        onClick={onClose} 
+      />
+      <div style={{
+        backgroundColor: '#1e293b',
+        borderRadius: '12px',
+        padding: '24px',
+        width: '100%',
+        maxWidth: '32rem',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        position: 'relative',
+        zIndex: 51,
+        border: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
+        }}>
+          <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Edit User</h2>
+          <button
+            onClick={onClose}
+            style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>First Name</label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Last Name</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Phone</label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Role</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {ROLES.map(r => (
+                  <option key={r} value={r} style={{ backgroundColor: '#1e293b' }}>{r.replace(/_/g, ' ')}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Department</label>
+              <select
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {DEPARTMENTS.map(d => (
+                  <option key={d} value={d} style={{ backgroundColor: '#1e293b' }}>{d}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Employee Type</label>
+              <select
+                value={employeeType}
+                onChange={(e) => setEmployeeType(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {EMPLOYEE_TYPES.map(t => (
+                  <option key={t} value={t} style={{ backgroundColor: '#1e293b' }}>{t.replace(/_/g, ' ')}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {STATUSES.map(s => (
+                  <option key={s} value={s} style={{ backgroundColor: '#1e293b' }}>{s}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px',
+          marginTop: '24px',
+          paddingTop: '16px',
+          borderTop: '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <button
+            onClick={onClose}
+            style={{
+              padding: '8px 16px',
+              color: '#cbd5e1',
+              fontSize: '14px',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none'
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontSize: '14px',
+              borderRadius: '8px',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.5 : 1,
+              border: 'none'
+            }}
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function UserManagementClient({ users }: UserManagementClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { update: updateSession } = useSession()
   const [filter, setFilter] = useState('ALL')
   const [search, setSearch] = useState('')
-  const [impersonating, setImpersonating] = useState<string | null>(null)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [saving, setSaving] = useState(false)
   const [showQuickAdd, setShowQuickAdd] = useState(false)
-  const [impersonateTarget, setImpersonateTarget] = useState<User | null>(null)
-  const [impersonateReason, setImpersonateReason] = useState('')
   const [viewingAs, setViewingAs] = useState<User | null>(null)
+  const [removingUser, setRemovingUser] = useState<User | null>(null)
+  const [magicLinkUser, setMagicLinkUser] = useState<User | null>(null)
+  const [generatingMagicLink, setGeneratingMagicLink] = useState(false)
 
   // Check if we are viewing as another user's dashboard
   const viewingUserId = searchParams.get('viewAs')
@@ -99,6 +376,31 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
     router.refresh()
   }
 
+  const handleGenerateMagicLink = async () => {
+    if (!magicLinkUser) return
+    setGeneratingMagicLink(true)
+    try {
+      const res = await fetch('/api/admin/generate-magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: magicLinkUser.id }),
+      })
+      const data = await res.json()
+      if (res.ok && data.token) {
+        const magicLink = `${window.location.origin}/auth/magic?token=${data.token}`
+        await navigator.clipboard.writeText(magicLink)
+        toast.success('Magic link copied! Share it with the user.')
+        setMagicLinkUser(null)
+      } else {
+        toast.error(data.error || 'Failed to generate magic link')
+      }
+    } catch (error) {
+      toast.error('Failed to generate magic link')
+    } finally {
+      setGeneratingMagicLink(false)
+    }
+  }
+
   const filteredUsers = users.filter((user) => {
     const matchesRole = filter === 'ALL' || user.role === filter
     const matchesSearch =
@@ -110,66 +412,14 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
     return matchesRole && matchesSearch
   })
 
-  const handleStartImpersonate = (user: User) => {
-    setImpersonateTarget(user)
-    setImpersonateReason('')
-  }
-
-  const handleConfirmImpersonate = async () => {
-    if (!impersonateTarget || !impersonateReason.trim()) return
-
-    setImpersonating(impersonateTarget.id)
-    try {
-      const res = await fetch('/api/admin/impersonate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetUserId: impersonateTarget.id, reason: impersonateReason }),
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-
-        // Update NextAuth session with impersonated user data (session ID stored server-side)
-        await updateSession({
-          impersonating: true,
-          impersonatedUser: data.impersonatedUser,
-          impersonationSessionId: data.sessionId,
-        })
-
-        setImpersonateTarget(null)
-        setImpersonateReason('')
-
-        // Redirect to dashboard to see the impersonated user's view
-        window.location.href = '/'
-      } else {
-        const data = await res.json()
-        toast.error(data.error || 'Failed to start impersonation')
-      }
-    } catch (error) {
-      console.error('Impersonation error:', error)
-      toast.error('Failed to start impersonation')
-    } finally {
-      setImpersonating(null)
-    }
-  }
-
-  const handleSaveUser = async () => {
+  const handleSaveUser = async (formData: { firstName: string; lastName: string | null; email: string | null; phone: string; role: string; department: string; employeeType: string; status: string }) => {
     if (!editingUser) return
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: editingUser.firstName,
-          lastName: editingUser.lastName,
-          email: editingUser.email,
-          phone: editingUser.phone,
-          role: editingUser.role,
-          department: editingUser.department,
-          employeeType: editingUser.employeeType,
-          status: editingUser.status,
-        }),
+        body: JSON.stringify(formData),
       })
 
       if (res.ok) {
@@ -182,6 +432,30 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
     } catch (error) {
       console.error('Save user error:', error)
       toast.error('Failed to update user')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleRemoveUser = async () => {
+    if (!removingUser) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/admin/users/${removingUser.id}`, {
+        method: 'DELETE',
+      })
+
+      if (res.ok) {
+        setRemovingUser(null)
+        toast.success('Employee removed successfully')
+        router.refresh()
+      } else {
+        const data = await res.json()
+        toast.error(data.error || 'Failed to remove employee')
+      }
+    } catch (error) {
+      console.error('Remove user error:', error)
+      toast.error('Failed to remove employee')
     } finally {
       setSaving(false)
     }
@@ -208,7 +482,7 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
   }
 
   return (
-    <div className="glass-card rounded-xl border border-white/10 overflow-hidden">
+    <div className="glass-card rounded-xl border border-white/10 overflow-hidden" suppressHydrationWarning>
       {/* Viewing As Banner */}
       {viewingAs && (
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 flex items-center justify-between">
@@ -222,7 +496,7 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
               <span className="ml-2 text-xs opacity-75">({formatRoleLabel(viewingAs.role)} - {viewingAs.department})</span>
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-white mb-2">
             {/* Quick nav to key department dashboards */}
             <Link
               href="/accounts"
@@ -283,12 +557,13 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name, email, or ID..."
-          className="px-3 py-2 border border-white/10 rounded-lg text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-2 bg-slate-900/40 border border-white/10 rounded-lg text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
         />
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-2 bg-slate-900/40 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+          style={{ colorScheme: 'dark' }}
         >
           <option value="ALL">All Roles</option>
           <option value="SUPER_ADMIN">Super Admin</option>
@@ -353,7 +628,7 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
                     {user.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-slate-300">{formatDate(user.joiningDate)}</td>
+                <td className="px-4 py-3 text-sm text-slate-300">{formatDate(user.joiningDate as Date)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     <button
@@ -368,18 +643,26 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
                       Dashboard
                     </button>
                     <button
-                      onClick={() => handleStartImpersonate(user)}
-                      disabled={impersonating === user.id || user.role === 'SUPER_ADMIN'}
-                      className="text-xs px-2 py-1 bg-slate-800/50 hover:bg-white/10 text-slate-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={user.role === 'SUPER_ADMIN' ? 'Cannot impersonate admins' : 'Login as this user'}
+                      onClick={() => setMagicLinkUser(user)}
+                      className="text-xs px-2 py-1 bg-amber-500/20 hover:bg-amber-600/30 text-amber-400 rounded border border-amber-500/20"
+                      title="Generate magic link for this user"
                     >
-                      {impersonating === user.id ? 'Loading...' : 'Impersonate'}
+                      <svg className="w-3.5 h-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Magic Link
                     </button>
                     <button
                       onClick={() => setEditingUser(user)}
-                      className="text-xs px-2 py-1 bg-blue-500/20 hover:bg-blue-200 text-blue-400 rounded"
+                      className="text-xs px-2 py-1 bg-blue-500/20 hover:bg-blue-600/30 text-blue-400 rounded border border-blue-500/20"
                     >
                       Edit
+                    </button>
+                    <button
+                      onClick={() => setRemovingUser(user)}
+                      className="text-xs px-2 py-1 bg-red-500/20 hover:bg-red-600/30 text-red-400 rounded border border-red-500/20"
+                    >
+                      Remove
                     </button>
                   </div>
                 </td>
@@ -391,127 +674,104 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
 
       {/* Edit User Modal */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setEditingUser(null)} />
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-slate-800 rounded-xl border border-white/10 overflow-hidden">
-        <div className="p-6 border-b border-white/10 -m-6 mb-0">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-white">Edit User</h2>
-            <button onClick={() => setEditingUser(null)} className="text-slate-400 hover:text-slate-300">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <EditUserModal
+          key={editingUser.id}
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+          onSave={handleSaveUser}
+          saving={saving}
+        />
+      )}
+
+      {/* Remove User Confirmation - Custom Modal for guaranteed visibility */}
+      {removingUser && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '16px'
+        }}>
+          <div 
+            style={{ position: 'fixed', inset: 0 }} 
+            onClick={() => !saving && setRemovingUser(null)} 
+          />
+          <div style={{
+            backgroundColor: '#1e293b',
+            borderRadius: '16px',
+            padding: '32px',
+            width: '100%',
+            maxWidth: '28rem',
+            position: 'relative',
+            zIndex: 10000,
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px',
+              color: '#ef4444'
+            }}>
+              <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-            </button>
-          </div>
-        </div>
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">First Name</label>
-              <input
-                type="text"
-                value={editingUser.firstName}
-                onChange={(e) => setEditingUser({ ...editingUser, firstName: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-              />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">Last Name</label>
-              <input
-                type="text"
-                value={editingUser.lastName || ''}
-                onChange={(e) => setEditingUser({ ...editingUser, lastName: e.target.value || null })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-white mb-1">Email</label>
-            <input
-              type="email"
-              value={editingUser.email || ''}
-              onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value || null })}
-              className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-white mb-1">Phone</label>
-            <input
-              type="text"
-              value={editingUser.phone}
-              onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
-              className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">Role</label>
-              <select
-                value={editingUser.role}
-                onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+            
+            <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Remove Employee</h2>
+            <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.5', marginBottom: '32px' }}>
+              Are you sure you want to remove <strong>{removingUser.firstName} {removingUser.lastName || ''}</strong>? <br/>
+              This will mark them as inactive and remove them from all active lists.
+            </p>
+            
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => setRemovingUser(null)}
+                disabled={saving}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#334155',
+                  color: 'white',
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 600
+                }}
               >
-                {ROLES.map(role => (
-                  <option key={role} value={role}>{role.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">Department</label>
-              <select
-                value={editingUser.department}
-                onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                Cancel
+              </button>
+              <button
+                onClick={handleRemoveUser}
+                disabled={saving}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#ef4444',
+                  color: 'white',
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: saving ? 'not-allowed' : 'pointer',
+                  opacity: saving ? 0.7 : 1,
+                  fontSize: '14px',
+                  fontWeight: 700
+                }}
               >
-                {DEPARTMENTS.map(dept => (
-                  <option key={dept} value={dept}>{dept.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
+                {saving ? 'Removing...' : 'Yes, Remove'}
+              </button>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">Employee Type</label>
-              <select
-                value={editingUser.employeeType}
-                onChange={(e) => setEditingUser({ ...editingUser, employeeType: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-              >
-                {EMPLOYEE_TYPES.map(type => (
-                  <option key={type} value={type}>{type.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white mb-1">Status</label>
-              <select
-                value={editingUser.status}
-                onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-              >
-                {STATUSES.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="p-6 border-t border-white/10 flex justify-end gap-3">
-          <button
-            onClick={() => setEditingUser(null)}
-            className="px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 rounded-lg"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSaveUser}
-            disabled={saving}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </div>
-      </div>
         </div>
       )}
 
@@ -525,53 +785,97 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
         submitLabel="Add Employee"
       />
 
-      {/* Impersonate Modal */}
-      {impersonateTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setImpersonateTarget(null)} />
-          <div className="relative w-full max-w-md bg-slate-800 rounded-xl border border-white/10 overflow-hidden">
-            <div className="p-6 border-b border-white/10">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-white">Impersonate User</h2>
-                <button onClick={() => setImpersonateTarget(null)} className="text-slate-400 hover:text-slate-300">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+      {/* Magic Link Modal */}
+      {magicLinkUser && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+          padding: '16px'
+        }}>
+          <div
+            style={{ position: 'fixed', inset: 0 }}
+            onClick={() => setMagicLinkUser(null)}
+          />
+          <div style={{
+            backgroundColor: '#1e293b',
+            borderRadius: '12px',
+            padding: '24px',
+            width: '100%',
+            maxWidth: '28rem',
+            position: 'relative',
+            zIndex: 51,
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px'
+            }}>
+              <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Generate Magic Link</h2>
+              <button onClick={() => setMagicLinkUser(null)} style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}>
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+                borderRadius: '8px',
+                padding: '12px',
+                fontSize: '14px',
+                color: '#fbbf24'
+              }}>
+                <strong>Magic Link for:</strong> {magicLinkUser.firstName} {magicLinkUser.lastName || ''} ({magicLinkUser.empId})<br/>
+                <span className="text-slate-400">This link expires in 24 hours and will be copied to your clipboard.</span>
               </div>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="p-4 bg-amber-500/10 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-400">
-                  <strong>Warning:</strong> You are about to view the app as <strong>{impersonateTarget.firstName} {impersonateTarget.lastName || ''}</strong> ({impersonateTarget.empId}). All actions will be logged for audit.
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-white mb-1">
-                  Reason for impersonation <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={impersonateReason}
-                  onChange={(e) => setImpersonateReason(e.target.value)}
-                  placeholder="e.g., Troubleshooting user issue, testing permissions..."
-                  rows={3}
-                  className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                />
-              </div>
-            </div>
-            <div className="p-6 border-t border-white/10 flex justify-end gap-3">
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+              marginTop: '24px',
+              paddingTop: '16px',
+              borderTop: '1px solid rgba(255,255,255,0.1)'
+            }}>
               <button
-                onClick={() => setImpersonateTarget(null)}
-                className="px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 rounded-lg"
+                onClick={() => setMagicLinkUser(null)}
+                style={{
+                  padding: '8px 16px',
+                  color: '#cbd5e1',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  background: 'none',
+                  border: 'none'
+                }}
               >
                 Cancel
               </button>
               <button
-                onClick={handleConfirmImpersonate}
-                disabled={!impersonateReason.trim() || impersonating === impersonateTarget.id}
-                className="px-4 py-2 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleGenerateMagicLink}
+                disabled={generatingMagicLink}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#d97706',
+                  color: 'white',
+                  fontSize: '14px',
+                  borderRadius: '8px',
+                  cursor: generatingMagicLink ? 'not-allowed' : 'pointer',
+                  opacity: generatingMagicLink ? 0.5 : 1,
+                  border: 'none'
+                }}
               >
-                {impersonating === impersonateTarget.id ? 'Starting...' : 'Start Impersonation'}
+                {generatingMagicLink ? 'Generating...' : 'Generate & Copy Link'}
               </button>
             </div>
           </div>
@@ -580,3 +884,4 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
     </div>
   )
 }
+

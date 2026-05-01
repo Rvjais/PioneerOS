@@ -181,8 +181,15 @@ export function withAuth(handler: AuthenticatedHandler, options?: AuthOptions) {
         }
       }
 
-      // Resolve params if provided
-      const params = context?.params ? await context.params : undefined
+      // Resolve params if provided (Next.js 16 passes params as Promise)
+      let params: Record<string, string> | undefined
+      if (context?.params) {
+        if (context.params instanceof Promise) {
+          params = await context.params
+        } else {
+          params = context.params
+        }
+      }
 
       // Call the handler with authenticated user
       return handler(req, { user, params })

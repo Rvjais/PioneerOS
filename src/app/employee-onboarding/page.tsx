@@ -13,6 +13,7 @@ import {
   Checkbox,
   SuccessScreen,
   StepIndicator,
+  FormAlert,
 } from '@/client/components/forms/FormComponents'
 
 // ============================================
@@ -454,6 +455,7 @@ function EmployeeOnboardingForm() {
   const [submitted, setSubmitted] = useState(false)
   const [ndaExpanded, setNdaExpanded] = useState(false)
   const [termsExpanded, setTermsExpanded] = useState(false)
+  const [submissionError, setSubmissionError] = useState('')
 
   const updateField = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
     setFormData(prev => {
@@ -475,13 +477,39 @@ function EmployeeOnboardingForm() {
     })
   }, [])
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     const stepErrors = validateStep(step, formData)
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors)
       return
     }
+    
+    // Check for existing record when leaving personal info step
+    if (step === 3 && formData.mode === 'new') {
+      setLoading(true)
+      setSubmissionError('')
+      try {
+        const params = new URLSearchParams()
+        params.set('phone', formData.personalPhone)
+        params.set('email', formData.email)
+        const res = await fetch(`/api/public/employee-onboarding?${params.toString()}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data && data.employee) {
+            setSubmissionError('An account with this phone number or email already exists. If you want to update your details, please use the "Search existing record" option on the first step or contact HR.')
+            setLoading(false)
+            return
+          }
+        }
+      } catch (err) {
+        // Continue if search fails - final validation happens on submit
+      } finally {
+        setLoading(false)
+      }
+    }
+
     setErrors({})
+    setSubmissionError('')
     setStep(prev => Math.min(prev + 1, TOTAL_STEPS))
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [step, formData])
@@ -578,10 +606,10 @@ function EmployeeOnboardingForm() {
       const lastName = nameParts.slice(1).join(' ') || ''
 
       const roleMap: Record<string, string> = {
-        'FULL_TIME': 'EMPLOYEE',
-        'PART_TIME': 'EMPLOYEE',
-        'INTERN': 'INTERN',
-        'FREELANCER': 'FREELANCER',
+        'full-time': 'EMPLOYEE',
+        'part-time': 'EMPLOYEE',
+        'intern': 'INTERN',
+        'freelancer': 'FREELANCER',
       }
 
       const apiData = {
@@ -590,7 +618,7 @@ function EmployeeOnboardingForm() {
         phone: formData.personalPhone,
         email: formData.email,
         department: formData.department,
-        employeeType: formData.employeeType,
+        employeeType: formData.employeeType.toUpperCase().replace('-', '_'),
         role: roleMap[formData.employeeType] || 'EMPLOYEE',
         joiningDate: formData.joiningDate || undefined,
         dateOfBirth: formData.dateOfBirth || undefined,
@@ -625,10 +653,13 @@ function EmployeeOnboardingForm() {
         setSubmitted(true)
       } else {
         const errData = await res.json().catch(() => null)
-        setErrors({ digitalSignature: errData?.error || errData?.message || 'Submission failed. Please try again.' })
+        const msg = errData?.error || errData?.message || 'Submission failed. Please try again.'
+        setSubmissionError(msg)
+        // Also map to specific field if possible, but keep banner primary
+        setErrors({ digitalSignature: msg })
       }
     } catch {
-      setErrors({ digitalSignature: 'Network error. Please check your connection and try again.' })
+      setSubmissionError('Network error. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }
@@ -1498,6 +1529,14 @@ function EmployeeOnboardingForm() {
         accentColor="orange"
       />
       <div className="transition-all duration-300 ease-in-out">
+        {submissionError && (
+          <FormAlert 
+            message={submissionError} 
+            type="error" 
+            onClose={() => setSubmissionError('')}
+            className="mb-8"
+          />
+        )}
         {renderCurrentStep()}
       </div>
     </FormLayout>

@@ -1,3 +1,5 @@
+'use client'
+
 import { ROLES, DEPARTMENTS } from './types'
 
 interface NewUserData {
@@ -21,124 +23,247 @@ interface AddUserModalProps {
 
 export default function AddUserModal({ newUser, onNewUserChange, onClose, onAdd, saving }: AddUserModalProps) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="glass-card rounded-xl shadow-none w-full max-w-lg mx-4">
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <h3 className="font-semibold text-white">Add New User</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-300">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50
+    }}>
+      <div style={{
+        backgroundColor: '#1e293b',
+        borderRadius: '12px',
+        padding: '24px',
+        width: '100%',
+        maxWidth: '32rem',
+        margin: '16px',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
+        }}>
+          <h3 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Add New User</h3>
+          <button
+            onClick={onClose}
+            style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <div className="p-4 space-y-4">
-          <div className="bg-blue-500/10 border border-blue-200 rounded-lg p-3 text-sm text-blue-400">
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            border: '1px solid rgba(37, 99, 235, 0.2)',
+            borderRadius: '8px',
+            padding: '12px',
+            fontSize: '14px',
+            color: '#60a5fa'
+          }}>
             Default password will be the employee&apos;s phone number. They will be prompted to complete their profile on first login.
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Employee ID *</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Employee ID *</label>
             <input
               type="text"
               value={newUser.empId}
               onChange={(e) => onNewUserChange({ ...newUser, empId: e.target.value.toUpperCase() })}
               placeholder="BP-XXX"
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">First Name *</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>First Name *</label>
               <input
                 type="text"
                 value={newUser.firstName}
                 onChange={(e) => onNewUserChange({ ...newUser, firstName: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Last Name</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Last Name</label>
               <input
                 type="text"
                 value={newUser.lastName}
                 onChange={(e) => onNewUserChange({ ...newUser, lastName: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               />
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Phone *</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Phone *</label>
             <input
               type="tel"
               value={newUser.phone}
               onChange={(e) => onNewUserChange({ ...newUser, phone: e.target.value })}
               placeholder="10-digit phone number"
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Email</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Email</label>
             <input
               type="email"
               value={newUser.email}
               onChange={(e) => onNewUserChange({ ...newUser, email: e.target.value })}
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Role</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Role</label>
               <select
                 value={newUser.role}
                 onChange={(e) => onNewUserChange({ ...newUser, role: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-                style={{ colorScheme: 'dark' }}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               >
                 {ROLES.map(role => (
-                  <option key={role} value={role} className="bg-slate-800 text-white">{role}</option>
+                  <option key={role} value={role} style={{ backgroundColor: '#1e293b' }}>{role}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Department</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Department</label>
               <select
                 value={newUser.department}
                 onChange={(e) => onNewUserChange({ ...newUser, department: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-                style={{ colorScheme: 'dark' }}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               >
                 {DEPARTMENTS.map(dept => (
-                  <option key={dept} value={dept} className="bg-slate-800 text-white">{dept}</option>
+                  <option key={dept} value={dept} style={{ backgroundColor: '#1e293b' }}>{dept}</option>
                 ))}
               </select>
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Employee Type</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Employee Type</label>
             <select
               value={newUser.employeeType}
               onChange={(e) => onNewUserChange({ ...newUser, employeeType: e.target.value })}
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-              style={{ colorScheme: 'dark' }}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             >
-              <option value="FULL_TIME" className="bg-slate-800 text-white">Full Time</option>
-              <option value="PART_TIME" className="bg-slate-800 text-white">Part Time</option>
-              <option value="CONTRACT" className="bg-slate-800 text-white">Contract</option>
-              <option value="INTERN" className="bg-slate-800 text-white">Intern</option>
-              <option value="FREELANCER" className="bg-slate-800 text-white">Freelancer</option>
+              <option value="FULL_TIME" style={{ backgroundColor: '#1e293b' }}>Full Time</option>
+              <option value="PART_TIME" style={{ backgroundColor: '#1e293b' }}>Part Time</option>
+              <option value="CONTRACT" style={{ backgroundColor: '#1e293b' }}>Contract</option>
+              <option value="INTERN" style={{ backgroundColor: '#1e293b' }}>Intern</option>
+              <option value="FREELANCER" style={{ backgroundColor: '#1e293b' }}>Freelancer</option>
             </select>
           </div>
         </div>
-        <div className="p-4 border-t border-white/10 flex items-center justify-end gap-3">
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px',
+          marginTop: '24px',
+          paddingTop: '16px',
+          borderTop: '1px solid rgba(255,255,255,0.1)'
+        }}>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-slate-300 hover:text-white"
+            style={{
+              padding: '8px 16px',
+              color: '#cbd5e1',
+              fontSize: '14px',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none'
+            }}
           >
             Cancel
           </button>
           <button
             onClick={onAdd}
             disabled={saving || !newUser.empId || !newUser.firstName || !newUser.phone}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontSize: '14px',
+              borderRadius: '8px',
+              cursor: (saving || !newUser.empId || !newUser.firstName || !newUser.phone) ? 'not-allowed' : 'pointer',
+              opacity: (saving || !newUser.empId || !newUser.firstName || !newUser.phone) ? 0.5 : 1,
+              border: 'none'
+            }}
           >
             {saving ? 'Creating...' : 'Create User'}
           </button>
@@ -147,3 +272,4 @@ export default function AddUserModal({ newUser, onNewUserChange, onClose, onAdd,
     </div>
   )
 }
+

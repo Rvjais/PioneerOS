@@ -244,7 +244,7 @@ export const POST = withAuth(async (req, { user, params }) => {
           gstAmount: gstAmount || 0,
           netAmount,
           collectedAt: collectedAt ? new Date(collectedAt) : new Date(),
-          collectedBy: user.isImpersonating ? (user.originalAdminId || user.id) : user.id,
+          collectedBy: user.id,
           paymentMethod: paymentMethod || 'NEFT',
           transactionRef,
           bankName,

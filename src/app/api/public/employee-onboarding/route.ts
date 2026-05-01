@@ -10,10 +10,10 @@ const employeeOnboardingSchema = z.object({
   lastName: z.string().max(100).trim().optional(),
   phone: z.string().min(10).max(20).trim(),
   email: z.string().email().max(255).toLowerCase().trim(),
-  department: z.enum(['WEB', 'SOCIAL', 'ADS', 'SEO', 'HR', 'ACCOUNTS', 'SALES', 'OPERATIONS']),
-  employeeType: z.enum(['FULL_TIME', 'PART_TIME', 'FREELANCER', 'INTERN']).default('FULL_TIME'),
+  department: z.string().min(1),
+  employeeType: z.string().default('FULL_TIME'),
   joiningDate: z.string().optional(),
-  role: z.enum(['EMPLOYEE', 'INTERN', 'FREELANCER']).default('EMPLOYEE'),
+  role: z.string().default('EMPLOYEE'),
   // Profile data
   profileData: z.object({
     profilePicture: z.string().optional(),
@@ -38,6 +38,84 @@ const employeeOnboardingSchema = z.object({
   aiTools: z.string().optional(),
   healthConditions: z.string().optional(),
 })
+
+// Public Employee Onboarding - GET to search for existing record
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const phone = searchParams.get('phone')
+    const email = searchParams.get('email')
+
+    if (!phone && !email) {
+      return NextResponse.json(
+        { error: 'Provide phone or email to search' },
+        { status: 400 }
+      )
+    }
+
+    const employee = await prisma.user.findFirst({
+      where: {
+        OR: [
+          phone ? { phone } : undefined,
+          email ? { email } : undefined,
+        ].filter(Boolean) as any,
+        deletedAt: null,
+      },
+      include: {
+        profile: true,
+      },
+    })
+
+    if (!employee) {
+      return NextResponse.json({ employee: null })
+    }
+
+    // Map database model to form data structure for frontend consumption
+    // Only return public/onboarding relevant data
+    return NextResponse.json({
+      employee: {
+        employeeName: `${employee.firstName} ${employee.lastName || ''}`.trim(),
+        department: employee.department,
+        role: employee.role,
+        employeeType: employee.employeeType.toLowerCase().replace('_', '-'),
+        languagesKnown: employee.languages?.split(', ') || [],
+        aiToolsKnown: employee.aiTools?.split(', ') || [],
+        dateOfBirth: employee.dateOfBirth ? employee.dateOfBirth.toISOString().split('T')[0] : '',
+        joiningDate: employee.joiningDate.toISOString().split('T')[0],
+        personalPhone: employee.phone,
+        email: employee.email,
+        bloodGroup: employee.bloodGroup || '',
+        livingSituation: employee.profile?.livingSituation || '',
+        currentAddress: employee.address || '',
+        parentsAddress: '', // Not stored in a single field
+        fatherPhone: employee.profile?.parentsPhone1 || '',
+        motherPhone: employee.profile?.parentsPhone2 || '',
+        profilePictureLink: employee.profile?.profilePicture || '',
+        documentsLink: employee.profile?.panCard || employee.profile?.aadhaar || '',
+        educationCertificatesLink: employee.profile?.educationCertUrl || '',
+        distanceFromOffice: employee.profile?.distanceFromOffice || '',
+        linkedinProfile: employee.profile?.linkedIn || '',
+        githubPortfolio: '', // Not in schema
+        favoriteFood: employee.profile?.favoriteFood || '',
+        healthConditions: employee.healthConditions || '',
+        hobbiesInterests: '', // Not in schema
+        accountHolderName: employee.profile?.emergencyContactName || '', // Close enough for placeholder
+        bankName: '',
+        accountNumber: '',
+        ifscCode: '',
+        emergencyContactName: employee.profile?.emergencyContactName || '',
+        emergencyContactPhone: employee.profile?.emergencyContactPhone || '',
+        emergencyRelationship: '',
+      }
+    })
+  } catch (error) {
+    console.error('Failed to search employee:', error)
+    return NextResponse.json(
+      { error: 'Failed to search for employee record' },
+      { status: 500 }
+    )
+  }
+}
 
 // Public Employee Onboarding submission - no authentication required
 export async function POST(request: NextRequest) {
@@ -64,6 +142,11 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Normalize select fields to match internal standards if they exist
+    if (body.department) body.department = String(body.department).toUpperCase().trim()
+    if (body.employeeType) body.employeeType = String(body.employeeType).toUpperCase().replace('-', '_').trim()
+    if (body.role) body.role = String(body.role).toUpperCase().trim()
+
     // Validate input with Zod
     const validation = employeeOnboardingSchema.safeParse(body)
     if (!validation.success) {
@@ -87,8 +170,10 @@ export async function POST(request: NextRequest) {
     })
 
     if (existingUser) {
+      const matchEmail = existingUser.email === data.email
+      const field = matchEmail ? 'email address' : 'phone number'
       return NextResponse.json(
-        { error: 'An account with this email or phone number already exists. Please contact HR.' },
+        { error: `An account with this ${field} already exists. If you want to update your details, please use the "Search existing record" option or contact HR.` },
         { status: 409 }
       )
     }

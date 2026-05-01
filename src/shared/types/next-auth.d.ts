@@ -25,11 +25,6 @@ declare module "next-auth" {
       profilePicture?: string | null;
       // Custom roles
       customRoles?: CustomRoleData[];
-      // Impersonation fields
-      isImpersonating?: boolean;
-      originalAdminId?: string;
-      originalRole?: string;
-      impersonationSessionId?: string;
     } & DefaultSession["user"];
   }
 
@@ -61,16 +56,5 @@ declare module "next-auth/jwt" {
     profilePicture?: string | null;
     // Custom roles
     customRoles?: CustomRoleData[];
-    // Impersonation fields
-    originalId?: string;
-    impersonating?: boolean;
-    impersonatedUser?: {
-      id: string;
-      empId: string;
-      firstName: string;
-      lastName: string | null;
-      role: string;
-      department: string;
-    };
   }
 }

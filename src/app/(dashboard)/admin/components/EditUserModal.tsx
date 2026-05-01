@@ -1,116 +1,272 @@
+'use client'
+
+import { useState } from 'react'
 import { User, ROLES, DEPARTMENTS, STATUSES } from './types'
 
 interface EditUserModalProps {
   editingUser: User
   onEditingUserChange: (user: User | null) => void
-  onSave: () => void
+  onSave: (data: { firstName: string; lastName: string | null; email: string | null; phone: string; role: string; department: string; employeeType: string; status: string }) => void
   saving: boolean
 }
 
+const EMPLOYEE_TYPES = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN', 'FREELANCER']
+
+
 export default function EditUserModal({ editingUser, onEditingUserChange, onSave, saving }: EditUserModalProps) {
+  const [firstName, setFirstName] = useState(editingUser.firstName)
+  const [lastName, setLastName] = useState(editingUser.lastName ?? '')
+  const [email, setEmail] = useState(editingUser.email ?? '')
+  const [phone, setPhone] = useState(editingUser.phone)
+  const [role, setRole] = useState(editingUser.role)
+  const [department, setDepartment] = useState(editingUser.department)
+  const [employeeType, setEmployeeType] = useState(editingUser.employeeType)
+  const [status, setStatus] = useState(editingUser.status)
+
+  const handleSubmit = () => {
+    onSave({
+      firstName,
+      lastName: lastName || null,
+      email: email || null,
+      phone,
+      role,
+      department,
+      employeeType,
+      status,
+    })
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="glass-card rounded-xl shadow-none w-full max-w-lg mx-4">
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <h3 className="font-semibold text-white">Edit User</h3>
-          <button onClick={() => onEditingUserChange(null)} className="text-slate-400 hover:text-slate-300">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50
+    }}>
+      <div style={{
+        backgroundColor: '#1e293b',
+        borderRadius: '12px',
+        padding: '24px',
+        width: '100%',
+        maxWidth: '32rem',
+        margin: '16px',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
+        }}>
+          <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Edit User</h2>
+          <button
+            onClick={() => onEditingUserChange(null)}
+            style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <div className="p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">First Name</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>First Name</label>
               <input
                 type="text"
-                value={editingUser.firstName}
-                onChange={(e) => onEditingUserChange({ ...editingUser, firstName: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Last Name</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Last Name</label>
               <input
                 type="text"
-                value={editingUser.lastName || ''}
-                onChange={(e) => onEditingUserChange({ ...editingUser, lastName: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               />
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Email</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Email</label>
             <input
               type="email"
-              value={editingUser.email || ''}
-              onChange={(e) => onEditingUserChange({ ...editingUser, email: e.target.value })}
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Phone</label>
+            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Phone</label>
             <input
               type="tel"
-              value={editingUser.phone}
-              onChange={(e) => onEditingUserChange({ ...editingUser, phone: e.target.value })}
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                backgroundColor: '#334155',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                color: 'white',
+                fontSize: '14px'
+              }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Role</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Role</label>
               <select
-                value={editingUser.role}
-                onChange={(e) => onEditingUserChange({ ...editingUser, role: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-                style={{ colorScheme: 'dark' }}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               >
-                {ROLES.map(role => (
-                  <option key={role} value={role} className="bg-slate-800 text-white">{role}</option>
+                {ROLES.map(r => (
+                  <option key={r} value={r}>{r.replace(/_/g, ' ')}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1">Department</label>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Department</label>
               <select
-                value={editingUser.department}
-                onChange={(e) => onEditingUserChange({ ...editingUser, department: e.target.value })}
-                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-                style={{ colorScheme: 'dark' }}
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
               >
-                {DEPARTMENTS.map(dept => (
-                  <option key={dept} value={dept} className="bg-slate-800 text-white">{dept}</option>
+                {DEPARTMENTS.map(d => (
+                  <option key={d} value={d}>{d}</option>
                 ))}
               </select>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-200 mb-1">Status</label>
-            <select
-              value={editingUser.status}
-              onChange={(e) => onEditingUserChange({ ...editingUser, status: e.target.value })}
-              className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white glass-card"
-              style={{ colorScheme: 'dark' }}
-            >
-              {STATUSES.map(status => (
-                <option key={status} value={status} className="bg-slate-800 text-white">{status}</option>
-              ))}
-            </select>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Employee Type</label>
+              <select
+                value={employeeType}
+                onChange={(e) => setEmployeeType(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {EMPLOYEE_TYPES.map(t => (
+                  <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: '#334155',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  fontSize: '14px'
+                }}
+              >
+                {STATUSES.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-        <div className="p-4 border-t border-white/10 flex items-center justify-end gap-3">
+
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '12px',
+          marginTop: '24px',
+          paddingTop: '16px',
+          borderTop: '1px solid rgba(255,255,255,0.1)'
+        }}>
           <button
             onClick={() => onEditingUserChange(null)}
-            className="px-4 py-2 text-slate-300 hover:text-white"
+            style={{
+              padding: '8px 16px',
+              color: '#cbd5e1',
+              fontSize: '14px',
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none'
+            }}
           >
             Cancel
           </button>
           <button
-            onClick={onSave}
+            onClick={handleSubmit}
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontSize: '14px',
+              borderRadius: '8px',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.5 : 1,
+              border: 'none'
+            }}
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>

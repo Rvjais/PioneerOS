@@ -7,12 +7,7 @@ export default async function ApiManagementPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  // Check role - handle impersonation: use original role if impersonating
-  const roleToCheck = session.user.isImpersonating && session.user.originalRole
-    ? session.user.originalRole
-    : session.user.role
-
-  if (roleToCheck !== 'SUPER_ADMIN') {
+  if (session.user.role !== 'SUPER_ADMIN') {
     redirect('/')
   }
 

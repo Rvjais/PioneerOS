@@ -1,3 +1,5 @@
+'use client'
+
 import { User, ROLES, STATUSES, roleColors, statusColors, formatDate } from './types'
 
 interface UsersTabProps {
@@ -17,7 +19,6 @@ interface UsersTabProps {
   onBulkAction: () => void
   onShowAddUser: () => void
   onEditUser: (user: User) => void
-  onImpersonate: (userId: string, userName: string) => void
 }
 
 export default function UsersTab({
@@ -37,7 +38,6 @@ export default function UsersTab({
   onBulkAction,
   onShowAddUser,
   onEditUser,
-  onImpersonate,
 }: UsersTabProps) {
   return (
     <div className="space-y-4">
@@ -191,7 +191,14 @@ export default function UsersTab({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <button
-                        onClick={() => onEditUser(user)}
+                        onClick={() => {
+                          try {
+                            console.log('UsersTab: Edit button clicked for user:', user.id, user.firstName)
+                            onEditUser(user)
+                          } catch (error) {
+                            console.error('UsersTab: Error in edit handler:', error)
+                          }
+                        }}
                         className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded"
                         title="Edit"
                       >
@@ -199,18 +206,20 @@ export default function UsersTab({
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                       </button>
-                      {user.role !== 'SUPER_ADMIN' && (
-                        <button
-                          onClick={() => onImpersonate(user.id, `${user.firstName} ${user.lastName || ''}`)}
-                          className="p-1.5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 rounded"
-                          title="Impersonate"
+                      <button
+                          onClick={() => {
+                            const email = prompt('Enter email to send magic link:')
+                            if (email) {
+                              window.dispatchEvent(new CustomEvent('generate-magic-link', { detail: { userId: user.id, email } }))
+                            }
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 rounded"
+                          title="Send Magic Link"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                           </svg>
                         </button>
-                      )}
                     </div>
                   </td>
                 </tr>

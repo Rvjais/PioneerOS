@@ -514,8 +514,6 @@
   "/api/admin/entities/route": "app/api/admin/entities/route.js",
   "/api/admin/fix-employee-ids/route": "app/api/admin/fix-employee-ids/route.js",
   "/api/admin/generate-magic-link/route": "app/api/admin/generate-magic-link/route.js",
-  "/api/admin/impersonate-client/route": "app/api/admin/impersonate-client/route.js",
-  "/api/admin/impersonate/route": "app/api/admin/impersonate/route.js",
   "/api/admin/oauth-connections/[id]/refresh/route": "app/api/admin/oauth-connections/[id]/refresh/route.js",
   "/api/admin/oauth-connections/[id]/revoke/route": "app/api/admin/oauth-connections/[id]/revoke/route.js",
   "/api/admin/oauth-connections/[id]/route": "app/api/admin/oauth-connections/[id]/route.js",

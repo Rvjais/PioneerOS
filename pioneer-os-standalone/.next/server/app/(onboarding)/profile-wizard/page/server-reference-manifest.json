@@ -1,6 +1,6 @@
 {
   "node": {
-    "60c2632beb8780146834496ceb2c6ade04dc03c34d": {
+    "6053db16e186fe0ee43c3a32d646ce01ef1006c874": {
       "workers": {
         "app/(onboarding)/profile-wizard/page": {
           "moduleId": 40672,
@@ -12,7 +12,7 @@
       "exportedName": "saveWizardStep",
       "filename": "src/app/(onboarding)/profile-wizard/actions.ts"
     },
-    "4047567ad130d8ca6382ce84dc1398ee4b8698f9a4": {
+    "402de116d3bb46cc1e5a23fede53bd51f22a04ace0": {
       "workers": {
         "app/(onboarding)/profile-wizard/page": {
           "moduleId": 40672,

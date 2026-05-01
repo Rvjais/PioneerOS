@@ -17,13 +17,13 @@ const UserPatchSchema = z.object({
 })
 
 // GET - Get user details
-export const GET = withAuth(async (req, { user, params: routeParams }) => {
+export const GET = withAuth(async (req, { user, params }) => {
   try {
     if (!['SUPER_ADMIN', 'MANAGER'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { userId } = await routeParams!
+    const { userId } = await params
     const dbUser = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -52,13 +52,13 @@ export const GET = withAuth(async (req, { user, params: routeParams }) => {
 })
 
 // PATCH - Update user
-export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
+export const PATCH = withAuth(async (req, { user, params }) => {
   try {
     if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Unauthorized. Only Super Admins can edit users.' }, { status: 401 })
     }
 
-    const { userId } = await routeParams!
+    const { userId } = await params
     const body = await req.json()
 
     // Validate input
@@ -136,13 +136,13 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
 })
 
 // DELETE - Deactivate user (soft delete)
-export const DELETE = withAuth(async (req, { user, params: routeParams }) => {
+export const DELETE = withAuth(async (req, { user, params }) => {
   try {
     if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { userId } = await routeParams!
+    const { userId } = (await params) as { userId: string }
 
     // Don't allow deleting yourself
     if (userId === user.id) {
@@ -157,7 +157,10 @@ export const DELETE = withAuth(async (req, { user, params: routeParams }) => {
 
     const dbUser = await prisma.user.update({
       where: { id: userId },
-      data: { status: 'INACTIVE' },
+      data: { 
+        status: 'INACTIVE',
+        deletedAt: new Date()
+      },
     })
 
     // Audit log

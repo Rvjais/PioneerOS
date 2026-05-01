@@ -93,19 +93,34 @@ export const statusColors: Record<string, string> = {
   INACTIVE: 'bg-slate-100 text-slate-500',
 }
 
-export function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+export function formatDate(dateStr: string | Date | null | undefined): string {
+  if (!dateStr) return '-'
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return '-'
+    const day = String(d.getUTCDate()).padStart(2, '0')
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const month = months[d.getUTCMonth()]
+    const year = d.getUTCFullYear()
+    return `${day} ${month} ${year}`
+  } catch {
+    return '-'
+  }
 }
 
-export function formatTime(dateStr: string) {
-  return new Date(dateStr).toLocaleString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+export function formatTime(dateStr: string | Date | null | undefined): string {
+  if (!dateStr) return '-'
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return '-'
+    const day = String(d.getUTCDate()).padStart(2, '0')
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    const month = months[d.getUTCMonth()]
+    const hours = String(d.getUTCHours()).padStart(2, '0')
+    const minutes = String(d.getUTCMinutes()).padStart(2, '0')
+    return `${day} ${month} ${hours}:${minutes}`
+  } catch {
+    return '-'
+  }
 }
+

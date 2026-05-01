@@ -20,22 +20,12 @@ interface Notification {
   createdAt: string
 }
 
-interface UserForImpersonation {
-  id: string
-  empId: string
-  firstName: string
-  lastName: string | null
-  role: string
-  department: string
-  profile?: { profilePicture?: string | null } | null
-}
-
 interface DashboardHeaderProps {
   showHamburger?: boolean
 }
 
 export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) {
-  const { data: session, update: updateSession } = useSession()
+  const { data: session } = useSession()
   const router = useRouter()
   const { toggle: toggleMobileNav } = useMobileNav()
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -44,99 +34,12 @@ export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) 
   const [searchQuery, setSearchQuery] = useState('')
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
-  const [endingImpersonation, setEndingImpersonation] = useState(false)
-  const [showImpersonateDropdown, setShowImpersonateDropdown] = useState(false)
-  const [users, setUsers] = useState<UserForImpersonation[]>([])
-  const [userSearch, setUserSearch] = useState('')
-  const [impersonating, setImpersonating] = useState(false)
   const [searchResults, setSearchResults] = useState<{
     clients: { id: string; name: string; tier: string }[]
     employees: { id: string; firstName: string; lastName: string | null; empId: string; department: string; profile?: { profilePicture?: string | null } | null }[]
     tasks: { id: string; title: string; status: string }[]
   }>({ clients: [], employees: [], tasks: [] })
   const [searchLoading, setSearchLoading] = useState(false)
-
-  // Check if currently impersonating from session
-  const isImpersonating = session?.user?.isImpersonating || false
-
-  // End impersonation
-  const endImpersonation = async () => {
-    setEndingImpersonation(true)
-    try {
-      // Get session ID from NextAuth session (not localStorage, to prevent XSS exposure)
-      const sessionId = session?.user?.impersonationSessionId || null
-
-      // Call API to end impersonation (for logging)
-      await fetch(`/api/admin/impersonate?sessionId=${sessionId}`, { method: 'DELETE' })
-
-      // Update NextAuth session to clear impersonation
-      await updateSession({
-        impersonating: false,
-        impersonatedUser: undefined,
-      })
-
-      // Redirect to admin dashboard
-      router.push('/admin/users')
-      router.refresh()
-    } catch (error) {
-      // Sentry captures this error
-    } finally {
-      setEndingImpersonation(false)
-    }
-  }
-
-  // Check if user is super admin (considering impersonation)
-  const isSuperAdmin = !isImpersonating && session?.user?.role === 'SUPER_ADMIN'
-
-  // Fetch users for impersonation dropdown
-  const fetchUsersForImpersonation = useCallback(async () => {
-    if (!isSuperAdmin) return
-    try {
-      const res = await fetch('/api/users?active=true')
-      if (res.ok) {
-        const data = await res.json()
-        setUsers(data.filter((u: UserForImpersonation) => u.id !== session?.user?.id))
-      }
-    } catch (error) {
-      // Sentry captures this error
-    }
-  }, [isSuperAdmin, session?.user?.id])
-
-  // Start impersonation
-  const startImpersonation = async (targetUserId: string) => {
-    setImpersonating(true)
-    try {
-      const res = await fetch('/api/admin/impersonate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetUserId, reason: 'Quick switch from header' }),
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-        // Update NextAuth session (session ID stored server-side, not in localStorage)
-        await updateSession({
-          impersonating: true,
-          impersonatedUser: data.impersonatedUser,
-          impersonationSessionId: data.sessionId,
-        })
-
-        setShowImpersonateDropdown(false)
-        router.refresh()
-      }
-    } catch (error) {
-      // Sentry captures this error
-    } finally {
-      setImpersonating(false)
-    }
-  }
-
-  // Load users when dropdown opens
-  useEffect(() => {
-    if (showImpersonateDropdown && users.length === 0) {
-      fetchUsersForImpersonation()
-    }
-  }, [showImpersonateDropdown, users.length, fetchUsersForImpersonation])
 
   // Fetch notifications
   const fetchNotifications = useCallback(async () => {
@@ -190,19 +93,6 @@ export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
-
-  // Close dropdowns on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      // Close impersonate dropdown if clicking outside
-      if (showImpersonateDropdown && !target.closest('[data-impersonate-dropdown]')) {
-        setShowImpersonateDropdown(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [showImpersonateDropdown])
 
   // Live search as user types
   useEffect(() => {
@@ -403,91 +293,6 @@ export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) 
               )}
             </div>
 
-            {/* Impersonation Dropdown - SUPER_ADMIN only */}
-            {isSuperAdmin && (
-              <div className="relative" data-impersonate-dropdown>
-                <button
-                  onClick={() => setShowImpersonateDropdown(!showImpersonateDropdown)}
-                  className={`p-2 rounded-xl transition-all ${showImpersonateDropdown ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100'}`}
-                  title="View as another user"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </button>
-
-                {showImpersonateDropdown && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setShowImpersonateDropdown(false)} />
-                    <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-lg border border-slate-200 z-20 overflow-hidden">
-                      <div className="px-4 py-3 border-b border-slate-200 bg-amber-500/10">
-                        <h3 className="font-semibold text-amber-400 text-sm">View as User</h3>
-                        <p className="text-xs text-slate-400 mt-0.5">Select a team member to view their perspective</p>
-                      </div>
-                      <div className="p-2 border-b border-slate-200">
-                        <input
-                          type="text"
-                          placeholder="Search tasks, clients, team..."
-                          value={userSearch}
-                          onChange={(e) => setUserSearch(e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                        />
-                      </div>
-                      <div className="max-h-[300px] overflow-y-auto">
-                        {users.length === 0 ? (
-                          <div className="px-4 py-8 text-center text-slate-400 text-sm">
-                            Loading team members...
-                          </div>
-                        ) : (
-                          users
-                            .filter(u =>
-                              `${u.firstName} ${u.lastName || ''}`.toLowerCase().includes(userSearch.toLowerCase()) ||
-                              u.empId.toLowerCase().includes(userSearch.toLowerCase())
-                            )
-                            .slice(0, 10)
-                            .map((user) => (
-                              <button
-                                key={user.id}
-                                onClick={() => startImpersonation(user.id)}
-                                disabled={impersonating}
-                                className="w-full px-4 py-3 text-left hover:bg-slate-100 transition-colors flex items-center gap-3 disabled:opacity-50"
-                              >
-                                <UserAvatar user={{ id: user.id, firstName: user.firstName, lastName: user.lastName, department: user.department, role: user.role, profile: user.profile }} size="sm" showPreview={false} />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-slate-900 truncate">
-                                    {user.firstName} {user.lastName || ''}
-                                  </p>
-                                  <p className="text-xs text-slate-400">
-                                    {user.empId} - {user.department}
-                                  </p>
-                                </div>
-                                <span className="text-[10px] px-2 py-0.5 bg-slate-100 rounded text-slate-400 uppercase">
-                                  {formatRoleLabel(user.role)}
-                                </span>
-                              </button>
-                            ))
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Exit Preview Button - shown when impersonating */}
-            {isImpersonating && (
-              <button
-                onClick={endImpersonation}
-                disabled={endingImpersonation}
-                className="flex items-center gap-2 px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-all disabled:opacity-50"
-                title="Exit Preview Mode"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Exit Preview
-              </button>
-            )}
 
             {/* User Menu */}
             {session?.user && (

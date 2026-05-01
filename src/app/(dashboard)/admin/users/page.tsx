@@ -7,7 +7,8 @@ import { UserManagementClient } from './UserManagementClient'
 import { Suspense } from 'react'
 
 async function getUsers(departmentFilter?: string) {
-  const where = departmentFilter ? { department: departmentFilter } : {}
+  const where: any = { deletedAt: null }
+  if (departmentFilter) where.department = departmentFilter
   const users = await prisma.user.findMany({
     where,
     select: {

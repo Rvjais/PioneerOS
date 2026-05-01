@@ -7,10 +7,7 @@ import { prisma } from '@/server/db/prisma'
 async function isSuperAdmin(): Promise<boolean> {
   const session = await getServerSession(authOptions)
   if (!session) return false
-  const currentRole = (session.user as any).isImpersonating
-    ? (session.user as any).originalRole
-    : session.user.role
-  return currentRole === 'SUPER_ADMIN'
+  return session.user.role === 'SUPER_ADMIN'
 }
 
 // POST - Set viewAsUserId cookie (admin viewing a user's dashboard)
@@ -68,9 +65,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ viewingAs: false })
   }
 
-  const currentRole = (session.user as any).isImpersonating
-    ? (session.user as any).originalRole
-    : session.user.role
+  const currentRole = session.user.role
   if (currentRole !== 'SUPER_ADMIN') {
     return NextResponse.json({ viewingAs: false })
   }

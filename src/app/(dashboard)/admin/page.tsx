@@ -172,21 +172,8 @@ export default async function AdminPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  // Check if user is impersonating - if so, check original admin role
-  const isImpersonating = session.user.isImpersonating
-  const roleToCheck = isImpersonating
-    ? session.user.originalRole
-    : session.user.role
-
-  // Also verify from database as fallback
-  const userIdToCheck = isImpersonating ? session.user.originalAdminId : session.user.id
-  const user = userIdToCheck ? await prisma.user.findUnique({
-    where: { id: userIdToCheck },
-    select: { role: true },
-  }) : null
-
-  // Allow access if session role or database role is SUPER_ADMIN
-  const isSuperAdmin = roleToCheck === 'SUPER_ADMIN' || user?.role === 'SUPER_ADMIN'
+  // Allow access if user is SUPER_ADMIN
+  const isSuperAdmin = session.user.role === 'SUPER_ADMIN'
 
   if (!isSuperAdmin) {
     return (

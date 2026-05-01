@@ -1,4 +1,6 @@
-import { Client, ClientUser, formatTime } from './types'
+'use client'
+
+import { Client, formatTime } from './types'
 
 interface ClientsTabProps {
   clients: Client[]
@@ -7,7 +9,6 @@ interface ClientsTabProps {
   onClientSearchChange: (search: string) => void
   showOnlyWithPortal: boolean
   onShowOnlyWithPortalChange: (show: boolean) => void
-  onShowImpersonateModal: (data: { clientUser: ClientUser; clientName: string }) => void
 }
 
 export default function ClientsTab({
@@ -17,7 +18,6 @@ export default function ClientsTab({
   onClientSearchChange,
   showOnlyWithPortal,
   onShowOnlyWithPortalChange,
-  onShowImpersonateModal,
 }: ClientsTabProps) {
   return (
     <div className="space-y-4">
@@ -141,22 +141,7 @@ export default function ClientsTab({
                               {cu.isActive ? 'Active' : 'Inactive'}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center justify-end gap-2">
-                              {cu.isActive && (
-                                <button
-                                  onClick={() => onShowImpersonateModal({ clientUser: cu, clientName: client.name })}
-                                  className="flex items-center gap-1 px-3 py-1.5 bg-purple-500/10 text-purple-400 text-xs font-medium rounded-lg hover:bg-purple-500/20 transition-colors"
-                                >
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                  </svg>
-                                  View as
-                                </button>
-                              )}
-                            </div>
-                          </td>
+                          <td className="px-4 py-3 text-slate-400 text-xs">-</td>
                         </tr>
                       ))}
                     </tbody>

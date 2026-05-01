@@ -514,8 +514,6 @@
   "/api/admin/entities/route": "/api/admin/entities",
   "/api/admin/fix-employee-ids/route": "/api/admin/fix-employee-ids",
   "/api/admin/generate-magic-link/route": "/api/admin/generate-magic-link",
-  "/api/admin/impersonate-client/route": "/api/admin/impersonate-client",
-  "/api/admin/impersonate/route": "/api/admin/impersonate",
   "/api/admin/oauth-connections/[id]/refresh/route": "/api/admin/oauth-connections/[id]/refresh",
   "/api/admin/oauth-connections/[id]/revoke/route": "/api/admin/oauth-connections/[id]/revoke",
   "/api/admin/oauth-connections/[id]/route": "/api/admin/oauth-connections/[id]",

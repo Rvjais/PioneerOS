@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import PageGuide from '@/client/components/ui/PageGuide'
 
-import { AdminStats, User, SystemSettings, Client, ClientUser } from './components/types'
+import { AdminStats, User, SystemSettings, Client } from './components/types'
 import OverviewTab from './components/OverviewTab'
 import UsersTab from './components/UsersTab'
 import ClientsTab from './components/ClientsTab'
@@ -14,7 +14,6 @@ import SecurityTab from './components/SecurityTab'
 import SettingsTab from './components/SettingsTab'
 import EditUserModal from './components/EditUserModal'
 import AddUserModal from './components/AddUserModal'
-import ImpersonateClientModal from './components/ImpersonateClientModal'
 
 interface Props {
   stats: AdminStats
@@ -47,9 +46,50 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
   })
   const [clientSearch, setClientSearch] = useState('')
   const [showOnlyWithPortal, setShowOnlyWithPortal] = useState(false)
-  const [impersonating, setImpersonating] = useState(false)
-  const [showImpersonateModal, setShowImpersonateModal] = useState<{ clientUser: ClientUser; clientName: string } | null>(null)
-  const [impersonateReason, setImpersonateReason] = useState('')
+  const [magicLinkEmail, setMagicLinkEmail] = useState('')
+  const [magicLinkUserId, setMagicLinkUserId] = useState<string | null>(null)
+  const [generatingLink, setGeneratingLink] = useState(false)
+
+  // Magic link generation handler
+  useEffect(() => {
+    const handleMagicLink = async (e: CustomEvent<{ userId: string; email: string }>) => {
+      setMagicLinkUserId(e.detail.userId)
+      setMagicLinkEmail(e.detail.email)
+    }
+    window.addEventListener('generate-magic-link', handleMagicLink as EventListener)
+    return () => window.removeEventListener('generate-magic-link', handleMagicLink as EventListener)
+  }, [])
+
+  const handleGenerateMagicLink = async () => {
+    if (!magicLinkUserId) return
+    setGeneratingLink(true)
+    try {
+      const res = await fetch('/api/admin/generate-magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: magicLinkUserId }),
+      })
+      const data = await res.json()
+      if (res.ok && data.token) {
+        const magicLink = `${window.location.origin}/auth/magic?token=${data.token}`
+        await navigator.clipboard.writeText(magicLink)
+        toast.success('Magic link copied! Share it with the user.')
+      } else {
+        toast.error(data.error || 'Failed to generate magic link')
+      }
+    } catch (error) {
+      toast.error('Failed to generate magic link')
+    } finally {
+      setGeneratingLink(false)
+      setMagicLinkUserId(null)
+      setMagicLinkEmail('')
+    }
+  }
+
+  const closeMagicLinkModal = () => {
+    setMagicLinkUserId(null)
+    setMagicLinkEmail('')
+  }
 
   // Filter users
   const filteredUsers = users.filter(user => {
@@ -72,31 +112,23 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
     return matchesSearch && matchesPortal
   })
 
-  const handleSaveUser = async () => {
+  const handleSaveUser = async (data: { firstName: string; lastName: string | null; email: string | null; phone: string; role: string; department: string; employeeType: string; status: string }) => {
     if (!editingUser) return
+    console.log('AdminDashboard: handleSaveUser called for user:', editingUser.id)
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: editingUser.firstName,
-          lastName: editingUser.lastName,
-          email: editingUser.email,
-          phone: editingUser.phone,
-          role: editingUser.role,
-          department: editingUser.department,
-          employeeType: editingUser.employeeType,
-          status: editingUser.status,
-        }),
+        body: JSON.stringify(data),
       })
       if (res.ok) {
         toast.success('User updated successfully')
         setEditingUser(null)
         router.refresh()
       } else {
-        const data = await res.json()
-        toast.error(data.error || 'Failed to save user')
+        const resData = await res.json()
+        toast.error(resData.error || 'Failed to save user')
       }
     } catch (error) {
       console.error('Failed to save user:', error)
@@ -197,53 +229,8 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
     }
   }
 
-  const handleImpersonate = async (userId: string, userName: string) => {
-    const reason = prompt(`Enter reason for impersonating ${userName}:`)
-    if (!reason) return
-
-    try {
-      const res = await fetch('/api/admin/impersonate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetUserId: userId, reason }),
-      })
-      if (res.ok) {
-        window.location.href = '/'
-      }
-    } catch (error) {
-      console.error('Failed to impersonate:', error)
-    }
-  }
-
-  const handleClientImpersonate = async () => {
-    if (!showImpersonateModal || !impersonateReason.trim()) return
-    setImpersonating(true)
-
-    try {
-      const res = await fetch('/api/admin/impersonate-client', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientUserId: showImpersonateModal.clientUser.id,
-          reason: impersonateReason,
-        }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        window.location.href = data.redirectUrl || '/client-portal/dashboard'
-      } else {
-        toast.error(data.error || 'Failed to impersonate client')
-      }
-    } catch (error) {
-      console.error('Failed to impersonate client:', error)
-      toast.error('Failed to impersonate client')
-    } finally {
-      setImpersonating(false)
-    }
-  }
-
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-6 pb-8" suppressHydrationWarning>
       <PageGuide
         pageKey="admin"
         title="Admin Panel"
@@ -321,7 +308,6 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
           onBulkAction={handleBulkAction}
           onShowAddUser={() => setShowAddUser(true)}
           onEditUser={setEditingUser}
-          onImpersonate={handleImpersonate}
         />
       )}
 
@@ -333,10 +319,6 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
           onClientSearchChange={setClientSearch}
           showOnlyWithPortal={showOnlyWithPortal}
           onShowOnlyWithPortalChange={setShowOnlyWithPortal}
-          onShowImpersonateModal={(data) => {
-            setShowImpersonateModal(data)
-            setImpersonateReason('')
-          }}
         />
       )}
 
@@ -355,12 +337,14 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
       {/* Modals */}
       {editingUser && (
         <EditUserModal
+          key={editingUser.id}
           editingUser={editingUser}
-          onEditingUserChange={setEditingUser}
+          onEditingUserChange={(user) => setEditingUser(user)}
           onSave={handleSaveUser}
           saving={saving}
         />
       )}
+
 
       {showAddUser && (
         <AddUserModal
@@ -372,16 +356,55 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
         />
       )}
 
-      {showImpersonateModal && (
-        <ImpersonateClientModal
-          clientUser={showImpersonateModal.clientUser}
-          clientName={showImpersonateModal.clientName}
-          impersonateReason={impersonateReason}
-          onReasonChange={setImpersonateReason}
-          onClose={() => setShowImpersonateModal(null)}
-          onImpersonate={handleClientImpersonate}
-          impersonating={impersonating}
-        />
+      {/* Magic Link Modal */}
+      {magicLinkUserId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-slate-900">Generate Magic Link</h3>
+              <button onClick={closeMagicLinkModal} className="text-slate-400 hover:text-slate-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+              <p className="text-sm text-amber-800">
+                This magic link will allow the user to log in without a password. The link expires in 24 hours.
+              </p>
+            </div>
+            <div className="mb-4">
+              <p className="text-sm text-slate-600 mb-2">Click below to generate and copy the magic link:</p>
+            </div>
+            <div className="flex items-center justify-end gap-3">
+              <button onClick={closeMagicLinkModal} className="px-4 py-2 text-slate-600 hover:text-slate-900">
+                Cancel
+              </button>
+              <button
+                onClick={handleGenerateMagicLink}
+                disabled={generatingLink}
+                className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 flex items-center gap-2"
+              >
+                {generatingLink ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Generate & Copy Link
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -227,13 +227,8 @@ export default async function AnalyticsPage() {
   // Role-based access: Leadership (SUPER_ADMIN, MANAGER, OPERATIONS_HEAD) can access analytics
   const session = await requirePageAuth(LEADERSHIP_ACCESS)
 
-  // Also allow OPERATIONS department users
-  const effectiveRole = (session.user.isImpersonating
-    ? session.user.originalRole
-    : session.user.role) as string || ''
   const userDepartment = (session.user.department as string) || ''
-
-  const hasAccess = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(effectiveRole) || userDepartment === 'OPERATIONS'
+  const hasAccess = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(session.user.role as string) || userDepartment === 'OPERATIONS'
 
   if (!hasAccess) {
     return (

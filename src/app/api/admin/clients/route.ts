@@ -2,7 +2,7 @@ import { prisma } from '@/server/db/prisma'
 import { NextResponse } from 'next/server'
 import { withAuth } from '@/server/auth/withAuth'
 
-// GET - List all clients with their portal users (for impersonation)
+// GET - List all clients with their portal users (for admin access)
 export const GET = withAuth(async (req, { user }) => {
   try {
     if (!user?.id) {

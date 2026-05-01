@@ -22,11 +22,7 @@ export default async function DepartmentsPage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  // Check if user is impersonating - if so, check original admin role
-  const isImpersonating = session.user.isImpersonating
-  const roleToCheck = isImpersonating ? session.user.originalRole : session.user.role
-
-  if (roleToCheck !== 'SUPER_ADMIN') redirect('/dashboard')
+  if (session.user.role !== 'SUPER_ADMIN') redirect('/dashboard')
 
   // Get user counts per department
   const deptCounts = await prisma.user.groupBy({

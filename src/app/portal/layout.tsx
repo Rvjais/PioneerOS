@@ -24,15 +24,6 @@ const navigation = [
   { name: 'My Account', href: '/portal/account', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
 ]
 
-interface ImpersonationData {
-  isImpersonating: boolean
-  adminId?: string
-  adminName?: string
-  clientUserId?: string
-  clientName?: string
-  startedAt?: string
-}
-
 interface ClientPortalData {
   logoUrl: string | null
   clientName: string | null
@@ -47,8 +38,6 @@ export default function ClientPortalLayout({
 }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [impersonation, setImpersonation] = useState<ImpersonationData | null>(null)
-  const [endingImpersonation, setEndingImpersonation] = useState(false)
   const [portalData, setPortalData] = useState<ClientPortalData | null>(null)
   const [signingOut, setSigningOut] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
@@ -56,22 +45,6 @@ export default function ClientPortalLayout({
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
-
-    // Check if currently being impersonated
-    const checkImpersonation = async () => {
-      try {
-        const res = await fetch('/api/admin/impersonate-client', { signal })
-        if (res.ok) {
-          const data = await res.json()
-          if (data.isImpersonating) {
-            setImpersonation(data)
-          }
-        }
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return
-        console.error('Failed to check impersonation status:', error)
-      }
-    }
 
     // Fetch portal data with abort signal
     const fetchPortalDataWithSignal = async () => {
@@ -106,7 +79,6 @@ export default function ClientPortalLayout({
       }
     }
 
-    checkImpersonation()
     fetchPortalDataWithSignal()
     fetchUnreadCount()
 
@@ -121,21 +93,6 @@ export default function ClientPortalLayout({
       window.removeEventListener('client-logo-updated', handleLogoUpdate as EventListener)
     }
   }, [])
-
-  const handleEndImpersonation = async () => {
-    setEndingImpersonation(true)
-    try {
-      const res = await fetch('/api/admin/impersonate-client', { method: 'DELETE' })
-      if (res.ok) {
-        const data = await res.json()
-        window.location.href = data.redirectUrl || '/admin'
-      }
-    } catch (error) {
-      console.error('Failed to end impersonation:', error)
-    } finally {
-      setEndingImpersonation(false)
-    }
-  }
 
   const handleSignOut = async () => {
     setSigningOut(true)
@@ -158,46 +115,6 @@ export default function ClientPortalLayout({
         Skip to main content
       </a>
 
-      {/* Impersonation Banner */}
-      {impersonation?.isImpersonating && (
-        <div role="alert" className="fixed top-0 left-0 right-0 bg-purple-600 text-white z-[60] px-4 py-2">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              <span className="text-sm">
-                <span className="font-semibold">{impersonation.adminName}</span> viewing as client: <span className="font-semibold">{impersonation.clientName}</span>
-              </span>
-            </div>
-            <button
-              onClick={handleEndImpersonation}
-              disabled={endingImpersonation}
-              aria-label="End impersonation session"
-              className="flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded text-sm font-medium transition-colors disabled:opacity-50"
-            >
-              {endingImpersonation ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Ending...
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  End Session
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -213,7 +130,7 @@ export default function ClientPortalLayout({
         aria-label="Portal navigation"
         className={`fixed inset-y-0 left-0 w-64 glass-card border-r border-white/10 z-50 transform transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${impersonation?.isImpersonating ? 'top-10' : ''}`}
+        }`}
       >
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
@@ -292,9 +209,9 @@ export default function ClientPortalLayout({
       </aside>
 
       {/* Main Content */}
-      <div className={`lg:pl-64 ${impersonation?.isImpersonating ? 'pt-10' : ''}`}>
+      <div className="lg:pl-64">
         {/* Header */}
-        <header className={`sticky ${impersonation?.isImpersonating ? 'top-10' : 'top-0'} glass-card border-b border-white/10 z-30`}>
+        <header className={`sticky  glass-card border-b border-white/10 z-30`}>
           <div className="flex items-center justify-between px-6 py-4">
             <button
               onClick={() => setSidebarOpen(true)}

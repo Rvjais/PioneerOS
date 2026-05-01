@@ -1,0 +1,366 @@
+/**
+ * PioneerOS — Atrium theme
+ * Drop-in replacement for src/app/globals.css
+ *
+ * Strategy: keep all the legacy class-name overrides at the bottom (so old
+ * dark-on-dark screens still re-skin), but introduce a fresh token system at
+ * the top driven by CSS variables. New components should use the tokens
+ * (var(--bg), var(--ink), etc) or the Tailwind helpers below.
+ */
+
+@import "tailwindcss";
+
+/* ─── Atrium tokens ──────────────────────────────────────────────── */
+:root {
+  /* Surface */
+  --bg: #faf8f5;            /* Linen — page background */
+  --bg-elev: #ffffff;       /* Paper — cards, panels */
+  --bg-sunken: #f3efe8;     /* Sunken — input fills, table headers */
+  --bg-inverse: #2a251f;    /* Cocoa — inverse surface (dark cards, tooltips) */
+
+  /* Ink */
+  --ink: #2a251f;           /* Cocoa — primary text */
+  --ink-2: #5c5448;         /* Body text */
+  --ink-3: #8a8175;         /* Muted, captions */
+  --ink-4: #b3a99a;         /* Disabled, hairline labels */
+  --ink-inverse: #faf8f5;   /* Text on inverse surfaces */
+
+  /* Lines */
+  --line: #ece7df;          /* Default border / divider */
+  --line-strong: #d8d0c2;   /* Stronger border for emphasis */
+
+  /* Brand accent */
+  --accent: #c96442;        /* Ember — primary action */
+  --accent-hover: #b5563a;
+  --accent-active: #9c4a32;
+  --accent-soft: #fbeee8;   /* Tint for badges, soft buttons */
+  --accent-ink: #6e2f1c;    /* Readable text on --accent-soft */
+
+  /* Semantic */
+  --success: #5a6b4a;
+  --success-soft: #eef2e8;
+  --warning: #c08a2e;
+  --warning-soft: #faf1dd;
+  --danger: #b54838;
+  --danger-soft: #f9e7e3;
+  --info: #4a6b8a;
+  --info-soft: #e7eef5;
+
+  /* Type */
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-pill: 999px;
+
+  /* Shadows — Atrium uses gentle, warm-tinted elevation */
+  --shadow-1: 0 1px 2px rgba(42, 37, 31, 0.05), 0 0 0 1px rgba(42, 37, 31, 0.04);
+  --shadow-2: 0 2px 6px rgba(42, 37, 31, 0.06), 0 0 0 1px rgba(42, 37, 31, 0.04);
+  --shadow-3: 0 8px 24px rgba(42, 37, 31, 0.08), 0 0 0 1px rgba(42, 37, 31, 0.04);
+  --shadow-pop: 0 16px 48px rgba(42, 37, 31, 0.14), 0 2px 6px rgba(42, 37, 31, 0.06);
+
+  /* Legacy aliases — keep for backward compat with old code */
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --panel-bg: var(--bg-elev);
+  --panel-border: var(--line);
+  --brand-primary: var(--accent);
+  --brand-secondary: var(--ink-2);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────── */
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11", "cv03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+  overflow-x: hidden;
+}
+
+select { color-scheme: light; }
+option { background: var(--bg-elev); color: var(--ink); }
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+::selection { background: var(--accent-soft); color: var(--accent-ink); }
+
+/* ─── Atrium component classes ──────────────────────────────────── */
+.atr-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+}
+.atr-card:hover { box-shadow: var(--shadow-2); border-color: var(--line-strong); }
+
+.atr-panel {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.atr-input {
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.atr-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 100, 66, 0.18);
+}
+.atr-input::placeholder { color: var(--ink-4); }
+
+.atr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, transform .05s;
+}
+.atr-btn:hover { background: var(--bg-sunken); border-color: var(--line-strong); }
+.atr-btn:active { transform: translateY(0.5px); }
+
+.atr-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.atr-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.atr-btn-primary:active { background: var(--accent-active); border-color: var(--accent-active); }
+
+.atr-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-2);
+}
+.atr-btn-ghost:hover { background: var(--bg-sunken); color: var(--ink); }
+
+.atr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  background: var(--bg-sunken);
+  color: var(--ink-2);
+}
+.atr-badge-accent { background: var(--accent-soft); color: var(--accent-ink); }
+.atr-badge-success { background: var(--success-soft); color: var(--success); }
+.atr-badge-warn { background: var(--warning-soft); color: var(--warning); }
+.atr-badge-danger { background: var(--danger-soft); color: var(--danger); }
+.atr-badge-info { background: var(--info-soft); color: var(--info); }
+
+.atr-kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+}
+
+.atr-mono { font-family: var(--font-mono); font-feature-settings: "ss01"; }
+
+.atr-display { font-size: 30px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.15; }
+.atr-h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+.atr-h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; }
+.atr-caption { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+/* ─── Animations ────────────────────────────────────────────────── */
+@keyframes atr-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes atr-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+.animate-fade-in-up { animation: atr-fade-in .35s cubic-bezier(.16,1,.3,1) forwards; }
+.animate-fade-in { animation: atr-fade-in .35s ease-out forwards; }
+
+/* Legacy keyframes preserved (used in onboarding/auth pages) */
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.animate-float { animation: float 6s ease-in-out infinite; }
+@keyframes pulse-glow { 0%{box-shadow:0 0 0 0 rgba(201,100,66,.4);} 70%{box-shadow:0 0 0 15px rgba(201,100,66,0);} 100%{box-shadow:0 0 0 0 rgba(201,100,66,0);} }
+.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+@keyframes progress { from { width: 0; } }
+.animate-progress { animation: progress 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* ─── LEGACY OVERRIDES ──────────────────────────────────────────── */
+/* The codebase has lots of old dark-themed Tailwind classes. These rules
+   re-skin them to Atrium so existing screens get the new look without
+   touching every component file.                                      */
+
+.bg-\[\#0B0E14\], .bg-\[\#0b0e14\],
+.bg-\[\#04080F\], .bg-\[\#0F172A\], .bg-\[\#0f172a\],
+.bg-\[\#111827\] { background-color: var(--bg) !important; }
+.bg-\[\#1e293b\] { background-color: var(--bg-elev) !important; box-shadow: var(--shadow-1) !important; }
+
+/* Translucent dark overlays → linen tints */
+.bg-slate-900\/40, .bg-slate-900\/50, .bg-slate-900\/60, .bg-slate-900\/80,
+.bg-slate-800\/40, .bg-slate-800\/50, .bg-slate-800\/60 {
+  background-color: rgba(243, 239, 232, 0.7) !important;
+}
+
+.bg-black\/20, .bg-black\/30 { background-color: rgba(250, 248, 245, 0.9) !important; }
+.bg-black\/40, .bg-black\/50, .bg-black\/60 { background-color: rgba(42, 37, 31, 0.32) !important; }
+.bg-white\/5, .bg-white\/10, .bg-white\/20, .bg-white\/30, .bg-white\/40 {
+  background-color: var(--bg-sunken) !important;
+}
+
+/* But keep white tints inside legitimately dark surfaces */
+.bg-black .bg-white\/5, .bg-slate-900 .bg-white\/5, .text-white .bg-white\/5,
+[class*="bg-gradient"] .bg-white\/5 { background-color: rgba(255,255,255,0.05) !important; }
+.bg-black .bg-white\/10, .bg-slate-900 .bg-white\/10, .text-white .bg-white\/10,
+[class*="bg-gradient"] .bg-white\/10 { background-color: rgba(255,255,255,0.1) !important; }
+.bg-black .bg-white\/20, .bg-slate-900 .bg-white\/20, .text-white .bg-white\/20,
+[class*="bg-gradient"] .bg-white\/20 { background-color: rgba(255,255,255,0.2) !important; }
+
+/* Tinted pills → Atrium semantic tints */
+[class*="bg-blue-500/10"], [class*="bg-blue-600/20"], [class*="bg-blue-500/20"] { background-color: var(--info-soft) !important; }
+[class*="bg-green-500/10"], [class*="bg-green-600/20"], [class*="bg-emerald-500/10"] { background-color: var(--success-soft) !important; }
+[class*="bg-red-500/10"], [class*="bg-red-600/20"] { background-color: var(--danger-soft) !important; }
+[class*="bg-purple-500/10"], [class*="bg-purple-600/20"], [class*="bg-violet-500/10"] { background-color: var(--accent-soft) !important; }
+[class*="bg-amber-500/10"], [class*="bg-orange-500/10"] { background-color: var(--warning-soft) !important; }
+
+/* Borders */
+.border-white\/5, .border-white\/10, .border-white\/20 { border-color: var(--line) !important; }
+.border-slate-700, .border-slate-700\/50, .border-slate-600 { border-color: var(--line-strong) !important; }
+.border-slate-800 { border-color: var(--line) !important; }
+
+/* Big colored shadows → flat Atrium shadow */
+[class*="shadow-\[0_4px_30px"], [class*="shadow-\[0_0_40px"],
+[class*="shadow-\[0_0_15px"], [class*="shadow-\[0_0_10px"],
+[class*="shadow-\[0_0_20px"] { box-shadow: var(--shadow-1) !important; }
+
+/* Inputs */
+input, textarea, select { color: var(--ink); }
+input::placeholder, textarea::placeholder { color: var(--ink-4); }
+.placeholder-slate-500::placeholder, .placeholder-slate-400::placeholder { color: var(--ink-4) !important; }
+
+/* Dynamic ink overrides — text-white reverts to cocoa on light bgs,
+   stays white on dark/colored surfaces */
+:root {
+  --override-white: var(--ink);
+  --override-slate-50: var(--ink);
+  --override-slate-100: var(--ink);
+  --override-slate-200: var(--ink-2);
+  --override-slate-300: var(--ink-2);
+  --override-slate-400: var(--ink-3);
+  --override-slate-500: var(--ink-3);
+  --override-indigo-200: var(--accent);
+  --override-purple-400: var(--accent);
+  --override-white-trans: var(--ink-2);
+}
+
+[class*="bg-gradient"],
+[class*="bg-blue-4"], [class*="bg-blue-5"], [class*="bg-blue-6"], [class*="bg-blue-7"],
+[class*="bg-green-4"], [class*="bg-green-5"], [class*="bg-green-6"], [class*="bg-green-7"],
+[class*="bg-red-4"], [class*="bg-red-5"], [class*="bg-red-6"], [class*="bg-red-7"],
+[class*="bg-purple-4"], [class*="bg-purple-5"], [class*="bg-purple-6"], [class*="bg-purple-7"],
+[class*="bg-amber-4"], [class*="bg-amber-5"], [class*="bg-amber-6"], [class*="bg-amber-7"],
+[class*="bg-emerald-4"], [class*="bg-emerald-5"], [class*="bg-emerald-6"], [class*="bg-emerald-7"],
+[class*="bg-orange-4"], [class*="bg-orange-5"], [class*="bg-orange-6"], [class*="bg-orange-7"],
+[class*="bg-pink-4"], [class*="bg-pink-5"], [class*="bg-pink-6"], [class*="bg-pink-7"],
+[class*="bg-cyan-4"], [class*="bg-cyan-5"], [class*="bg-cyan-6"], [class*="bg-cyan-7"],
+[class*="bg-indigo-4"], [class*="bg-indigo-5"], [class*="bg-indigo-6"], [class*="bg-indigo-7"],
+[class*="bg-teal-4"], [class*="bg-teal-5"], [class*="bg-teal-6"], [class*="bg-teal-7"],
+[class*="bg-violet-4"], [class*="bg-violet-5"], [class*="bg-violet-6"], [class*="bg-violet-7"],
+.bg-slate-700, .bg-slate-800, .bg-slate-900,
+.bg-black, .bg-neutral-900, .bg-neutral-950, .bg-zinc-900, .bg-zinc-950 {
+  --override-white: #ffffff;
+  --override-slate-50: #faf8f5;
+  --override-slate-100: #f3efe8;
+  --override-slate-200: #ece7df;
+  --override-slate-300: #d8d0c2;
+  --override-slate-400: #b3a99a;
+  --override-slate-500: #8a8175;
+  --override-indigo-200: #fbeee8;
+  --override-purple-400: #f4a261;
+  --override-white-trans: rgba(255,255,255,0.7);
+}
+
+/* Veto on translucent / pastel surfaces — keep dark text */
+.bg-slate-900\/5, .bg-slate-900\/10, .bg-slate-900\/20, .bg-slate-900\/30, .bg-slate-900\/40, .bg-slate-900\/50,
+.bg-slate-800\/5, .bg-slate-800\/10, .bg-slate-800\/20, .bg-slate-800\/30, .bg-slate-800\/40, .bg-slate-800\/50,
+.bg-slate-700\/5, .bg-slate-700\/10, .bg-slate-700\/20, .bg-slate-700\/30, .bg-slate-700\/40, .bg-slate-700\/50,
+[class*="bg-gradient"][class*="/5"],
+[class*="bg-gradient"][class*="/10"],
+[class*="bg-gradient"][class*="/20"],
+[class~="bg-blue-50"], [class~="bg-green-50"], [class~="bg-red-50"], [class~="bg-purple-50"],
+[class~="bg-amber-50"], [class~="bg-emerald-50"], [class~="bg-orange-50"], [class~="bg-pink-50"],
+[class~="bg-cyan-50"], [class~="bg-indigo-50"], [class~="bg-teal-50"], [class~="bg-violet-50"],
+[class~="from-blue-50"], [class~="to-purple-50"], [class~="from-slate-50"], [class~="to-white"],
+[class~="from-indigo-50"], [class~="to-blue-50"], [class~="from-purple-50"], [class~="from-white"],
+[class~="bg-blue-500/10"], [class~="bg-blue-500/20"], [class~="bg-blue-600/10"], [class~="bg-blue-600/20"],
+[class~="bg-indigo-500/10"], [class~="bg-indigo-500/20"], [class~="bg-indigo-600/10"], [class~="bg-indigo-600/20"],
+[class~="bg-purple-500/10"], [class~="bg-purple-500/20"], [class~="bg-purple-600/10"], [class~="bg-purple-600/20"],
+[class~="bg-green-500/10"], [class~="bg-green-500/20"], [class~="bg-green-600/10"], [class~="bg-green-600/20"],
+[class~="bg-red-500/10"], [class~="bg-red-500/20"], [class~="bg-red-600/10"], [class~="bg-red-600/20"] {
+  --override-white: var(--ink);
+  --override-slate-50: var(--ink);
+  --override-slate-100: var(--ink);
+  --override-slate-200: var(--ink-2);
+  --override-slate-300: var(--ink-2);
+  --override-slate-400: var(--ink-3);
+  --override-white-trans: rgba(42, 37, 31, 0.7);
+}
+
+.text-white { color: var(--override-white) !important; }
+.text-slate-50, .text-zinc-50, .text-gray-50 { color: var(--override-slate-50) !important; }
+.text-slate-100, .text-zinc-100, .text-gray-100 { color: var(--override-slate-100) !important; }
+.text-slate-200, .text-zinc-200, .text-gray-200 { color: var(--override-slate-200) !important; }
+.text-slate-300, .text-zinc-300, .text-gray-300 { color: var(--override-slate-300) !important; }
+.text-slate-400, .text-zinc-400, .text-gray-400 { color: var(--override-slate-400) !important; }
+.text-slate-500, .text-zinc-500, .text-gray-500 { color: var(--override-slate-500) !important; }
+.text-indigo-200 { color: var(--override-indigo-200) !important; }
+.text-purple-400 { color: var(--override-purple-400) !important; }
+[class*="text-white/"] { color: var(--override-white-trans) !important; }
+.text-transparent.bg-clip-text { color: transparent !important; }
+
+/* Re-tint Tailwind blue/indigo accents → Atrium ember on common buttons */
+.bg-blue-500, .bg-blue-600, .bg-indigo-500, .bg-indigo-600,
+.hover\:bg-blue-600:hover, .hover\:bg-blue-700:hover,
+.hover\:bg-indigo-600:hover, .hover\:bg-indigo-700:hover { background-color: var(--accent) !important; }
+.hover\:bg-blue-700:hover, .hover\:bg-indigo-700:hover { background-color: var(--accent-hover) !important; }
+.text-blue-500, .text-blue-600, .text-indigo-500, .text-indigo-600 { color: var(--accent) !important; }
+.border-blue-500, .border-blue-600, .border-indigo-500, .border-indigo-600 { border-color: var(--accent) !important; }
+.ring-blue-500, .ring-indigo-500 { --tw-ring-color: var(--accent) !important; }
+
+/* Form themes used in onboarding/auth */
+.dark-form {
+  --bg: var(--bg);
+  --bg-card: var(--bg-elev);
+  --text: var(--ink);
+  --text-muted: var(--ink-3);
+  --border: var(--line);
+}

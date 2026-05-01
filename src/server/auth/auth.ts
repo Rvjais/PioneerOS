@@ -216,7 +216,6 @@ export const authOptions: NextAuthOptions = {
                 token.profileCompletionStatus = user.profileCompletionStatus;
                 token.profilePicture = user.profilePicture;
                 token.customRoles = user.customRoles || [];
-                token.originalId = user.id; // Store original ID for impersonation
             }
             if (trigger === "update") {
                 if (session?.ndaSigned !== undefined) {
@@ -233,55 +232,18 @@ export const authOptions: NextAuthOptions = {
                 if (session?.customRoles !== undefined) {
                     token.customRoles = session.customRoles;
                 }
-                // Handle impersonation updates
-                if (session?.impersonating !== undefined) {
-                    token.impersonating = session.impersonating;
-                    if (session.impersonating && session.impersonatedUser) {
-                        token.impersonatedUser = session.impersonatedUser;
-                        token.impersonationSessionId = session.impersonationSessionId;
-                    } else {
-                        token.impersonatedUser = undefined;
-                        token.impersonationSessionId = undefined;
-                    }
-                }
             }
             return token;
         },
         async session({ session, token }) {
             if (session.user) {
-                // Check for impersonation
-                const impersonatedUser = token.impersonatedUser as {
-                    id: string;
-                    empId: string;
-                    firstName: string;
-                    lastName: string | null;
-                    role: string;
-                    department: string;
-                } | undefined;
-
-                if (token.impersonating && impersonatedUser) {
-                    // Use impersonated user's data
-                    session.user.id = impersonatedUser.id;
-                    session.user.empId = impersonatedUser.empId;
-                    session.user.firstName = impersonatedUser.firstName;
-                    session.user.lastName = impersonatedUser.lastName || '';
-                    session.user.role = impersonatedUser.role;
-                    session.user.department = impersonatedUser.department;
-                    // Add impersonation metadata
-                    session.user.isImpersonating = true;
-                    session.user.originalAdminId = token.originalId as string;
-                    session.user.originalRole = token.role as string;
-                    session.user.impersonationSessionId = token.impersonationSessionId as string;
-                } else {
-                    // Normal session
-                    session.user.id = token.id as string;
-                    session.user.empId = token.empId as string;
-                    session.user.firstName = token.firstName as string;
-                    session.user.lastName = token.lastName as string;
-                    session.user.role = token.role as string;
-                    session.user.department = token.department as string;
-                    session.user.isImpersonating = false;
-                }
+                // Normal session
+                session.user.id = token.id as string;
+                session.user.empId = token.empId as string;
+                session.user.firstName = token.firstName as string;
+                session.user.lastName = token.lastName as string;
+                session.user.role = token.role as string;
+                session.user.department = token.department as string;
                 session.user.ndaSigned = token.ndaSigned as boolean;
                 session.user.profileCompletionStatus = token.profileCompletionStatus as string;
                 session.user.customRoles = (token.customRoles as CustomRoleData[]) || [];
@@ -300,8 +262,3 @@ export const authOptions: NextAuthOptions = {
     },
     secret: process.env.NEXTAUTH_SECRET
 };
-
-// NOTE: Impersonation is handled through NextAuth session updates and database records.
-// See /api/admin/impersonate for the impersonation flow.
-// The session.user.isImpersonating flag indicates active impersonation.
-// Database table: impersonationSession tracks audit history.

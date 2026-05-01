@@ -2787,18 +2787,6 @@
       "namedRegex": "^/api/admin/generate\\-magic\\-link(?:/)?$"
     },
     {
-      "page": "/api/admin/impersonate",
-      "regex": "^/api/admin/impersonate(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/admin/impersonate(?:/)?$"
-    },
-    {
-      "page": "/api/admin/impersonate-client",
-      "regex": "^/api/admin/impersonate\\-client(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/admin/impersonate\\-client(?:/)?$"
-    },
-    {
       "page": "/api/admin/oauth-connections",
       "regex": "^/api/admin/oauth\\-connections(?:/)?$",
       "routeKeys": {},
