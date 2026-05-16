@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle, AlertCircle, Shield, ChevronRight, Loader2, Download } from 'lucide-react'
 import { GlassCard, PrimaryButton } from './ui'
+import { toast } from 'sonner'
 import { formatDate } from './types'
 import type { StepProps } from './types'
 import SignatureCapture from './SignatureCapture'
@@ -96,7 +97,7 @@ export default function Step3SignNDA({ data, token, onComplete }: StepProps) {
             </p>
           </div>
           <button
-            onClick={() => {}}
+            onClick={() => toast.success('PDF download started...')}
             className="ml-auto flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> PDF

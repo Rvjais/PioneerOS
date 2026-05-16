@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -48,7 +49,7 @@ export default function ClientApprovalsPage() {
         }))
         setAllApprovals(mapped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load client approvals:', error); toast.error('Failed to load client approvals. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 
@@ -67,8 +68,9 @@ export default function ClientApprovalsPage() {
       if (res.ok) {
         fetchApprovals()
       }
-    } catch {
-      // silently fail
+    } catch (error) {
+      console.error('Failed to update approval:', error)
+      toast.error('Failed to update approval. Please try again.')
     } finally {
       setActionLoading(null)
     }

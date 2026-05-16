@@ -1,6 +1,6 @@
 var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/ai/oracle/route.js")
 R.c("server/chunks/[externals]_crypto_0mbm8ve._.js")
-R.c("server/chunks/[root-of-the-server]__06s~3qv._.js")
+R.c("server/chunks/[root-of-the-server]__0vgksg4._.js")
 R.c("server/chunks/node_modules_next_11synfn._.js")
 R.c("server/chunks/_0q~k_mo._.js")
 R.c("server/chunks/node_modules_next_124cnn1._.js")

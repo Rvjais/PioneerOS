@@ -45,7 +45,7 @@ const socialNavigation = [
     items: [
       { name: 'Dashboard', href: '/social', icon: LayoutDashboard },
       { name: 'Daily Planner', href: '/tasks/daily', icon: Calendar },
-      { name: 'Calendar', href: '/social/calendar', icon: CalendarDays },
+      { name: 'Calendar', href: '/calendar', icon: CalendarDays },
     ],
   },
   {
@@ -112,7 +112,17 @@ const socialNavigation = [
       { name: 'Arcade', href: '/arcade', icon: Gamepad2 },
     ],
   },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: LightbulbIcon },
+      { name: 'SOP Library', href: '/sop', icon: ClipboardList },
+    ],
+  },
 ]
+
+const socialLeadRoles = ['MANAGER', 'OPERATIONS_HEAD', 'SUPER_ADMIN']
+const socialLeadOnlyCategories = ['Reporting']
 
 export function SocialNav() {
   const pathname = usePathname()
@@ -168,7 +178,14 @@ export function SocialNav() {
 
         {/* Navigation */}
         <nav className="p-3">
-          {socialNavigation.map((section) => (
+          {socialNavigation
+            .filter(section => {
+              if (socialLeadOnlyCategories.includes(section.category)) {
+                return socialLeadRoles.includes(userRole || '') || userRole === 'SOCIAL'
+              }
+              return true
+            })
+            .map((section) => (
             <div key={section.category} className="mb-4">
               <h3 className="px-3 text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                 {section.category}

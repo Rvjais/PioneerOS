@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 interface CalendarEvent {
   date: string
@@ -35,7 +36,7 @@ export default function SeoCalendarPage() {
           }))
         setEvents(mapped)
       })
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load calendar events') })
   }, [currentYear, currentMonth])
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()

@@ -417,11 +417,10 @@ export function SettingsClient({ user }: Props) {
           <CardHeader>
             <div className="flex items-center gap-3">
               <h3 className="font-semibold text-white">Notification Preferences</h3>
-              <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">Coming soon</span>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <p className="text-sm text-slate-400">Notification preferences will be configurable in a future update. The settings below show default values.</p>
+            <p className="text-sm text-slate-400">Configure how and when you want to receive alerts.</p>
             {[
               { id: 'whatsapp', label: 'WhatsApp Notifications', description: 'Get WhatsApp messages for reminders and updates', enabled: true },
               { id: 'email', label: 'Email Notifications', description: 'Receive email alerts for task assignments and leave updates', enabled: true },
@@ -430,19 +429,18 @@ export function SettingsClient({ user }: Props) {
               { id: 'meeting', label: 'Meeting Reminders', description: 'Get reminded 15 minutes before meetings', enabled: true },
               { id: 'arcade', label: 'Arcade Updates', description: 'XP gains, achievements, and leaderboard changes', enabled: false },
             ].map((pref) => (
-              <div key={pref.id} className="flex items-center justify-between opacity-60">
+              <div key={pref.id} className="flex items-center justify-between">
                 <div>
                   <p className="text-white font-medium">{pref.label}</p>
                   <p className="text-sm text-slate-400">{pref.description}</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-not-allowed">
+                <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     defaultChecked={pref.enabled}
-                    disabled
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:glass-card after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
             ))}

@@ -485,7 +485,7 @@ export function CalendarClient({ initialData, currentUserId, isManager }: Calend
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Calendar</h1>
           <p className="text-slate-400 mt-1">Meetings, leaves, deadlines & HR updates</p>
@@ -545,20 +545,21 @@ export function CalendarClient({ initialData, currentUserId, isManager }: Calend
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
         {/* Calendar Grid */}
         <div className="lg:col-span-3 glass-card rounded-2xl border border-white/10 overflow-hidden">
           {/* Day headers */}
           <div className="grid grid-cols-7 border-b border-white/10">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="p-3 text-center text-sm font-medium text-slate-400 bg-slate-900/40">
-                {day}
+              <div key={day} className="p-1 sm:p-3 text-center text-xs sm:text-sm font-medium text-slate-400 bg-slate-900/40">
+                <span className="hidden sm:inline">{day}</span>
+                <span className="sm:hidden">{day.charAt(0)}</span>
               </div>
             ))}
           </div>
 
           {/* Calendar days */}
-          <div className="grid grid-cols-7">
+          <div className="grid grid-cols-7 overflow-x-auto">
             {calendarDays.map((day, index) => {
               const items = day ? getItemsForDay(day) : []
               const isSelected = day === selectedDay
@@ -568,13 +569,13 @@ export function CalendarClient({ initialData, currentUserId, isManager }: Calend
                 <div
                   key={`cal-${index}`}
                   onClick={() => day && setSelectedDay(day)}
-                  className={`min-h-[100px] p-2 border-b border-r border-white/5 cursor-pointer transition-colors ${
+                  className={`min-h-[80px] sm:min-h-[100px] p-1 sm:p-2 border-b border-r border-white/5 cursor-pointer transition-colors ${
                     day ? (isSelected ? 'bg-blue-500/10' : 'hover:bg-slate-900/40') : 'bg-slate-900/40'
                   }`}
                 >
                   {day && (
                     <>
-                      <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm mb-1 ${
+                      <div className={`w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center rounded-full text-xs sm:text-sm mb-1 ${
                         isTodayDate
                           ? 'bg-blue-600 text-white font-bold'
                           : isSelected
@@ -583,11 +584,11 @@ export function CalendarClient({ initialData, currentUserId, isManager }: Calend
                       }`}>
                         {day}
                       </div>
-                      <div className="space-y-1">
-                        {items.slice(0, 3).map((item, i) => (
+                      <div className="space-y-0.5 sm:space-y-1">
+                        {items.slice(0, 2).map((item, i) => (
                           <div
                             key={`item-${item.label}-${i}`}
-                            className={`px-1.5 py-0.5 rounded text-xs truncate ${item.color} ${
+                            className={`px-1 py-0.5 rounded text-[10px] sm:text-xs truncate ${item.color} ${
                               item.type === 'meeting' ? 'text-blue-400' :
                               item.type === 'leave' ? 'text-amber-400' :
                               item.type === 'deadline' ? 'text-red-400' :
@@ -599,8 +600,8 @@ export function CalendarClient({ initialData, currentUserId, isManager }: Calend
                             {item.label}
                           </div>
                         ))}
-                        {items.length > 3 && (
-                          <div className="text-xs text-slate-400 px-1">+{items.length - 3} more</div>
+                        {items.length > 2 && (
+                          <div className="text-[10px] sm:text-xs text-slate-400 px-1 hidden sm:block">+{items.length - 2} more</div>
                         )}
                       </div>
                     </>

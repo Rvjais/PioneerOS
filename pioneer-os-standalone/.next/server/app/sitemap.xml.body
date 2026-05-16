@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://brandingpioneers.in</loc>
-<lastmod>2026-04-27T12:33:42.880Z</lastmod>
+<loc>http://localhost:3000</loc>
+<lastmod>2026-05-15T21:44:53.950Z</lastmod>
 <changefreq>weekly</changefreq>
 <priority>1</priority>
 </url>
 <url>
-<loc>https://brandingpioneers.in/login</loc>
-<lastmod>2026-04-27T12:33:42.880Z</lastmod>
+<loc>http://localhost:3000/login</loc>
+<lastmod>2026-05-15T21:44:53.950Z</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 <url>
-<loc>https://brandingpioneers.in/privacy</loc>
-<lastmod>2026-04-27T12:33:42.880Z</lastmod>
+<loc>http://localhost:3000/privacy</loc>
+<lastmod>2026-05-15T21:44:53.950Z</lastmod>
 <changefreq>yearly</changefreq>
 <priority>0.3</priority>
 </url>
 <url>
-<loc>https://brandingpioneers.in/terms</loc>
-<lastmod>2026-04-27T12:33:42.880Z</lastmod>
+<loc>http://localhost:3000/terms</loc>
+<lastmod>2026-05-15T21:44:53.950Z</lastmod>
 <changefreq>yearly</changefreq>
 <priority>0.3</priority>
 </url>

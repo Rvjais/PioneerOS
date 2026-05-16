@@ -38,10 +38,10 @@ function getRedisClient(): Redis | null {
 
   if (!redisUrl) {
     if (process.env.NODE_ENV === 'production') {
-      console.error('[RateLimit] WARNING: REDIS_URL not set in production — using in-memory rate limiting. This is NOT safe across multiple instances.')
-    } else {
-      console.warn('[RateLimit] REDIS_URL not set, using in-memory rate limiting')
+      console.warn('[RateLimit] REDIS_URL is missing in production. Falling back to in-memory rate limiting. Ensure you only have 1 instance running.')
+      return null
     }
+    console.warn('[RateLimit] REDIS_URL not set, using in-memory rate limiting (not for production)')
     return null
   }
 

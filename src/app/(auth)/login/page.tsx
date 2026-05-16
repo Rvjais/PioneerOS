@@ -60,11 +60,11 @@ function LoginContent() {
       if (errorParam === 'NoPassword') {
         setError('No password set. Please set up your password first.')
       } else if (errorParam === 'InvalidPassword') {
-        setError('Invalid phone number or password')
+        setError('Invalid email/phone or password')
       } else if (errorParam === 'CredentialsSignin') {
-        setError('Invalid phone number or password')
+        setError('Invalid email/phone or password')
       } else if (errorParam === 'User not found') {
-        setError('No account found with this phone number')
+        setError('No account found with this email/phone')
       } else {
         setError(errorParam || 'Login failed')
       }
@@ -150,7 +150,7 @@ function LoginContent() {
     setError('')
 
     if (!phone.trim()) {
-      setPasswordError('Please enter your phone number')
+      setPasswordError('Please enter your email or phone number')
       return
     }
 
@@ -171,11 +171,18 @@ function LoginContent() {
       })
 
       if (result?.error) {
-        // Handle specific errors
-        if (result.error === 'CredentialsSignin') {
-          setError('Invalid phone number or password')
-        } else if (result.status === 429) {
-          setError('Too many attempts. Please wait before trying again.')
+        if (result.error === 'NoPassword') {
+          setError('No password set for this account. Use Magic Link or set up a password first.')
+        } else if (result.error === 'InvalidPassword') {
+          setError('Incorrect password. Please try again.')
+        } else if (result.error === 'CredentialsSignin') {
+          // Could be wrong email, wrong phone, or wrong password
+          const isEmailInput = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(phone.trim())
+          setError(
+            isEmailInput
+              ? 'No account found with this email, or incorrect password.'
+              : 'Invalid phone number or password.'
+          )
         } else {
           setError(result.error || 'Login failed')
         }
@@ -282,8 +289,8 @@ function LoginContent() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900">Phone & Password</p>
-                      <p className="text-sm text-slate-500">Log in with your phone number and password</p>
+                      <p className="font-medium text-slate-900">Password</p>
+                      <p className="text-sm text-slate-500">Log in with your email/phone and password</p>
                     </div>
                   </div>
                 </button>
@@ -469,14 +476,14 @@ function LoginContent() {
               <form onSubmit={handlePasswordLogin} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Phone Number
+                    Email or Phone Number
                   </label>
                   <input
-                    type="tel"
+                    type="text"
                     value={phone}
                     onChange={(e) => { setPhone(e.target.value); setPasswordError('') }}
                     className="w-full px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-colors"
-                    placeholder="Enter your phone number"
+                    placeholder="Enter your email or phone number"
                   />
                 </div>
 

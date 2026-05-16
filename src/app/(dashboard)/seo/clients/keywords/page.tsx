@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { formatDateDDMMYYYY } from '@/shared/utils/cn'
 
 interface Keyword {
@@ -27,7 +28,7 @@ export default function SeoKeywordTrackerPage() {
 
   useEffect(() => {
     fetchKeywords()
-    fetch('/api/clients?status=ACTIVE&limit=100').then(r => r.json()).then(d => setClients(d.clients || [])).catch(() => {})
+    fetch('/api/clients?status=ACTIVE&limit=100').then(r => r.json()).then(d => setClients(d.clients || [])).catch(() => { toast.error('Failed to load clients') })
   }, [])
 
   const fetchKeywords = async () => {
@@ -39,6 +40,7 @@ export default function SeoKeywordTrackerPage() {
       }
     } catch (error) {
       console.error('Failed to fetch keywords:', error)
+      toast.error('Failed to load keywords')
     } finally {
       setLoading(false)
     }

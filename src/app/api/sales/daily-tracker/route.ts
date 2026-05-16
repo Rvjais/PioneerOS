@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
           lead: { select: { id: true, companyName: true } },
         },
         orderBy: [
-          { status: 'asc' }, // TODO before DONE
+          { status: 'asc' },
           { priority: 'desc' },
         ],
       }),

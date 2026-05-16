@@ -394,7 +394,7 @@ export default function AccountsHandoversPage() {
                   </a>
                 )}
                 <Link
-                  href={`/accounts/clients/onboard?leadId=${selectedHandover.lead.id}`}
+                  href={`/accounts/onboarding?leadId=${selectedHandover.lead.id}`}
                   className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 border border-white/10 rounded-lg hover:bg-slate-900/40"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

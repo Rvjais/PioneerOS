@@ -240,30 +240,30 @@ export function ExcelTrackerView({
   return (
     <div className="glass-card rounded-xl border border-white/10 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-500 text-white flex items-center justify-between">
+      <div className="px-2 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-500 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <div>
-          <h2 className="font-semibold">Daily Task Tracker</h2>
-          <p className="text-xs text-indigo-200">Click any cell to edit inline</p>
+          <h2 className="font-semibold text-sm sm:text-base">Daily Task Tracker</h2>
+          <p className="text-[10px] sm:text-xs text-indigo-200">Click any cell to edit inline</p>
         </div>
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-2 sm:gap-4 text-xs">
           <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-white/30 backdrop-blur-sm rounded"></span>
-            <span>Planned</span>
+            <span className="hidden sm:inline">Planned</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-blue-300 rounded"></span>
-            <span>In Progress</span>
+            <span className="hidden sm:inline">In Progress</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-green-300 rounded"></span>
-            <span>Done</span>
+            <span className="hidden sm:inline">Done</span>
           </div>
         </div>
       </div>
 
       {/* Excel-like Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm border-collapse">
+      <div className="overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+        <table className="w-full text-xs sm:text-sm border-collapse min-w-[900px]">
           <thead>
             <tr className="bg-slate-800/50 border-b-2 border-white/20">
               <th className="px-2 py-2 text-left font-semibold text-slate-900 border-r border-slate-200/50 w-8">#</th>

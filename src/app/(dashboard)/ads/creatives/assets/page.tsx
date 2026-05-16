@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { toast } from 'sonner'
 
 interface AdCreative {
   id: string
@@ -131,7 +132,7 @@ export default function AdCreativesPage() {
         setNewCreative(prev => ({ ...prev, mediaUrl: url }))
       }
     } catch (err) {
-      alert('Upload failed. Please try again.')
+      toast.error('Upload failed. Please try again.')
     } finally {
       setUploading(false)
     }
@@ -165,7 +166,7 @@ export default function AdCreativesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newCreative.campaignId || !newCreative.name) {
-      alert('Please select a campaign and enter a name')
+      toast.error('Please select a campaign and enter a name')
       return
     }
 
@@ -195,10 +196,10 @@ export default function AdCreativesPage() {
         fetchCreatives()
       } else {
         const error = await res.json()
-        alert(error.error || 'Failed to create creative')
+        toast.error(error.error || 'Failed to create creative')
       }
     } catch (err) {
-      alert('Failed to create creative')
+      toast.error('Failed to create creative')
     } finally {
       setUploading(false)
     }

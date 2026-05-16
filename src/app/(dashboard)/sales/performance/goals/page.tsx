@@ -78,7 +78,7 @@ export default function SalesGoalsPage() {
     fetch('/api/admin/users?role=SALES&limit=100')
       .then(res => res.ok ? res.json() : { users: [] })
       .then(data => setTeamMembers(data.users || []))
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load team members') })
   }, [])
 
   async function fetchGoals() {

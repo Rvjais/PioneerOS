@@ -28,13 +28,20 @@ export const GET = withAuth(async (req: NextRequest, { params }) => {
       where: { id },
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true, role: true } },
-        resolvedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true, role: true } },
+        User_WebBugReport_resolvedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
 
     if (!bug) return NextResponse.json({ error: 'Bug report not found' }, { status: 404 })
-    return NextResponse.json(bug)
+    
+    const mappedBug = {
+      ...bug,
+      assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
+      resolvedBy: (bug as any).User_WebBugReport_resolvedByIdToUser,
+    }
+
+    return NextResponse.json(mappedBug)
   } catch (error) {
     console.error('Failed to fetch bug report:', error)
     return NextResponse.json({ error: 'Failed to fetch bug report' }, { status: 500 })
@@ -81,12 +88,18 @@ export const PATCH = withAuth(async (req: NextRequest, { user, params }) => {
       data: updateData,
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
-        resolvedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_resolvedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
 
-    return NextResponse.json(bug)
+    const mappedUpdated = {
+      ...bug,
+      assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
+      resolvedBy: (bug as any).User_WebBugReport_resolvedByIdToUser,
+    }
+
+    return NextResponse.json(mappedUpdated)
   } catch (error) {
     console.error('Failed to update bug report:', error)
     return NextResponse.json({ error: 'Failed to update bug report' }, { status: 500 })

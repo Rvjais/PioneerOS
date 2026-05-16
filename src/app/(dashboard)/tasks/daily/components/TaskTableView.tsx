@@ -60,8 +60,8 @@ export function TaskTableView({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -mx-2 px-2">
+        <table className="w-full text-xs min-w-[800px]">
           <thead className="bg-slate-900/40 border-b border-white/10">
             <tr>
               <th className="px-2 py-3 text-left font-medium text-slate-300 text-xs">Timestamp</th>
@@ -279,9 +279,9 @@ export function TaskTableView({
 
       {/* Warning for under 4 hours */}
       {totalActual > 0 && totalActual < 4 && (
-        <div className="bg-red-500/10 border-t border-red-200 px-4 py-3">
-          <p className="text-red-400 font-medium text-sm">
-            Warning: You have logged only {totalActual.toFixed(1)} hours. Minimum 4 hours required.
+        <div className="mt-4 p-3 bg-amber-500/20 border border-amber-500/30 rounded-lg">
+          <p className="text-amber-400 text-sm">
+            ⚠️ You&apos;ve logged less than 4 hours today. Make sure to track all your time.
           </p>
         </div>
       )}

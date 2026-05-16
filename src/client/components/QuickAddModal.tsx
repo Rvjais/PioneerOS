@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import InfoTip from '@/client/components/ui/InfoTip'
+import { cn } from '@/shared/utils/cn'
 
 interface Field {
   name: string
@@ -71,167 +72,113 @@ export function QuickAddModal({
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 50,
-      padding: '16px'
-    }} suppressHydrationWarning>
-      <div style={{
-        backgroundColor: '#1e293b',
-        borderRadius: '16px',
-        padding: '24px',
-        width: '100%',
-        maxWidth: '32rem',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        border: '1px solid rgba(255,255,255,0.1)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-          paddingBottom: '16px',
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 700 }}>{title}</h2>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '8px',
-              cursor: 'pointer',
-              background: 'none',
-              border: 'none',
-              color: '#94a3b8'
-            }}
-          >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <div className="fixed inset-0 z-[110] overflow-y-auto" suppressHydrationWarning>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {error && (
-            <div style={{
-              padding: '12px',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-              borderRadius: '8px',
-              color: '#f87171',
-              fontSize: '14px'
-            }}>
-              {error}
-            </div>
-          )}
-
-          {fields.map((field) => (
-            <div key={field.name}>
-              <label style={{ display: 'block', color: 'white', fontSize: '14px', fontWeight: 500, marginBottom: '4px' }}>
-                {field.label}
-                {field.required && <span style={{ color: '#ef4444', marginLeft: '4px' }}>*</span>}
-                {field.tooltip && <InfoTip text={field.tooltip} />}
-              </label>
-
-              {field.type === 'select' ? (
-                <select
-                  value={formData[field.name] || ''}
-                  onChange={(e) => {
-                    setFormData({ ...formData, [field.name]: e.target.value })
-                    if (fieldErrors[field.name]) {
-                      setFieldErrors({ ...fieldErrors, [field.name]: '' })
-                    }
-                  }}
-                  style={{
-                    width: '100%',
-                    padding: '10px 16px',
-                    backgroundColor: '#334155',
-                    border: `1px solid ${fieldErrors[field.name] ? '#ef4444' : 'rgba(255,255,255,0.1)'}`,
-                    borderRadius: '12px',
-                    color: 'white',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }}
-                >
-                  <option value="" style={{ backgroundColor: '#1e293b' }}>Select...</option>
-                  {field.options?.map((opt) => (
-                    <option key={opt.value} value={opt.value} style={{ backgroundColor: '#1e293b' }}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type={field.type}
-                  value={formData[field.name] || ''}
-                  onChange={(e) => {
-                    setFormData({ ...formData, [field.name]: e.target.value })
-                    if (fieldErrors[field.name]) {
-                      setFieldErrors({ ...fieldErrors, [field.name]: '' })
-                    }
-                  }}
-                  placeholder={field.placeholder}
-                  style={{
-                    width: '100%',
-                    padding: '10px 16px',
-                    backgroundColor: '#334155',
-                    border: `1px solid ${fieldErrors[field.name] ? '#ef4444' : 'rgba(255,255,255,0.1)'}`,
-                    borderRadius: '12px',
-                    color: 'white',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }}
-                />
-              )}
-              {fieldErrors[field.name] && (
-                <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>{fieldErrors[field.name]}</p>
-              )}
-            </div>
-          ))}
-
-          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+      {/* Modal Container */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative w-full max-w-lg transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all border border-slate-200">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h2>
             <button
-              type="button"
               onClick={onClose}
-              style={{
-                flex: 1,
-                padding: '10px 16px',
-                backgroundColor: '#334155',
-                color: 'white',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                flex: 1,
-                padding: '10px 16px',
-                backgroundColor: '#2563eb',
-                color: 'white',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.5 : 1,
-                fontSize: '14px',
-                fontWeight: 500
-              }}
-            >
-              {loading ? 'Adding...' : submitLabel}
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        </form>
+
+          {/* Form Content */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-medium flex items-center gap-2">
+                <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {error}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {fields.map((field) => (
+                <div key={field.name} className={field.name === 'email' || field.name === 'phone' || field.name === 'name' ? 'sm:col-span-2' : ''}>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">
+                    {field.label}
+                    {field.required && <span className="text-red-500 ml-1">*</span>}
+                    {field.tooltip && <InfoTip text={field.tooltip} />}
+                  </label>
+
+                  {field.type === 'select' ? (
+                    <select
+                      value={formData[field.name] || ''}
+                      onChange={(e) => {
+                        setFormData({ ...formData, [field.name]: e.target.value })
+                        if (fieldErrors[field.name]) {
+                          setFieldErrors({ ...fieldErrors, [field.name]: '' })
+                        }
+                      }}
+                      className={cn(
+                        "w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-sm font-medium text-slate-900 outline-none transition-all focus:ring-4 focus:ring-orange-500/10",
+                        fieldErrors[field.name] ? "border-red-300 ring-4 ring-red-500/10" : "border-slate-200 focus:border-orange-500"
+                      )}
+                    >
+                      <option value="">Select...</option>
+                      {field.options?.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      value={formData[field.name] || ''}
+                      onChange={(e) => {
+                        setFormData({ ...formData, [field.name]: e.target.value })
+                        if (fieldErrors[field.name]) {
+                          setFieldErrors({ ...fieldErrors, [field.name]: '' })
+                        }
+                      }}
+                      placeholder={field.placeholder}
+                      className={cn(
+                        "w-full px-4 py-2.5 bg-slate-50 border rounded-xl text-sm font-medium text-slate-900 outline-none transition-all focus:ring-4 focus:ring-orange-500/10",
+                        fieldErrors[field.name] ? "border-red-300 ring-4 ring-red-500/10" : "border-slate-200 focus:border-orange-500"
+                      )}
+                    />
+                  )}
+                  {fieldErrors[field.name] && (
+                    <p className="text-[11px] font-bold text-red-500 mt-1 ml-1 uppercase tracking-tight">{fieldErrors[field.name]}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 mt-6 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest transition-all order-2 sm:order-1"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 px-6 py-3 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all disabled:opacity-50 order-1 sm:order-2"
+              >
+                {loading ? 'Adding...' : submitLabel}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )

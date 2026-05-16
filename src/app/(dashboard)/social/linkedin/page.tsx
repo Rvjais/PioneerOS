@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -46,7 +47,7 @@ export default function LinkedInManagementPage() {
       fetch('/api/social/posts?platform=LINKEDIN').then(res => res.json()),
     ])
       .then(([metricsResult, postsResult]) => {
-        const metricsItems = metricsResult.data || metricsResult || []
+        const metricsItems = metricsResult.metrics || metricsResult.data || []
         const mappedProfiles: LinkedInProfile[] = metricsItems.map((item: any) => ({
           id: item.id,
           client: item.client?.name || item.client || '',
@@ -62,7 +63,7 @@ export default function LinkedInManagementPage() {
         }))
         setProfiles(mappedProfiles)
 
-        const postItems = postsResult.data || postsResult || []
+        const postItems = postsResult.posts || postsResult.data || []
         const mappedPosts: LinkedInPost[] = postItems.map((item: any) => {
           const dateStr = item.publishedDate || item.scheduledDate || item.createdAt || ''
           const date = dateStr ? new Date(dateStr) : new Date()
@@ -80,7 +81,7 @@ export default function LinkedInManagementPage() {
         })
         setPosts(mappedPosts)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load LinkedIn data:', error); toast.error('Failed to load LinkedIn data. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 

@@ -227,7 +227,7 @@ export async function uploadFileToDrive(
   })
 
   // Make file viewable within the organization's domain
-  // TODO: Configure GOOGLE_WORKSPACE_DOMAIN env var per deployment; falls back to 'anyone' if not set
+  // Set GOOGLE_WORKSPACE_DOMAIN env var per deployment to restrict to domain; falls back to 'anyone'
   const shareType = process.env.GOOGLE_WORKSPACE_DOMAIN ? 'domain' : 'anyone'
   await drive.permissions.create({
     fileId: response.data.id!,

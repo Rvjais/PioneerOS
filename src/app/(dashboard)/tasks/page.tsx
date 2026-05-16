@@ -118,14 +118,14 @@ export default async function TasksPage() {
   }))
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-8 pb-12">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
             {isManager ? 'All Tasks' : 'My Tasks'}
           </h1>
-          <p className="text-slate-400 mt-1">
+          <p className="text-slate-500 mt-1 font-medium">
             {isManager ? 'Manage team tasks and assignments' : 'Track and complete your work'}
           </p>
         </div>
@@ -133,53 +133,38 @@ export default async function TasksPage() {
 
       <EndOfDayReport userId={session.user.id} />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <p className="text-3xl font-bold text-white">{stats.total}</p>
-          <p className="text-sm text-slate-400">Total Tasks</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-slate-900/40 rounded-full" />
-            <p className="text-3xl font-bold text-white">{stats.todo}</p>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+        {[
+          { label: 'Total Tasks', value: stats.total, color: 'text-slate-900', bg: 'bg-slate-50', dot: 'bg-slate-300' },
+          { label: 'To Do', value: stats.todo, color: 'text-slate-600', bg: 'bg-slate-50', dot: 'bg-slate-400' },
+          { label: 'In Progress', value: stats.inProgress, color: 'text-blue-600', bg: 'bg-blue-50', dot: 'bg-blue-500' },
+          { label: 'In Review', value: stats.review, color: 'text-purple-600', bg: 'bg-purple-50', dot: 'bg-purple-500' },
+          { label: 'Completed', value: stats.completed, color: 'text-emerald-600', bg: 'bg-emerald-50', dot: 'bg-emerald-500' },
+        ].map((stat, i) => (
+          <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-center gap-2 mb-2">
+              <div className={`w-2.5 h-2.5 rounded-full ${stat.dot} shadow-sm`} />
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+            </div>
+            <p className={`text-3xl font-bold ${stat.color} tracking-tight`}>{stat.value}</p>
           </div>
-          <p className="text-sm text-slate-400">To Do</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full" />
-            <p className="text-3xl font-bold text-blue-400">{stats.inProgress}</p>
-          </div>
-          <p className="text-sm text-slate-400">In Progress</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-purple-500 rounded-full" />
-            <p className="text-3xl font-bold text-purple-400">{stats.review}</p>
-          </div>
-          <p className="text-sm text-slate-400">In Review</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full" />
-            <p className="text-3xl font-bold text-green-400">{stats.completed}</p>
-          </div>
-          <p className="text-sm text-slate-400">Completed</p>
-        </div>
+        ))}
       </div>
 
-      {/* Tasks */}
-      <TasksClient
-        tasks={serializedTasks}
-        users={users}
-        clients={assignedClients}
-        leads={leads}
-        currentUserId={session.user.id}
-        isManager={isManager}
-        userDepartment={userDepartment}
-        userRole={userRole}
-      />
+      {/* Tasks Content Area */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <TasksClient
+          tasks={serializedTasks}
+          users={users}
+          clients={assignedClients}
+          leads={leads}
+          currentUserId={session.user.id}
+          isManager={isManager}
+          userDepartment={userDepartment}
+          userRole={userRole}
+        />
+      </div>
     </div>
   )
 }

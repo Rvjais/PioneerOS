@@ -14,13 +14,12 @@ const nextConfig: NextConfig = {
   // Standalone output: bundles only the required node_modules into .next/standalone/
   // This lets the VPS run `node server.js` with NO npm install — much lower RAM/disk usage
   output: 'standalone',
-  // Skip TypeScript checking during build (already checked locally, saves server memory)
+  // TypeScript checking enabled to catch errors at build time
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   // External packages for server-side (heavy Node.js libs)
   serverExternalPackages: [
-    'jimp',
     'sharp',
     'googleapis',
     'jspdf',
@@ -67,6 +66,15 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "drive.google.com",
       },
+      // WhatsApp/Business tool images
+      {
+        protocol: "https",
+        hostname: "*.wbiztool.com",
+      },
+      {
+        protocol: "https",
+        hostname: "wbiztool.com",
+      },
     ],
     // Optimize image formats
     formats: ['image/avif', 'image/webp'],
@@ -81,7 +89,7 @@ const nextConfig: NextConfig = {
   // For production VPS: these don't apply (only affects dev server)
   onDemandEntries: {
     maxInactiveAge: 60 * 1000, // 60 seconds — default, prevents constant recompilation
-    pagesBufferLength: 5, // Keep 5 pages in memory — default, reduces recompile churn
+    pagesBufferLength: 1, // Minimize memory usage by keeping only 1 page in buffer
   },
   // Enable compression for smaller responses
   compress: true,
@@ -90,7 +98,9 @@ const nextConfig: NextConfig = {
   // Experimental features for better performance
   experimental: {
     // Optimize package imports for smaller bundles
-    optimizePackageImports: ['recharts', 'date-fns', '@heroicons/react', 'lucide-react', 'framer-motion', 'zod'],
+    optimizePackageImports: ['recharts', 'date-fns', 'lucide-react', 'framer-motion', 'zod'],
+    // Limit concurrency to 1 to save memory on build (prevents OOM/Killed errors)
+    staticGenerationMaxConcurrency: 1,
   },
   // Security headers + iframe embedding for /embed routes
   async headers() {
@@ -169,18 +179,84 @@ const nextConfig: NextConfig = {
         destination: '/accounts/onboarding',
         permanent: true,
       },
+      {
+        source: '/design/print',
+        destination: '/social/print-designing?category=PRINT',
+        permanent: false,
+      },
+      {
+        source: '/design/digital',
+        destination: '/social/print-designing?category=DIGITAL',
+        permanent: false,
+      },
+      {
+        source: '/design/branding',
+        destination: '/social/print-designing?category=BRANDING',
+        permanent: false,
+      },
+      {
+        source: '/design/thumbnails',
+        destination: '/social/print-designing?category=SOCIAL',
+        permanent: false,
+      },
+      {
+        source: '/design/delivered',
+        destination: '/design/requests?status=DELIVERED',
+        permanent: false,
+      },
+      {
+        source: '/design/approvals',
+        destination: '/design/requests?status=APPROVED',
+        permanent: false,
+      },
+      {
+        source: '/design/requests/pending',
+        destination: '/design/requests?status=PENDING',
+        permanent: false,
+      },
+      {
+        source: '/design/requests/in-progress',
+        destination: '/design/requests?status=IN_DESIGN',
+        permanent: false,
+      },
+      {
+        source: '/design/daily-planner',
+        destination: '/design/calendar',
+        permanent: false,
+      },
+      {
+        source: '/design/metrics',
+        destination: '/design',
+        permanent: false,
+      },
+      {
+        source: '/design/metrics/turnaround',
+        destination: '/design',
+        permanent: false,
+      },
     ];
   },
 };
 
-// In development: use bare config (skip PWA + Sentry wrappers for faster startup & less RAM)
-// In production: wrap with PWA + Sentry
-export default process.env.NODE_ENV === 'production'
-  ? withSentryConfig(withPWA(nextConfig), {
+// Optimization: Allow bypassing heavy wrappers during build to save memory
+const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
+const shouldSkipSentry = process.env.SKIP_SENTRY === 'true';
+const shouldSkipPWA = process.env.SKIP_PWA === 'true';
+
+let finalConfig = nextConfig;
+
+if (!shouldSkipPWA && process.env.NODE_ENV === 'production') {
+  finalConfig = withPWA(finalConfig);
+}
+
+if (!shouldSkipSentry && process.env.NODE_ENV === 'production') {
+  finalConfig = withSentryConfig(finalConfig, {
     sourcemaps: {
       deleteSourcemapsAfterUpload: true,
     },
     silent: !process.env.CI,
     tunnelRoute: "/monitoring",
-  })
-  : nextConfig;
+  });
+}
+
+export default finalConfig;

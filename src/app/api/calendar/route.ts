@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
 import { cache, cacheTTL } from '@/server/cache/redis'
 import { withAuth } from '@/server/auth/withAuth'
+import { softDelete } from '@/server/db/softDelete'
 import { z } from 'zod'
 
 function serializeDate(date: Date | null): string | null {
@@ -415,7 +416,7 @@ export const DELETE = withAuth(async (req, { user }) => {
         return NextResponse.json({ error: 'Only the creator, assignee, or an admin can delete this task' }, { status: 403 })
       }
 
-      await prisma.task.delete({ where: { id } })
+      await softDelete('task', id)
     } else if (itemType === 'event') {
       const event = await prisma.event.findUnique({ where: { id } })
 

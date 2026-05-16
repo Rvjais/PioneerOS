@@ -144,7 +144,7 @@ const { searchParams } = new URL(req.url)
                 acc[key].metrics[k] = (acc[key].metrics[k] || 0) + v
               }
             }
-          } catch {}
+          } catch (e) { console.error('Failed to parse metrics:', e); }
         }
 
         return acc

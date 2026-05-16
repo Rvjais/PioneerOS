@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
+import Link from 'next/link'
+import { AddBudgetModal } from '@/client/components/ads/AddBudgetModal'
 interface BudgetAllocation {
   id: string
   client: string | { name: string }
@@ -41,42 +42,74 @@ export default function BudgetAllocationsPage() {
   const [allocations, setAllocations] = useState<BudgetAllocation[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date()
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   })
 
-  useEffect(() => {
-    async function fetchBudgets() {
-      try {
-        setLoading(true)
-        const res = await fetch(`/api/ads/budget?month=${selectedMonth}`)
-        if (!res.ok) throw new Error('Failed to fetch budgets')
-        const data = await res.json()
-        const items = Array.isArray(data) ? data : data.allocations || data.budgets || []
-        // Calculate utilization from real data if not provided
-        const processed = items.map((item: BudgetAllocation) => {
-          const totalBudget = item.totalBudget || item.allocatedAmount || 0
-          const metaSpent = item.metaSpent || 0
-          const googleSpent = item.googleSpent || 0
-          const totalSpent = item.spentAmount || (metaSpent + googleSpent)
-          const remaining = item.remainingBudget ?? (totalBudget - totalSpent)
-          const utilization = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0
-          return {
-            ...item,
-            remainingBudget: remaining,
-            utilizationRate: item.utilizationRate ?? utilization,
+  const fetchBudgets = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/ads/budget?month=${selectedMonth}`)
+      if (!res.ok) throw new Error('Failed to fetch budgets')
+      const data = await res.json()
+      const items = Array.isArray(data) ? data : data.allocations || data.budgets || []
+      
+      const grouped = items.reduce((acc: any, item: any) => {
+        const clientId = item.client?.id || item.clientId
+        if (!acc[clientId]) {
+          acc[clientId] = {
+            id: clientId,
+            client: item.client || { name: 'Unknown' },
+            totalBudget: 0,
+            metaBudget: 0,
+            googleBudget: 0,
+            metaSpent: 0,
+            googleSpent: 0,
+            spentAmount: 0,
+            remainingBudget: 0,
+            utilizationRate: 0,
+            billingCycle: 'MONTHLY',
+            nextRenewal: '',
           }
-        })
-        setAllocations(processed)
-      } catch (err) {
-        setError('Failed to load budget data')
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
+        }
+        const clientData = acc[clientId]
+        const allocated = item.allocatedAmount || 0
+        const spent = item.spentAmount || 0
+        
+        clientData.totalBudget += allocated
+        clientData.spentAmount += spent
+        
+        if (item.platform === 'META') {
+          clientData.metaBudget += allocated
+          clientData.metaSpent += spent
+        } else if (item.platform === 'GOOGLE') {
+          clientData.googleBudget += allocated
+          clientData.googleSpent += spent
+        }
+        return acc
+      }, {})
 
+      const processed = Object.values(grouped).map((item: any) => {
+        const remaining = item.totalBudget - item.spentAmount
+        const utilization = item.totalBudget > 0 ? Math.round((item.spentAmount / item.totalBudget) * 100) : 0
+        return {
+          ...item,
+          remainingBudget: remaining,
+          utilizationRate: utilization,
+        }
+      })
+      setAllocations(processed)
+    } catch (err) {
+      setError('Failed to load budget data')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
     fetchBudgets()
   }, [selectedMonth])
 
@@ -122,7 +155,10 @@ export default function BudgetAllocationsPage() {
               className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm"
               style={{ colorScheme: 'dark' }}
             />
-            <button disabled title="Coming soon" className="px-4 py-2 glass-card text-red-400 rounded-lg font-medium opacity-50 cursor-not-allowed">
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="px-4 py-2 glass-card text-red-400 rounded-lg font-medium hover:bg-white/5 transition-colors"
+            >
               + Add Budget
             </button>
           </div>
@@ -240,20 +276,35 @@ export default function BudgetAllocationsPage() {
 
               {/* Actions */}
               <div className="mt-4 flex items-center gap-2">
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg opacity-50 cursor-not-allowed">
+                <button 
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg hover:bg-slate-700/50 transition-colors"
+                >
                   Adjust Budget
                 </button>
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg opacity-50 cursor-not-allowed">
+                <Link 
+                  href="/ads/campaigns"
+                  className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg hover:bg-slate-700/50 transition-colors"
+                >
                   View Campaigns
-                </button>
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg opacity-50 cursor-not-allowed">
+                </Link>
+                <Link 
+                  href="/ads/performance/reports"
+                  className="px-3 py-1.5 text-sm bg-slate-800/50 text-slate-200 rounded-lg hover:bg-slate-700/50 transition-colors"
+                >
                   Download Report
-                </button>
+                </Link>
               </div>
             </div>
           ))
         )}
       </div>
+      <AddBudgetModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={() => fetchBudgets()}
+        selectedMonth={selectedMonth}
+      />
     </div>
   )
 }

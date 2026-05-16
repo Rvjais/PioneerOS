@@ -28,6 +28,7 @@ async function getProjects(userId: string, userRole: string) {
         : {
             OR: [
               { assigneeId: userId },
+              { creatorId: userId },
               { clientId: { in: clientIds } }
             ]
           })
@@ -46,7 +47,9 @@ const statusColors: Record<string, string> = {
   TODO: 'bg-slate-900/20 text-slate-400 border-slate-500/30',
   IN_PROGRESS: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
   IN_REVIEW: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+  REVISION: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
   DONE: 'bg-green-500/20 text-green-400 border-green-500/30',
+  COMPLETED: 'bg-green-500/20 text-green-400 border-green-500/30',
   BLOCKED: 'bg-red-500/20 text-red-400 border-red-500/30',
 }
 
@@ -63,8 +66,8 @@ export default async function WebProjectsPage() {
 
   const { projects, isManagerOrAdmin } = await getProjects(session.user.id, session.user.role as string)
 
-  const activeProjects = projects.filter(p => !['DONE', 'CANCELLED'].includes(p.status))
-  const completedProjects = projects.filter(p => p.status === 'DONE')
+  const activeProjects = projects.filter(p => !['DONE', 'CANCELLED', 'COMPLETED'].includes(p.status))
+  const completedProjects = projects.filter(p => ['DONE', 'COMPLETED'].includes(p.status))
 
   return (
     <div className="space-y-6 pb-8">

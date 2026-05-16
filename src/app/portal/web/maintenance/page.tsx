@@ -296,9 +296,9 @@ export default function MaintenancePage() {
               <div key={option.id} className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-100">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-white">{option.name}</h4>
-                  <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">
-                    Coming Soon
-                  </span>
+                  <button onClick={() => { setNotes(`Interested in ${option.name}`); setShowRequestModal(true); }} className="text-xs bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 px-2 py-0.5 rounded-full transition-colors cursor-pointer">
+                    Request Demo
+                  </button>
                 </div>
                 <p className="text-sm text-slate-300">{option.description}</p>
               </div>

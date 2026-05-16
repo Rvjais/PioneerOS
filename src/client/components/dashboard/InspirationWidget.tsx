@@ -48,10 +48,10 @@ export function InspirationWidget({ quotes }: InspirationWidgetProps) {
           </svg>
         </button>
       </div>
-      <blockquote className="text-lg font-medium mb-3 leading-relaxed">
+      <blockquote className="text-lg font-medium mb-3 leading-relaxed" suppressHydrationWarning>
         "{currentQuote.text}"
       </blockquote>
-      <p className="text-blue-100 text-sm">— {currentQuote.author}</p>
+      <p className="text-blue-100 text-sm" suppressHydrationWarning>— {currentQuote.author}</p>
     </div>
   )
 }

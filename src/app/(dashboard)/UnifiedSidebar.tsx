@@ -123,7 +123,7 @@ export async function UnifiedSidebar({ viewAsUserId }: { viewAsUserId?: string }
           depts.forEach((d: string) => {
             if (!departments.includes(d)) departments.push(d)
           })
-        } catch {}
+        } catch (e) { console.error('Failed to parse departments:', e); }
       }
       if (departments.length > 1) {
         return <BlendedNav departments={departments} />

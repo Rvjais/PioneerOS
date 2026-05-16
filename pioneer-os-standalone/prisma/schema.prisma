@@ -72,6 +72,7 @@ model User {
   sentMessages                                          ChatMessage[]                @relation("MessageSender")
   approvedAccessRequests                                ClientAccessRequest[]        @relation("ClientAccessApprover")
   clientAccessRequests                                  ClientAccessRequest[]        @relation("ClientAccessRequester")
+  contentApprovalsCreated                               ContentApproval[]            @relation("ContentApprovalCreator")
   deliverablesCreated                                   ClientDeliverable[]          @relation("DeliverableCreator")
   deliverablesReviewed                                  ClientDeliverable[]          @relation("DeliverableReviewer")
   deliverablesSubmitted                                 ClientDeliverable[]          @relation("DeliverableSubmitter")
@@ -161,6 +162,10 @@ model User {
   seoContentWritten                                     SeoContent[]                 @relation("ContentWriter")
   seoTasksAssigned                                      SeoTask[]                    @relation("SeoTaskAssignee")
   seoTasksReviewing                                     SeoTask[]                    @relation("SeoTaskReviewer")
+  qcReviewsSubmitted                                   QcReview[]                   @relation("QcReviewSubmitter")
+  qcReviewsReviewed                                    QcReview[]                   @relation("QcReviewer")
+  approvalsSubmitted                                   ClientApproval[]            @relation("ApprovalSubmitter")
+  youTubeVideosAssigned                                YouTubeVideo[]               @relation("YouTubeAssignee")
   sharedWhatsAppChats                                   SharedWhatsAppChat[]
   socialMediaPageMetrics                                SocialMediaPageMetrics[]
   socialMediaPosts                                      SocialMediaPost[]
@@ -459,6 +464,10 @@ model Client {
   seoContent                SeoContent[]               @relation("SeoContent")
   seoKeywords               SeoKeyword[]               @relation("SeoKeywords")
   seoTasks                  SeoTask[]                  @relation("SeoTasks")
+  qcReviews                 QcReview[]                 @relation("QcReviews")
+  clientApprovals           ClientApproval[]          @relation("ClientApprovals")
+  youTubeVideos             YouTubeVideo[]            @relation("YouTubeVideos")
+  seoReports                SeoReport[]               @relation("SeoReports")
   terminations              ServiceTermination[]
   sharedWhatsAppChats       SharedWhatsAppChat[]
   socialMediaPageMetrics    SocialMediaPageMetrics[]
@@ -5030,6 +5039,7 @@ model ContentApproval {
   title          String
   description    String?
   type           String      @default("CONTENT")
+  specifications String?     // JSON: { designType, assignedDesignerId, referenceUrls }
   contentUrl     String?
   previewUrl     String?
   attachments    String?
@@ -5047,6 +5057,7 @@ model ContentApproval {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   client         Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdBy      User        @relation("ContentApprovalCreator", fields: [createdById], references: [id])
   reviewedBy     ClientUser? @relation("ApprovalReviewer", fields: [reviewedById], references: [id])
 
   @@index([clientId])
@@ -5055,6 +5066,7 @@ model ContentApproval {
   @@index([priority])
   @@index([dueDate])
   @@index([reviewedById])
+  @@index([createdById])
 }
 
 model ClientAccessRequest {
@@ -6017,4 +6029,92 @@ model ConversionEvent {
   @@index([platform])
   @@index([occurredAt])
   @@index([clientId, occurredAt])
+}
+
+model QcReview {
+  id           String   @id @default(cuid())
+  clientId     String
+  taskTitle    String
+  taskType     String   @default("Content")
+  submittedById String?
+  submittedAt  DateTime @default(now())
+  reviewerId   String?
+  reviewedAt   DateTime?
+  status       String   @default("PENDING_REVIEW")
+  feedback     String?
+  priority     String   @default("MEDIUM")
+  deadline     DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  client       Client   @relation("QcReviews", fields: [clientId], references: [id], onDelete: Cascade)
+  submittedBy  User?    @relation("QcReviewSubmitter", fields: [submittedById], references: [id])
+  reviewer     User?    @relation("QcReviewer", fields: [reviewerId], references: [id])
+
+  @@index([clientId])
+  @@index([status])
+  @@index([submittedById])
+}
+
+model ClientApproval {
+  id             String   @id @default(cuid())
+  clientId       String
+  deliverable    String
+  deliverableType String @default("Content Draft")
+  submittedById  String?
+  submittedAt    DateTime @default(now())
+  reviewerName   String?
+  status         String   @default("PENDING")
+  feedback       String?
+  dueDate        DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  client         Client   @relation("ClientApprovals", fields: [clientId], references: [id], onDelete: Cascade)
+  submittedBy    User?    @relation("ApprovalSubmitter", fields: [submittedById], references: [id])
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model YouTubeVideo {
+  id              String   @id @default(cuid())
+  clientId        String
+  videoTitle      String
+  videoUrl        String?
+  thumbnailUrl    String?
+  channelName     String?
+  views           Int      @default(0)
+  likes           Int      @default(0)
+  comments        Int      @default(0)
+  subscribers     Int      @default(0)
+  duration        String?
+  publishedAt     DateTime?
+  status          String   @default("TODO")
+  priority        String   @default("MEDIUM")
+  assignedToId    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  client          Client   @relation("YouTubeVideos", fields: [clientId], references: [id], onDelete: Cascade)
+  assignedTo      User?    @relation("YouTubeAssignee", fields: [assignedToId], references: [id])
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model SeoReport {
+  id           String   @id @default(cuid())
+  clientId     String
+  title        String
+  reportType   String   @default("Monthly SEO Report")
+  period       String?
+  status       String   @default("DRAFT")
+  metrics      Json?
+  publishedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  client       Client   @relation("SeoReports", fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([status])
 }

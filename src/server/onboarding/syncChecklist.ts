@@ -68,7 +68,10 @@ export async function syncProposalToChecklist(proposal: ProposalState) {
     checklistData.accountManagerAssigned = true
   }
   if (proposal.teamAllocated) {
-    checklistData.teamIntroductionDone = false // Team allocated but intro not done yet
+    // Only set to false if it wasn't already done (don't overwrite existing completion)
+    if (checklistData.teamIntroductionDone === undefined) {
+      checklistData.teamIntroductionDone = false
+    }
   }
   if (proposal.portalActivated) {
     checklistData.communicationChannelSetup = true

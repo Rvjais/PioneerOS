@@ -972,6 +972,15 @@ export default async function DashboardPage() {
           </DashboardWithCelebrations>
         )
       }
+      case 'OM':
+      case 'BLENDED_USER': {
+        const defaultData = await getDefaultEmployeeDashboardData(userId)
+        return (
+          <DashboardWithCelebrations>
+            <EmployeeDashboard {...defaultData} />
+          </DashboardWithCelebrations>
+        )
+      }
       case 'EMPLOYEE': {
         // Route to department-specific dashboard based on work type
         // Note: HR department employees get employee dashboard, not HR admin dashboard
@@ -1114,7 +1123,7 @@ export default async function DashboardPage() {
             </div>
           </Link>
           <Link
-            href="/employee-onboarding"
+            href="/hr/employee-onboarding"
             className="flex items-center gap-4 px-5 py-4 bg-[#141A25]/50 border border-white/5 hover:border-blue-500/30 rounded-xl hover:bg-blue-500/5 hover:-translate-y-1 transition-all group/item shadow-inner"
           >
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 group-hover/item:scale-110 transition-transform shadow-[0_0_15px_rgba(59,130,246,0.15)]">

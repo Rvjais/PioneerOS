@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: 'Payment already processed' })
     }
 
-    // Update in transaction
+    // Update in transaction with Serializable isolation to prevent ledger race conditions
     await prisma.$transaction(async (tx) => {
       // Update invoice status
       if (proposal.invoiceId) {

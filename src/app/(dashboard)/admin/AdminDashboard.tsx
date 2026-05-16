@@ -56,8 +56,8 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
       setMagicLinkUserId(e.detail.userId)
       setMagicLinkEmail(e.detail.email)
     }
-    window.addEventListener('generate-magic-link', handleMagicLink as EventListener)
-    return () => window.removeEventListener('generate-magic-link', handleMagicLink as EventListener)
+    window.addEventListener('generate-magic-link', handleMagicLink as unknown as EventListener)
+    return () => window.removeEventListener('generate-magic-link', handleMagicLink as unknown as EventListener)
   }, [])
 
   const handleGenerateMagicLink = async () => {
@@ -114,7 +114,6 @@ export default function AdminDashboard({ stats, users, settings, clients }: Prop
 
   const handleSaveUser = async (data: { firstName: string; lastName: string | null; email: string | null; phone: string; role: string; department: string; employeeType: string; status: string }) => {
     if (!editingUser) return
-    console.log('AdminDashboard: handleSaveUser called for user:', editingUser.id)
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {

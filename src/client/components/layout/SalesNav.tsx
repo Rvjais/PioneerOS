@@ -15,10 +15,15 @@ const salesNavigation = [
   { name: 'RFP Manager', href: '/sales/rfp-manager', icon: 'rfp' },
   { name: 'Meetings', href: '/sales/meetings', icon: 'meetings' },
   { name: 'Deals', href: '/sales/deals', icon: 'deals' },
-  { name: 'Handovers', href: '/sales/handovers', icon: 'handover' },
+  { name: 'Client Onboarding', href: '/accounts/client-onboarding', icon: 'handover' },
   { name: 'Nurturing', href: '/sales/nurturing', icon: 'nurturing' },
   { name: 'Performance', href: '/sales/performance', icon: 'performance' },
   { name: 'Reports', href: '/sales/reports', icon: 'reports' },
+  { name: 'Team Chat', href: '/mash', icon: 'whatsapp' },
+  { name: 'Org Chart', href: '/team/org-chart', icon: 'performance' },
+  { name: 'Directory', href: '/directory', icon: 'leads' },
+  { name: 'Knowledge Base', href: '/knowledge', icon: 'reports' },
+  { name: 'SOP Library', href: '/sop', icon: 'rfp' },
 ]
 
 const icons: Record<string, ReactNode> = {

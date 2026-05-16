@@ -443,7 +443,7 @@ function LeadsCRMContent() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="glass-card rounded-xl w-full max-w-lg mx-4 overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-800">Add New Lead</h2>
+              <h2 className="font-semibold text-white">Add New Lead</h2>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-300">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -453,7 +453,7 @@ function LeadsCRMContent() {
             <div className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Company Name * <InfoTip text="Full business name of the potential client. Use the name they go by publicly." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Company Name * <InfoTip text="Full business name of the potential client. Use the name they go by publicly." /></label>
                   <input
                     type="text"
                     value={newLead.companyName}
@@ -463,7 +463,7 @@ function LeadsCRMContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Contact Name * <InfoTip text="Decision-maker or primary contact person you're speaking with." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Contact Name * <InfoTip text="Decision-maker or primary contact person you're speaking with." /></label>
                   <input
                     type="text"
                     value={newLead.contactName}
@@ -475,7 +475,7 @@ function LeadsCRMContent() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email <InfoTip text="Email of the contact person. Verify it's the right person before adding." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Email <InfoTip text="Email of the contact person. Verify it's the right person before adding." /></label>
                   <input
                     type="email"
                     value={newLead.contactEmail}
@@ -485,7 +485,7 @@ function LeadsCRMContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Phone <InfoTip text="WhatsApp-enabled number with country code. Used for follow-up calls." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Phone <InfoTip text="WhatsApp-enabled number with country code. Used for follow-up calls." /></label>
                   <input
                     type="tel"
                     value={newLead.contactPhone}
@@ -497,7 +497,7 @@ function LeadsCRMContent() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Priority <InfoTip text="HOT = ready to buy soon, WARM = interested but not urgent, COLD = early stage or unresponsive." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Priority <InfoTip text="HOT = ready to buy soon, WARM = interested but not urgent, COLD = early stage or unresponsive." /></label>
                   <select
                     value={newLead.leadPriority}
                     onChange={(e) => setNewLead({ ...newLead, leadPriority: e.target.value })}
@@ -509,7 +509,7 @@ function LeadsCRMContent() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Estimated Value <InfoTip text="Expected monthly retainer if they convert. Helps prioritize pipeline." /></label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Estimated Value <InfoTip text="Expected monthly retainer if they convert. Helps prioritize pipeline." /></label>
                   <input
                     type="number"
                     value={newLead.value}
@@ -544,7 +544,7 @@ function LeadsCRMContent() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="glass-card rounded-xl w-full max-w-md mx-4 overflow-hidden">
             <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-800">
+              <h2 className="font-semibold text-white">
                 {showActionModal.type === 'CALL' ? 'Log Call' : 'Add Note'}
               </h2>
               <button onClick={() => setShowActionModal(null)} className="text-slate-400 hover:text-slate-600">
@@ -554,7 +554,7 @@ function LeadsCRMContent() {
               </button>
             </div>
             <div className="p-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Action Notes <InfoTip text="What was discussed, agreed upon, and next steps. Be specific for your future self." /></label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Action Notes <InfoTip text="What was discussed, agreed upon, and next steps. Be specific for your future self." /></label>
               <textarea
                 value={actionNote}
                 onChange={(e) => setActionNote(e.target.value)}

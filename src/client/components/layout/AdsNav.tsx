@@ -39,8 +39,8 @@ const adsNavigation = [
     category: 'Main',
     items: [
       { name: 'Dashboard', href: '/ads', icon: LayoutDashboard },
-      { name: 'Daily Planner', href: '/ads/daily-planner', icon: Calendar },
-      { name: 'Calendar', href: '/ads/calendar', icon: CalendarDays },
+      { name: 'Daily Planner', href: '/tasks/daily', icon: Calendar },
+      { name: 'Calendar', href: '/calendar', icon: CalendarDays },
     ],
   },
   {
@@ -98,6 +98,13 @@ const adsNavigation = [
       { name: 'Arcade', href: '/arcade', icon: Gamepad2 },
     ],
   },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: LightbulbIcon },
+      { name: 'SOP Library', href: '/sop', icon: ClipboardList },
+    ],
+  },
 ]
 
 interface TeamMember {
@@ -109,6 +116,9 @@ interface TeamMember {
 interface AdsNavProps {
   onNavigate?: () => void
 }
+
+const adsLeadRoles = ['MANAGER', 'OPERATIONS_HEAD', 'SUPER_ADMIN']
+const adsLeadOnlyCategories = ['Reporting', 'Performance Analytics']
 
 export function AdsNav({ onNavigate }: AdsNavProps) {
   const pathname = usePathname()
@@ -174,7 +184,14 @@ export function AdsNav({ onNavigate }: AdsNavProps) {
 
       {/* Navigation */}
       <nav className="p-3">
-        {adsNavigation.map((section) => (
+        {adsNavigation
+          .filter(section => {
+            if (adsLeadOnlyCategories.includes(section.category)) {
+              return adsLeadRoles.includes(userRole || '') || userRole === 'ADS'
+            }
+            return true
+          })
+          .map((section) => (
           <div key={section.category} className="mb-4">
             <h3 className="flex items-center justify-between w-full px-2 py-1.5 text-xs font-semibold text-slate-300 uppercase tracking-wider hover:text-slate-100">
               {section.category}

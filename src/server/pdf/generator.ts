@@ -276,7 +276,8 @@ export function generateInvoicePDF(data: InvoicePDFData): Buffer {
     ['Subtotal', formatINR(data.amount, curr)],
   ]
   if (data.tax > 0) {
-    totals.push(['GST (18%)', formatINR(data.tax, curr)])
+    const taxRate = data.amount > 0 ? Math.round((data.tax / data.amount) * 100) : 0
+    totals.push([`GST (${taxRate}%)`, formatINR(data.tax, curr)])
   }
   if (data.tds && data.tds > 0) {
     totals.push(['TDS Deducted', `- ${formatINR(data.tds, curr)}`])

@@ -26,8 +26,8 @@ export function DailyMeetingForm({ onComplete, isBlocking = false }: DailyMeetin
   const [workLocation, setWorkLocation] = useState('OFFICE')
 
   // Time tracking
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const isLateTime = currentTime.getHours() >= 11
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const isLateTime = currentTime ? currentTime.getHours() >= 11 : false
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -114,6 +114,7 @@ export function DailyMeetingForm({ onComplete, isBlocking = false }: DailyMeetin
   }
 
   const greeting = () => {
+    if (!currentTime) return 'Hello'
     const hour = currentTime.getHours()
     if (hour < 12) return 'Good Morning'
     if (hour < 17) return 'Good Afternoon'
@@ -136,7 +137,7 @@ export function DailyMeetingForm({ onComplete, isBlocking = false }: DailyMeetin
           <div className="mt-4 flex items-center justify-center gap-2">
             <span className={`text-sm px-3 py-1 rounded-full ${isLateTime ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'
               }`}>
-              {currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+              {currentTime ? currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '--:--'}
               {isLateTime && ' (Late check-in)'}
             </span>
           </div>

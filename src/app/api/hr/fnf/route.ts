@@ -165,8 +165,17 @@ const allowedRoles = ['SUPER_ADMIN', 'MANAGER', 'HR']
     })
 
     const monthlySalary = baseline?.baseSalary || DEFAULT_MONTHLY_SALARY
-    const dailyRate = roundMoney(divideMoney(monthlySalary, 30))
-    const salaryDues = roundMoney(multiplyMoney(dailyRate, daysRemaining))
+    // Use actual days in current month for daily rate calculation
+    const now = new Date()
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+    const dailyRate = roundMoney(divideMoney(monthlySalary, daysInMonth))
+    // Only count weekdays as working days
+    const workingDaysRemaining = Array.from({ length: daysRemaining }, (_, i) => {
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i)
+      const day = d.getDay()
+      return day !== 0 && day !== 6 ? 1 : 0
+    }).reduce((a, b) => a + b, 0)
+    const salaryDues = roundMoney(multiplyMoney(dailyRate, workingDaysRemaining))
 
     if (salaryDues > 0) {
       lineItems.push({

@@ -546,10 +546,8 @@ export const EXPERIENCE_LEVELS = [
   { value: 'LEAD', label: 'Lead (8+ years)', minYears: 8, maxYears: null },
 ] as const
 
-// TODO: These leave types are hardcoded defaults. They should be configurable
-// via admin settings (SystemSetting model, category: 'leave_policy', key: 'leave_types').
-// An admin UI at /settings/leave-policy should allow adding/removing types and
-// adjusting maxDays, paidLeave, etc. Until then, these serve as fallback defaults.
+// These leave types serve as fallback defaults and should be overridden
+// via SystemSetting model (category: 'leave_policy', key: 'leave_types') when available.
 export const LEAVE_TYPES = [
   { value: 'CASUAL', label: 'Casual Leave', paidLeave: true, maxDays: 12 },
   { value: 'SICK', label: 'Sick Leave', paidLeave: true, maxDays: 6 },

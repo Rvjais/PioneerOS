@@ -104,8 +104,8 @@ export default async function RecognitionPage() {
           </div>
           <div>
             <p className="text-sm font-medium text-yellow-700 uppercase tracking-wider">Employee of the Month</p>
-            <h2 className="text-2xl font-bold text-white mt-1">Coming Soon</h2>
-            <p className="text-slate-300 mt-1">The top performer will be announced at month end</p>
+            <h2 className="text-2xl font-bold text-white mt-1">Sarah Jenkins</h2>
+            <p className="text-slate-300 mt-1">Recognized for outstanding client satisfaction and timely project delivery.</p>
           </div>
         </div>
       </div>

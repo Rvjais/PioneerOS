@@ -83,9 +83,9 @@ async function getCalendarData(userId: string, department: string, isManager: bo
     }),
 
     // Payments
-    prisma.payment.findMany({
+    prisma.paymentCollection.findMany({
       where: {
-        paymentDate: {
+        collectedAt: {
           gte: startOfMonth,
           lte: endOfMonth,
         },
@@ -93,7 +93,7 @@ async function getCalendarData(userId: string, department: string, isManager: bo
       include: {
         client: { select: { id: true, name: true } },
       },
-      orderBy: { paymentDate: 'asc' },
+      orderBy: { collectedAt: 'asc' },
     }),
 
     // Expenses
@@ -148,8 +148,8 @@ async function getCalendarData(userId: string, department: string, isManager: bo
     payments: payments.map(payment => ({
       id: payment.id,
       title: `Payment from ${payment.client?.name || 'Client'}`,
-      date: serializeDate(payment.paymentDate)!,
-      amount: payment.amount,
+      date: serializeDate(payment.collectedAt)!,
+      amount: payment.netAmount,
       status: payment.status,
     })),
     expenses: expenses.map(expense => ({

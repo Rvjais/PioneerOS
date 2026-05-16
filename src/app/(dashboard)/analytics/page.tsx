@@ -248,7 +248,7 @@ export default async function AnalyticsPage() {
 
   const { metrics, clientHealthStats } = await getAnalyticsData(
     (session.user as any).id,
-    effectiveRole || 'EMPLOYEE'
+    session.user.role || 'EMPLOYEE'
   )
 
   const formatCurrency = (amount: number) => {
@@ -271,9 +271,9 @@ export default async function AnalyticsPage() {
           <p className="text-slate-400 mt-1">Comprehensive performance metrics and insights</p>
         </div>
         <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-sm font-medium rounded-full">
-          {effectiveRole === 'SUPER_ADMIN' ? 'Super Admin' :
-           effectiveRole === 'OPERATIONS_HEAD' ? 'Operations Manager' :
-           effectiveRole === 'MANAGER' ? 'Manager' : 'Leadership'} View
+          {session.user.role === 'SUPER_ADMIN' ? 'Super Admin' :
+           session.user.role === 'OPERATIONS_HEAD' ? 'Operations Manager' :
+           session.user.role === 'MANAGER' ? 'Manager' : 'Leadership'} View
         </span>
       </div>
 

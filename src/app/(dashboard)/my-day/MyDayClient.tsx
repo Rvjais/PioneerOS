@@ -138,12 +138,13 @@ export default function MyDayClient({
 
     setSaving(true)
     try {
-      const res = await fetch('/api/daily/tasks', {
+      const res = await fetch('/api/tasks/daily', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId,
-          ...newTask,
+          activityType: newTask.activityType,
+          description: newTask.description,
+          plannedHours: newTask.plannedHours,
         }),
       })
 
@@ -162,7 +163,7 @@ export default function MyDayClient({
   const handleStartTask = async (taskId: string) => {
     setSaving(true)
     try {
-      const res = await fetch(`/api/daily/tasks/${taskId}/start`, {
+      const res = await fetch(`/api/tasks/daily/${taskId}/start`, {
         method: 'POST',
       })
 
@@ -181,7 +182,7 @@ export default function MyDayClient({
   const handleCompleteTask = async (taskId: string) => {
     setSaving(true)
     try {
-      const res = await fetch(`/api/daily/tasks/${taskId}/complete`, {
+      const res = await fetch(`/api/tasks/daily/${taskId}/complete`, {
         method: 'POST',
       })
 

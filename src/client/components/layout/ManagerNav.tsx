@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { type ReactNode } from 'react'
 import { useSession } from 'next-auth/react'
 import { ExternalQuickLinks } from './ExternalQuickLinks'
 
@@ -28,7 +29,7 @@ const managerNavigation = [
     items: [
       { name: 'Directory', href: '/directory', icon: 'performance' },
       { name: 'Org Chart', href: '/team/org-chart', icon: 'seo' },
-      { name: 'Departments', href: '/admin/departments', icon: 'ads' },
+      { name: 'Departments', href: '/team', icon: 'ads' },
       { name: 'Team Chat', href: '/mash', icon: 'chat' },
     ]
   },
@@ -43,8 +44,8 @@ const managerNavigation = [
   {
     category: 'Finance',
     items: [
-      { name: 'Invoices', href: '/invoices', icon: 'invoices' },
-      { name: 'Expenses', href: '/expenses', icon: 'collections' },
+      { name: 'Invoices', href: '/finance/invoices', icon: 'invoices' },
+      { name: 'Expenses', href: '/accounts/expenses', icon: 'collections' },
       { name: 'Finance Overview', href: '/accounts/finance-overview', icon: 'delays' },
     ]
   },
@@ -62,6 +63,13 @@ const managerNavigation = [
       { name: 'Tasks', href: '/tasks', icon: 'mash' },
       { name: 'Meetings', href: '/meetings', icon: 'compliance' },
       { name: 'Reports', href: '/reports', icon: 'problems' },
+    ]
+  },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: 'seo' },
+      { name: 'SOP Library', href: '/sop', icon: 'compliance' },
     ]
   },
 ]
@@ -180,7 +188,7 @@ export function ManagerNav() {
       <div className="shrink-0 p-3 border-t border-slate-200 bg-slate-50">
         <div className="grid grid-cols-2 gap-2">
           <Link
-            href="/manager/clients/escalations"
+            href="/hr/escalations"
             className="flex items-center justify-center gap-1.5 px-2 py-2 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-800 transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,13 +197,13 @@ export function ManagerNav() {
             Escalations
           </Link>
           <Link
-            href="/manager/operations/mash-tasks"
+            href="/tasks/new"
             className="flex items-center justify-center gap-1.5 px-2 py-2 text-xs font-semibold text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 hover:text-purple-800 transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            MASH Task
+            New Task
           </Link>
         </div>
       </div>

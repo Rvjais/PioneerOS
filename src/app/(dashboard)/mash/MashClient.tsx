@@ -268,18 +268,19 @@ export function MashClient(props: Props) {
   }
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
-      {/* Sidebar */}
-      <div className="w-64 bg-slate-50 border-r border-slate-200 flex flex-col">
+    <div className="h-[calc(100vh-8rem)] flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+      {/* Sidebar - Hidden on mobile when chat is open */}
+      <div className="w-full sm:w-64 bg-slate-50 border-r border-slate-200 flex flex-col sm:flex-shrink-0">
         {/* Team Chat Header */}
-        <div className="p-4 border-b border-slate-200">
-          <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="p-3 sm:p-4 border-b border-slate-200">
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <svg className="w-5 h-5 sm:w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            {TEAM_CHAT.name}
+            <span className="hidden sm:inline">{TEAM_CHAT.name}</span>
+            <span className="sm:hidden">Team Chat</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">{TEAM_CHAT.description}</p>
+          <p className="text-xs text-slate-400 mt-1 hidden sm:block">{TEAM_CHAT.description}</p>
         </div>
 
         {/* Channels */}
@@ -420,9 +421,21 @@ export function MashClient(props: Props) {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Chat Header */}
-        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
+        <div className="px-3 sm:px-6 py-2 sm:py-4 border-b border-slate-200 bg-slate-50">
+          {/* Mobile back button */}
+          <button
+            onClick={() => {
+              setShowDMs(false)
+              setSelectedChannel(initialChannels[0] || null)
+            }}
+            className="sm:hidden mb-2 p-1 text-slate-500 hover:text-slate-700"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
           {showDMs && selectedDMUser ? (
             <div className="flex items-center gap-3">
               <UserAvatar user={selectedDMUser} size="lg" />
@@ -447,7 +460,7 @@ export function MashClient(props: Props) {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-4">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
@@ -522,8 +535,8 @@ export function MashClient(props: Props) {
 
         {/* Message Input */}
         {(canPost || showDMs) && (
-          <div className="p-4 border-t border-slate-200 bg-slate-50">
-            <div className="flex items-center gap-3">
+          <div className="p-2 sm:p-4 border-t border-slate-200 bg-slate-50">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="flex-1 relative">
                 <input
                   type="text"
@@ -542,18 +555,18 @@ export function MashClient(props: Props) {
                       ? 'Post an announcement...'
                       : `Message #${selectedChannel?.name}...`
                   }
-                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border border-slate-200 rounded-xl text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
               </div>
               <button
                 onClick={handleSendMessage}
                 disabled={sendingMessage || !newMessage.trim()}
-                className="px-4 py-3 bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-white transition-colors flex items-center gap-2"
+                className="p-2 sm:px-4 sm:py-3 bg-purple-500 hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-white transition-colors flex items-center gap-2"
               >
                 {sendingMessage ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 )}

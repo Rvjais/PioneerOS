@@ -38,7 +38,7 @@ export const ENTITY_TYPES = [
     name: 'Branding Pioneers',
     legalName: 'Branding Pioneers',
     address: '750, Udyog Vihar, Third Floor, Gurgaon, Haryana',
-    gstin: process.env.COMPANY_GSTIN || '', // TODO: Add actual GSTIN for Branding Pioneers
+    gstin: process.env.COMPANY_GSTIN || '', // Set COMPANY_GSTIN env var for actual GSTIN
     bank: {
       name: 'HDFC Bank',
       branch: 'Udyog Vihar, Gurgaon',

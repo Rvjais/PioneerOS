@@ -81,13 +81,15 @@ export default async function ReferralBonusPage() {
                     </h1>
                     <p className="text-slate-400 mt-1">Track employee and client referral bonuses</p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-700/50 text-slate-400 rounded-xl font-medium cursor-not-allowed">
+                <Link 
+                    href="?add=true"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors"
+                >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                     Submit Referral
-                    <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded ml-2">Coming Soon</span>
-                </div>
+                </Link>
             </div>
 
             {/* Stats */}

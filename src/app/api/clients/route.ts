@@ -6,6 +6,7 @@ export const GET = withAuth(async (req, { user, params }) => {
   try {
 const { searchParams } = new URL(req.url)
     const onboarding = searchParams.get('onboarding')
+    const includeLifecycle = searchParams.get('includeLifecycle') === 'true'
     const status = searchParams.get('status')
     const search = searchParams.get('search')
 
@@ -82,7 +83,12 @@ const { searchParams } = new URL(req.url)
           lifecycleStage: true,
           tier: true,
           monthlyFee: true,
+          billingType: true,
+          paymentStatus: true,
+          currentPaymentStatus: true,
+          pendingAmount: true,
           services: true,
+          selectedServices: true,
           createdAt: true,
           updatedAt: true,
           startDate: true,

@@ -109,35 +109,34 @@ export async function POST(request: NextRequest) {
       phoneVariants.push(digits, `+${digits}`, digits.slice(2))
     }
 
-    // Find user and delete existing tokens in parallel to save time
-    const [user] = await Promise.all([
-      prisma.user.findFirst({
-        where: {
-          deletedAt: null,
-          OR: [
-            { email: identifier },
-            { phone: { in: phoneVariants } },
-            { empId: identifier.toUpperCase() },
-          ],
-          status: { in: ['ACTIVE', 'PROBATION'] },
-        },
-      }),
-      prisma.magicLinkToken.deleteMany({
-        where: {
-          user: {
-            OR: [
-              { email: identifier },
-              { phone: { in: phoneVariants } },
-              { empId: identifier.toUpperCase() },
-            ],
-          },
-          usedAt: null,
-        },
-      })
-    ])
+    // Find user first, then delete tokens only for existing users
+    const user = await prisma.user.findFirst({
+      where: {
+        deletedAt: null,
+        OR: [
+          { email: identifier },
+          { phone: { in: phoneVariants } },
+          { empId: identifier.toUpperCase() },
+        ],
+        status: { in: ['ACTIVE', 'PROBATION'] },
+      },
+    })
 
     if (!user) {
       // Don't reveal if user exists or not for security
+      return NextResponse.json({
+        success: true,
+        message: 'If an account exists, a login link has been sent.',
+      })
+    }
+
+    // Add per-user rate limiting (in addition to per-IP)
+    const userRateLimitKey = `magic-link-user:${user.id}`
+    const userRateLimit = await checkRateLimit(userRateLimitKey, {
+      maxRequests: 3,
+      windowMs: 15 * 60 * 1000,
+    })
+    if (!userRateLimit.success) {
       return NextResponse.json({
         success: true,
         message: 'If an account exists, a login link has been sent.',
@@ -157,8 +156,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Existing tokens already deleted by Promise.all above
+    // Atomically delete old tokens and create new token
+    const token = generateToken()
+    const tokenHash = hashToken(token)
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
 
+    await prisma.$transaction([
+      prisma.magicLinkToken.deleteMany({
+        where: { userId: user.id, usedAt: null },
+      }),
+      prisma.magicLinkToken.create({
+        data: { token: tokenHash, userId: user.id, channel: effectiveChannel, expiresAt },
+      }),
+    ])
 
     // Opportunistic cleanup: purge expired/used tokens older than 24h (all users)
     // Non-blocking — don't await
@@ -170,20 +180,6 @@ export async function POST(request: NextRequest) {
         ],
       },
     }).catch(() => { /* ignore cleanup failures */ })
-
-    // Create new token -- store hash in DB, send raw token to user
-    const token = generateToken()
-    const tokenHash = hashToken(token)
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
-
-    await prisma.magicLinkToken.create({
-      data: {
-        token: tokenHash,
-        userId: user.id,
-        channel: effectiveChannel,
-        expiresAt,
-      },
-    })
 
     if (effectiveChannel === 'EMAIL' && user.email) {
       // Send email via Resend

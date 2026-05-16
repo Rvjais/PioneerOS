@@ -10,34 +10,34 @@ interface StatsRowProps {
 
 export function StatsRow({ totalPlanned, totalActual, taskCount, plan }: StatsRowProps) {
   return (
-    <div className="grid grid-cols-5 gap-4">
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm">Planned Hours</p>
-        <p className="text-2xl font-bold text-white">{totalPlanned.toFixed(1)}h</p>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+      <div className="bg-slate-800/50 rounded-xl p-2 sm:p-4 border border-slate-700">
+        <p className="text-slate-400 text-xs sm:text-sm">Planned Hours</p>
+        <p className="text-xl sm:text-2xl font-bold text-white">{totalPlanned.toFixed(1)}h</p>
       </div>
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm">Actual Hours</p>
-        <p className={`text-2xl font-bold ${totalActual < 4 ? 'text-red-400' : 'text-green-400'}`}>
+      <div className="bg-slate-800/50 rounded-xl p-2 sm:p-4 border border-slate-700">
+        <p className="text-slate-400 text-xs sm:text-sm">Actual Hours</p>
+        <p className={`text-xl sm:text-2xl font-bold ${totalActual < 4 ? 'text-red-400' : 'text-green-400'}`}>
           {totalActual.toFixed(1)}h
         </p>
       </div>
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm">Tasks</p>
-        <p className="text-2xl font-bold text-white">{taskCount}</p>
+      <div className="bg-slate-800/50 rounded-xl p-2 sm:p-4 border border-slate-700">
+        <p className="text-slate-400 text-xs sm:text-sm">Tasks</p>
+        <p className="text-xl sm:text-2xl font-bold text-white">{taskCount}</p>
       </div>
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm">Status</p>
-        <p className={`text-lg font-semibold ${plan?.status === 'SUBMITTED' ? 'text-green-400' : 'text-amber-400'}`}>
+      <div className="bg-slate-800/50 rounded-xl p-2 sm:p-4 border border-slate-700">
+        <p className="text-slate-400 text-xs sm:text-sm">Status</p>
+        <p className={`text-base sm:text-lg font-semibold ${plan?.status === 'SUBMITTED' ? 'text-green-400' : 'text-amber-400'}`}>
           {plan?.status || 'Not Started'}
         </p>
         {plan?.submittedAt && (
-          <p className={`text-xs ${plan.submittedBeforeHuddle ? 'text-green-400' : 'text-red-400'}`}>
-            {plan.submittedBeforeHuddle ? 'Submitted before huddle' : 'Submitted after huddle'}
+          <p className={`text-[10px] sm:text-xs ${plan.submittedBeforeHuddle ? 'text-green-400' : 'text-red-400'}`}>
+            {plan.submittedBeforeHuddle ? 'Before huddle' : 'After huddle'}
           </p>
         )}
       </div>
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm mb-2">Breakthrough Rate</p>
+      <div className="col-span-2 sm:col-span-1 bg-slate-800/50 rounded-xl p-2 sm:p-4 border border-slate-700">
+        <p className="text-slate-400 text-xs sm:text-sm mb-1 sm:mb-2">Breakthrough</p>
         <BreakthroughStats compact />
       </div>
     </div>

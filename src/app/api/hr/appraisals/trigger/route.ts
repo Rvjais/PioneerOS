@@ -16,8 +16,6 @@ export const POST = withAuth(async (req, { user, params }) => {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    // TODO: Consider enforcing minimum learning hours before allowing appraisal
-    // eligibility. Currently learning hours are tracked but not gated here.
     // Trigger appraisals
     const results = await triggerEligibleAppraisals()
 

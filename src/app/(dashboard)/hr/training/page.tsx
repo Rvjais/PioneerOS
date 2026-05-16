@@ -59,13 +59,15 @@ export default async function TrainingPage() {
           <h1 className="text-2xl font-bold text-white">Training Management</h1>
           <p className="text-slate-300">Manage employee training and certifications</p>
         </div>
-        <div className="px-4 py-2 bg-slate-700/50 text-slate-400 rounded-lg flex items-center gap-2 cursor-not-allowed">
+        <Link 
+          href="?add=true"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+        >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Add Training
-          <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded">Coming Soon</span>
-        </div>
+        </Link>
       </div>
 
       {/* Stats */}

@@ -57,7 +57,7 @@ export default function ProformaInvoicePage() {
 
   const fetchInvoices = async () => {
     try {
-      const res = await fetch('/api/accounts/proforma-invoices')
+      const res = await fetch('/api/accounts/proforma-invoice')
       if (res.ok) {
         const data = await res.json()
         setInvoices(data.invoices || [])
@@ -105,7 +105,7 @@ export default function ProformaInvoicePage() {
 
     // Save to API
     try {
-      await fetch('/api/accounts/proforma-invoices', {
+      await fetch('/api/accounts/proforma-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(invoice)
@@ -128,7 +128,7 @@ export default function ProformaInvoicePage() {
     ))
 
     try {
-      await fetch(`/api/accounts/proforma-invoices/${id}`, {
+      await fetch(`/api/accounts/proforma-invoice/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

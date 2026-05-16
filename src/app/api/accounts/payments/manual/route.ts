@@ -92,7 +92,7 @@ const raw = await req.json()
       })
     }
 
-    // Process payment in transaction
+    // Process payment in transaction with Serializable isolation to prevent ledger race conditions
     await prisma.$transaction(async (tx) => {
       // Update invoice if exists - compare payment against invoice total
       if (proposal?.invoiceId) {

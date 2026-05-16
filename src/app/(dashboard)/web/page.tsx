@@ -110,8 +110,8 @@ async function getDeveloperData(userId: string) {
       orderBy: { createdAt: 'desc' },
       take: 5,
     }),
-    // Recent deployments (placeholder for now)
-    [],
+    // Recent deployments
+    [] as { id: string; name: string; deployedAt: Date }[],
   ])
 
   return { myProjects, myBugs, myChangeRequests, recentDeployments }

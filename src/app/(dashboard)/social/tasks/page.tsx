@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -25,6 +27,17 @@ export default function SocialTasksPage() {
   const [tasks, setTasks] = useState<SocialTask[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('ALL')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [formData, setFormData] = useState({
+    title: '',
+    client: '',
+    platform: 'All',
+    taskType: 'Content Planning',
+    priority: 'MEDIUM',
+    deadline: '',
+  })
 
   useEffect(() => {
     fetch('/api/tasks?department=SOCIAL_MEDIA')
@@ -44,9 +57,52 @@ export default function SocialTasksPage() {
         }))
         setTasks(mapped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load tasks:', error); toast.error('Failed to load tasks. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          description: `Platform: ${formData.platform}, Type: ${formData.taskType}`,
+          type: formData.taskType,
+          priority: formData.priority,
+          dueDate: formData.deadline,
+          department: 'SOCIAL_MEDIA',
+          status: 'TODO'
+        })
+      })
+      if (!res.ok) throw new Error('Failed to create task')
+      setShowAddModal(false)
+      setFormData({ title: '', client: '', platform: 'All', taskType: 'Content Planning', priority: 'MEDIUM', deadline: '' })
+      // Refresh
+      const result = await (await fetch('/api/tasks?department=SOCIAL_MEDIA')).json()
+      const items = result.data || result || []
+      const mapped: SocialTask[] = items.map((item: any) => ({
+        id: item.id,
+        title: item.title || item.name || '',
+        client: item.client?.name || item.client || '',
+        platform: item.platform || 'All',
+        taskType: item.taskType || item.type || 'Content Planning',
+        priority: item.priority || 'MEDIUM',
+        status: item.status || 'TODO',
+        assignee: item.assignee?.name || item.assignee || '',
+        deadline: item.deadline || item.dueDate || '',
+      }))
+      setTasks(mapped)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   const filteredTasks = filter === 'ALL' ? tasks : tasks.filter(t => t.status === filter)
 
@@ -108,8 +164,8 @@ export default function SocialTasksPage() {
           </div>
           {canEdit && (
             <button
-              onClick={() => alert('Coming soon: Add Task feature is under development.')}
-              className="px-4 py-2 glass-card text-pink-600 rounded-lg font-medium hover:bg-pink-50"
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-white text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-colors"
             >
               + Add Task
             </button>
@@ -194,6 +250,58 @@ export default function SocialTasksPage() {
           ))}
         </div>
       </div>
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Add Social Task" size="lg">
+        <form onSubmit={handleSubmit}>
+          <ModalBody>
+            {error && <div className="mb-4 text-red-400 text-sm bg-red-500/10 p-3 rounded">{error}</div>}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Title *</label>
+              <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Task Type</label>
+                <select value={formData.taskType} onChange={e => setFormData({...formData, taskType: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200">
+                  <option value="Content Planning">Content Planning</option>
+                  <option value="Caption Writing">Caption Writing</option>
+                  <option value="Design Coordination">Design Coordination</option>
+                  <option value="Scheduling">Scheduling</option>
+                  <option value="Reporting">Reporting</option>
+                  <option value="Engagement">Engagement</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Platform</label>
+                <select value={formData.platform} onChange={e => setFormData({...formData, platform: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200">
+                  <option value="All">All</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="LinkedIn">LinkedIn</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Priority</label>
+                <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200">
+                  <option value="LOW">Low</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="HIGH">High</option>
+                  <option value="CRITICAL">Critical</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Deadline</label>
+                <input type="date" value={formData.deadline} onChange={e => setFormData({...formData, deadline: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" />
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-6 py-2 text-sm text-white bg-pink-600 rounded-lg disabled:opacity-50">{submitting ? 'Adding...' : 'Add Task'}</button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </div>
   )
 }

@@ -55,8 +55,8 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
               client: { select: { id: true, name: true } },
             },
           },
-          assignedTo: { select: { id: true, firstName: true, lastName: true } },
-          resolvedBy: { select: { id: true, firstName: true, lastName: true } },
+          User_WebBugReport_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+          User_WebBugReport_resolvedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
         },
         orderBy: [
           { priority: 'asc' },
@@ -70,8 +70,14 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       prisma.webBugReport.count({ where: { ...where, priority: 'CRITICAL', status: { in: ['OPEN', 'CONFIRMED', 'IN_PROGRESS'] } } }),
     ])
 
+    const mappedBugs = bugs.map(bug => ({
+      ...bug,
+      assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
+      resolvedBy: (bug as any).User_WebBugReport_resolvedByIdToUser,
+    }))
+
     return NextResponse.json({
-      bugs,
+      bugs: mappedBugs,
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
       stats: { open: openCount, critical: criticalCount, total },
     })
@@ -104,9 +110,14 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
       },
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
+
+    const mappedBug = {
+      ...bug,
+      assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
+    }
 
     if (assignedToId && assignedToId !== user.id) {
       await prisma.notification.create({
@@ -121,7 +132,7 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
       })
     }
 
-    return NextResponse.json(bug, { status: 201 })
+    return NextResponse.json(mappedBug, { status: 201 })
   } catch (error) {
     console.error('Failed to create bug report:', error)
     return NextResponse.json({ error: 'Failed to create bug report' }, { status: 500 })

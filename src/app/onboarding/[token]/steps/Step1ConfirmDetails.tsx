@@ -6,6 +6,7 @@ import {
   Building2, Mail, Phone, MapPin, FileCheck, Loader2, Sparkles, ArrowRight,
   Plus, Minus, Send, CheckCircle, Clock, AlertCircle, Package
 } from 'lucide-react'
+import { toast } from 'sonner'
 import PageGuide from '@/client/components/ui/PageGuide'
 import InfoTip from '@/client/components/ui/InfoTip'
 import SectionLabel from '@/client/components/ui/SectionLabel'
@@ -86,7 +87,7 @@ export default function Step1ConfirmDetails({ data, onComplete }: Step1Props) {
       .then(result => {
         if (result.requests) setChangeRequests(result.requests)
       })
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load change requests') })
   }, [data.token])
 
   const handleServiceChangeRequest = async () => {

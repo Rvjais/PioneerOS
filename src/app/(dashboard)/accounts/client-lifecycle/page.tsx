@@ -40,8 +40,9 @@ export default function ClientLifecyclePage() {
       const res = await fetch('/api/clients?includeLifecycle=true')
       if (res.ok) {
         const data = await res.json()
+        const clientsList = Array.isArray(data) ? data : (data.clients || [])
         // Map onboarding status to lifecycle stages
-        const mapped = data.map((c: Client) => ({
+        const mapped = clientsList.map((c: Client) => ({
           ...c,
           lifecycleStage: mapOnboardingToLifecycle(c.onboardingStatus, c)
         }))

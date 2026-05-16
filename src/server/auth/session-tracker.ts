@@ -6,6 +6,26 @@
 
 import prisma from '@/server/db/prisma'
 import { UAParser } from 'ua-parser-js'
+import crypto from 'crypto'
+
+// In-memory geo cache
+const geoCache = new Map<string, { data: GeoLocation; expiresAt: number }>()
+const GEO_CACHE_TTL = 24 * 60 * 60 * 1000
+const GEO_CACHE_MAX_ENTRIES = 1000
+
+function getCachedGeo(ip: string): GeoLocation | null {
+  const entry = geoCache.get(ip)
+  if (entry && entry.expiresAt > Date.now()) return entry.data
+  geoCache.delete(ip)
+  return null
+}
+
+function setCachedGeo(ip: string, data: GeoLocation): void {
+  if (geoCache.size >= GEO_CACHE_MAX_ENTRIES) {
+    for (const [key] of geoCache) { geoCache.delete(key); break }
+  }
+  geoCache.set(ip, { data, expiresAt: Date.now() + GEO_CACHE_TTL })
+}
 
 interface SessionInfo {
   userId: string
@@ -60,7 +80,6 @@ function getDeviceType(type: string | undefined, userAgent: string): string {
  * Get geolocation from IP address using free API
  */
 async function getGeoLocation(ipAddress: string): Promise<GeoLocation | null> {
-  // Skip for localhost/private IPs
   if (
     !ipAddress ||
     ipAddress === '127.0.0.1' ||
@@ -72,19 +91,17 @@ async function getGeoLocation(ipAddress: string): Promise<GeoLocation | null> {
     return null
   }
 
-  try {
-    // Using ipwho.is (free HTTPS service)
-    const response = await fetch(`https://ipwho.is/${ipAddress}`, {
-      next: { revalidate: 86400 }, // Cache for 24 hours
-    })
+  const cached = getCachedGeo(ipAddress)
+  if (cached) return cached
 
+  try {
+    const response = await fetch(`https://ipwho.is/${ipAddress}`)
     if (!response.ok) return null
 
     const data = await response.json()
-
     if (data.success === false) return null
 
-    return {
+    const geo = {
       country: data.country,
       countryCode: data.country_code,
       region: data.region,
@@ -94,6 +111,9 @@ async function getGeoLocation(ipAddress: string): Promise<GeoLocation | null> {
       timezone: data.timezone?.id,
       isp: data.connection?.isp,
     }
+
+    setCachedGeo(ipAddress, geo)
+    return geo
   } catch {
     return null
   }
@@ -178,35 +198,38 @@ async function checkSuspicious(
   return { isSuspicious: false }
 }
 
+export interface RecordedSession {
+  id: string
+  sessionToken: string | null
+  isSuspicious: boolean
+  suspiciousReason: string | null
+  isNewDevice: boolean
+}
+
 /**
  * Record a new login session
  */
 export async function recordLoginSession(
   info: SessionInfo
-): Promise<string | null> {
+): Promise<RecordedSession | null> {
   try {
-    const { userId, userType = 'EMPLOYEE', ipAddress, userAgent, sessionToken } = info
+    const { userId, userType = 'EMPLOYEE', ipAddress, userAgent } = info
 
-    // Parse device info
     const deviceInfo = userAgent ? parseUserAgent(userAgent) : {}
 
-    // Generate device fingerprint
     const deviceFingerprint = userAgent && ipAddress
       ? generateDeviceFingerprint(userAgent, ipAddress)
       : undefined
 
-    // Check if new device
     const newDevice = deviceFingerprint
       ? await isNewDevice(userId, deviceFingerprint)
       : false
 
-    // Get geolocation
     const geo = ipAddress ? await getGeoLocation(ipAddress) : null
-
-    // Check for suspicious activity
     const suspicious = await checkSuspicious(userId, ipAddress || '', geo?.country)
 
-    // Create session record
+    const sessionToken = info.sessionToken || `session_${Date.now()}_${crypto.randomUUID()}`
+
     const session = await prisma.loginSession.create({
       data: {
         userId,
@@ -226,7 +249,13 @@ export async function recordLoginSession(
       },
     })
 
-    return session.id
+    return {
+      id: session.id,
+      sessionToken: session.sessionToken,
+      isSuspicious: session.isSuspicious,
+      suspiciousReason: session.suspiciousReason,
+      isNewDevice: session.isNewDevice,
+    }
   } catch (error) {
     console.error('Failed to record login session:', error)
     return null

@@ -110,7 +110,9 @@ export function WebRequestsClient({
     .sort((a, b) => {
       const aIdx = typePriority.indexOf(a.type)
       const bIdx = typePriority.indexOf(b.type)
-      return aIdx - bIdx
+      const aVal = aIdx === -1 ? 99 : aIdx
+      const bVal = bIdx === -1 ? 99 : bIdx
+      return aVal - bVal
     })
 
   const formatDate = (dateStr: string) => {

@@ -148,7 +148,7 @@ export function InternDashboard({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">{stats.tasksCompleted}</p>
+            <p className="text-3xl font-bold text-white">{stats.tasksCompleted}</p>
             <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -161,7 +161,7 @@ export function InternDashboard({
 
         <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">{stats.learningHours}h</p>
+            <p className="text-3xl font-bold text-white">{stats.learningHours}h</p>
             <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -174,7 +174,7 @@ export function InternDashboard({
 
         <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">{stats.skillsAcquired}</p>
+            <p className="text-3xl font-bold text-white">{stats.skillsAcquired}</p>
             <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -187,7 +187,7 @@ export function InternDashboard({
 
         <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <p className="text-3xl font-bold text-slate-900">
+            <p className="text-3xl font-bold text-white">
               {Math.round((stats.tasksCompleted / Math.max(stats.tasksAssigned, 1)) * 100)}%
             </p>
             <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
@@ -204,13 +204,13 @@ export function InternDashboard({
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Mentor Card */}
         <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-5">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Your Mentor</h2>
+          <h2 className="text-lg font-semibold text-slate-100 mb-4">Your Mentor</h2>
           {mentor ? (
             <div className="flex items-center gap-4">
               <UserAvatar user={{ id: mentor.id, firstName: mentor.firstName, lastName: mentor.lastName, department: mentor.department, phone: mentor.phone }} size="xl" showPreview={false} />
               <div>
-                <p className="font-semibold text-slate-800">{mentor.firstName} {mentor.lastName}</p>
-                <p className="text-sm text-slate-600">{mentor.department}</p>
+                <p className="font-semibold text-slate-100">{mentor.firstName} {mentor.lastName}</p>
+                <p className="text-sm text-slate-400">{mentor.department}</p>
                 <a href={`tel:${mentor.phone}`} className="text-sm text-blue-400 hover:text-blue-300 mt-1 inline-block">
                   {mentor.phone}
                 </a>
@@ -237,238 +237,29 @@ export function InternDashboard({
 
         {/* Skills Roadmap */}
         <div className="lg:col-span-2 bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl p-5">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Skills Roadmap</h2>
+          <h2 className="text-lg font-semibold text-slate-100 mb-4">Skills Roadmap</h2>
           <div className="space-y-4">
             {skillsRoadmap.length === 0 ? (
-              <p className="text-slate-400 text-center py-4">No skills roadmap set yet</p>
-            ) : (
-              skillsRoadmap.map((skill, index) => (
-                <div key={skill.skill}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-slate-800">{skill.skill}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs ${
-                        skill.level === 'advanced' ? 'bg-purple-500/20 text-purple-300' :
-                        skill.level === 'intermediate' ? 'bg-blue-500/20 text-blue-300' :
-                        'bg-emerald-500/20 text-emerald-300'
-                      }`}>
-                        {skill.level}
-                      </span>
-                    </div>
-                    <span className="text-sm text-slate-400">{skill.progress}%</span>
-                  </div>
-                  <div className="w-full h-2 bg-white/10 backdrop-blur-sm rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${
-                        skill.progress >= 80 ? 'bg-emerald-500' :
-                        skill.progress >= 50 ? 'bg-blue-500/100' : 'bg-amber-500/100'
-                      }`}
-                      style={{ width: `${skill.progress}%` }}
-                    />
-                  </div>
+            <p className="text-slate-400 text-center py-4">No skills roadmap set yet</p>
+          ) : (
+            skillsRoadmap.slice(0, 3).map((skill, idx) => (
+              <div key={idx} className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-slate-100">{skill.skillName}</p>
+                  <p className="text-xs text-slate-400">{skill.category}</p>
                 </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Learning Progress */}
-        <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-800">Learning Progress</h2>
-            <Link href="/learning" className="text-sm text-blue-400 hover:text-blue-300">
-              View all courses
-            </Link>
-          </div>
-          <div className="divide-y divide-white/5">
-            {learningProgress.length === 0 ? (
-              <div className="p-5 text-center text-slate-400">No courses started yet</div>
-            ) : (
-              learningProgress.map((course) => (
-                <div key={course.id} className="p-4 hover:bg-white/5">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="font-medium text-slate-900">{course.title}</p>
-                      <p className="text-xs text-slate-400">{course.category}</p>
-                    </div>
-                    <span className="text-sm font-medium text-blue-400">{course.progress}%</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/10 backdrop-blur-sm rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-500/100 rounded-full"
-                      style={{ width: `${course.progress}%` }}
-                    />
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Upcoming Deadlines */}
-        <div className="bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-          <div className="p-5 border-b border-white/10">
-            <h2 className="text-lg font-semibold text-slate-800">Upcoming Deadlines</h2>
-          </div>
-          <div className="divide-y divide-white/5">
-            {upcomingDeadlines.length === 0 ? (
-              <div className="p-5 text-center text-slate-400">No upcoming deadlines</div>
-            ) : (
-              upcomingDeadlines.map((deadline) => {
-                const daysUntil = differenceInDays(new Date(deadline.dueDate), new Date())
-                return (
-                  <div key={deadline.id} className="p-4 flex items-center justify-between hover:bg-white/5">
-                    <div>
-                      <p className="font-medium text-slate-900">{deadline.title}</p>
-                      <p className="text-xs text-slate-400">{deadline.type}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-sm font-medium ${
-                        daysUntil <= 1 ? 'text-red-400' :
-                        daysUntil <= 3 ? 'text-amber-400' : 'text-slate-400'
-                      }`}>
-                        {daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days`}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {format(new Date(deadline.dueDate), 'MMM d')}
-                      </p>
-                    </div>
-                  </div>
-                )
-              })
-            )}
-          </div>
-        </div>
-
-        {/* Recent Tasks */}
-        <div className="lg:col-span-2 bg-white/5 backdrop-blur-sm backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-          <div className="p-5 border-b border-white/10 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-800">Recent Tasks</h2>
-            <Link href="/tasks" className="text-sm text-blue-400 hover:text-blue-300">
-              View all
-            </Link>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-white/5 backdrop-blur-sm">
-                <tr>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-slate-400 uppercase">Task</th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-slate-400 uppercase">Status</th>
-                  <th className="text-left px-5 py-3 text-xs font-medium text-slate-400 uppercase">Completed</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {recentTasks.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-5 py-8 text-center text-slate-400">No tasks yet</td>
-                  </tr>
-                ) : (
-                  recentTasks.map((task) => (
-                    <tr key={task.id} className="hover:bg-white/5">
-                      <td className="px-5 py-4 text-sm text-slate-900">{task.title}</td>
-                      <td className="px-5 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                          task.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-300' :
-                          task.status === 'IN_PROGRESS' ? 'bg-blue-500/20 text-blue-300' :
-                          'bg-white/5 text-slate-300'
-                        }`}>
-                          {task.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-sm text-slate-400">
-                        {task.completedAt ? format(new Date(task.completedAt), 'MMM d, yyyy') : '-'}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* Tips for Success */}
-      <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-5">
-        <h2 className="text-lg font-semibold text-slate-800 mb-3">Tips for Success</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-emerald-400">1</span>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-800">Ask Questions</p>
-              <p className="text-xs text-slate-400">Don&apos;t hesitate to reach out to your mentor or team.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-emerald-400">2</span>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-800">Document Everything</p>
-              <p className="text-xs text-slate-400">Keep notes of what you learn each day.</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-emerald-400">3</span>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-800">Take Initiative</p>
-              <p className="text-xs text-slate-400">Look for ways to contribute beyond assigned tasks.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Schedule 1:1 Meeting Modal */}
-      {showScheduleModal && mentor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowScheduleModal(false)} />
-          <div className="relative glass-card border border-white/10 rounded-2xl w-full max-w-md">
-            <div className="p-6 border-b border-white/10">
-              <h2 className="text-lg font-semibold text-white">Schedule 1:1 with {mentor.firstName}</h2>
-            </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Date *</label>
-                <input
-                  type="date"
-                  value={meetingDate}
-                  onChange={(e) => setMeetingDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500"
-                />
+                <span className={`text-xs px-2 py-1 rounded-full ${skill.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                  {skill.status}
+                </span>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Time *</label>
-                <input
-                  type="time"
-                  value={meetingTime}
-                  onChange={(e) => setMeetingTime(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Agenda (optional)</label>
-                <textarea
-                  value={meetingAgenda}
-                  onChange={(e) => setMeetingAgenda(e.target.value)}
-                  placeholder="What would you like to discuss?"
-                  rows={3}
-                  className="w-full px-4 py-2.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 resize-none"
-                />
-              </div>
-            </div>
-            <div className="p-6 border-t border-white/10 flex gap-3">
-              <button
-                onClick={() => setShowScheduleModal(false)}
-                className="flex-1 px-4 py-2.5 border border-white/10 text-slate-300 rounded-xl hover:bg-white/5"
-              >
-                Cancel
-              </button>
+            ))
+          )}
+          <button
+            onClick={() => setShowSkillsModal(true)}
+            className="w-full mt-3 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            View Full Roadmap
+          </button>
               <button
                 onClick={handleScheduleMeeting}
                 disabled={!meetingDate || isScheduling}
@@ -479,7 +270,6 @@ export function InternDashboard({
             </div>
           </div>
         </div>
-      )}
     </div>
   )
 }

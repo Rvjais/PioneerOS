@@ -54,10 +54,11 @@ const priorityColors: Record<string, string> = {
   LOW: 'bg-green-500/20 text-green-400',
   MEDIUM: 'bg-amber-500/20 text-amber-400',
   HIGH: 'bg-orange-500/20 text-orange-400',
+  URGENT: 'bg-red-500/20 text-red-400',
   CRITICAL: 'bg-red-500/20 text-red-400',
 }
 
-const priorityOrder = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+const priorityOrder = ['CRITICAL', 'URGENT', 'HIGH', 'MEDIUM', 'LOW']
 
 export function WebBugsClient({
   initialBugs,
@@ -105,7 +106,9 @@ export function WebBugsClient({
     .sort((a, b) => {
       const aIdx = priorityOrder.indexOf(a.priority)
       const bIdx = priorityOrder.indexOf(b.priority)
-      return aIdx - bIdx
+      const aVal = aIdx === -1 ? 99 : aIdx
+      const bVal = bIdx === -1 ? 99 : bIdx
+      return aVal - bVal
     })
 
   const formatDate = (dateStr: string) => {

@@ -19,16 +19,25 @@ export default function NotificationTemplatesPage() {
         </div>
       </div>
 
-      <div className="glass-card rounded-xl border border-white/10 p-12 text-center">
-        <div className="text-4xl mb-4">📝</div>
-        <h3 className="text-lg font-medium text-white mb-2">Coming Soon</h3>
-        <p className="text-slate-400">Notification templates management is under development.</p>
-        <Link
-          href="/admin/notifications"
-          className="inline-block mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-        >
-          Back to Notifications
-        </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          { title: 'Meeting Reminder', type: 'MEETING', description: 'Sent 15 minutes before scheduled meetings' },
+          { title: 'Task Assigned', type: 'TASK', description: 'Triggered when a new task is assigned to an employee' },
+          { title: 'Payment Overdue', type: 'PAYMENT', description: 'Sent to clients when invoice passes due date' },
+          { title: 'Project Escalation', type: 'ESCALATION', description: 'Alert for projects missing critical milestones' },
+        ].map(template => (
+          <div key={template.title} className="glass-card p-6 rounded-xl border border-white/10 hover:border-purple-500/50 transition-colors cursor-pointer bg-slate-800/50">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-white text-lg">{template.title}</h3>
+              <span className="px-2 py-1 text-xs font-medium rounded bg-purple-500/20 text-purple-400">{template.type}</span>
+            </div>
+            <p className="text-sm text-slate-400 mb-6">{template.description}</p>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500">Last updated: 2 days ago</span>
+              <button className="text-purple-400 hover:text-purple-300 font-medium">Edit</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

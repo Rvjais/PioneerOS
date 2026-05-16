@@ -3,6 +3,7 @@ import { prisma } from '@/server/db/prisma'
 import { hash } from 'bcryptjs'
 import crypto from 'crypto'
 import { z } from 'zod'
+import { checkRateLimit } from '@/server/security/rateLimit'
 
 function hashToken(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex')
@@ -18,6 +19,20 @@ const resetSchema = z.object({
 // POST: Reset password with token
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit by IP - 10 attempts per 15 minutes
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('x-real-ip') || 'unknown'
+    const rateLimit = await checkRateLimit(`password-reset:${ip}`, {
+      maxRequests: 10,
+      windowMs: 15 * 60 * 1000,
+    })
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfter || 900) } }
+      )
+    }
+
     const body = await request.json()
     const parsed = resetSchema.safeParse(body)
 

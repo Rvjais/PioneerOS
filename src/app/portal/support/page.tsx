@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { getClientSession } from '@/server/auth/clientSession'
 import { prisma } from '@/server/db/prisma'
 import { redirect } from 'next/navigation'
-import { BRAND } from '@/shared/constants/constants'
-import { SUPPORT_EMAIL } from '@/shared/constants/clientPortalConstants'
+import { supportConfig } from '@/shared/constants/supportConfig'
 import PageGuide from '@/client/components/ui/PageGuide'
 
 async function getTickets(clientId: string) {
@@ -65,8 +64,8 @@ export default async function SupportPage() {
           </div>
           <h3 className="font-semibold text-white mb-2">Email Support</h3>
           <p className="text-sm text-slate-400 mb-3">Get help via email</p>
-          <a href={`mailto:${SUPPORT_EMAIL}`} className="text-blue-400 hover:underline text-sm">
-            {SUPPORT_EMAIL}
+          <a href={`mailto:${supportConfig.email.support}`} className="text-blue-400 hover:underline text-sm">
+            {supportConfig.email.support}
           </a>
         </div>
 
@@ -77,9 +76,9 @@ export default async function SupportPage() {
             </svg>
           </div>
           <h3 className="font-semibold text-white mb-2">Phone Support</h3>
-          <p className="text-sm text-slate-400 mb-3">Mon-Fri, 10 AM - 7 PM</p>
-          <a href={`tel:+${BRAND.supportPhone.replace(/[^0-9]/g, '')}`} className="text-blue-400 hover:underline text-sm">
-            {BRAND.supportPhone}
+          <p className="text-sm text-slate-400 mb-3">{supportConfig.businessHours.display}</p>
+          <a href={supportConfig.phone.href} className="text-blue-400 hover:underline text-sm">
+            {supportConfig.phone.display}
           </a>
         </div>
 
@@ -91,7 +90,7 @@ export default async function SupportPage() {
           </div>
           <h3 className="font-semibold text-white mb-2">WhatsApp</h3>
           <p className="text-sm text-slate-400 mb-3">Quick responses</p>
-          <a href={`https://wa.me/${BRAND.supportPhone.replace(/[^0-9]/g, '')}`} className="text-blue-400 hover:underline text-sm">
+          <a href={supportConfig.whatsapp.url} className="text-blue-400 hover:underline text-sm">
             Message us
           </a>
         </div>

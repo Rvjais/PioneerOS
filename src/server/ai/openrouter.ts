@@ -37,7 +37,11 @@ async function callOpenRouter(
 ): Promise<string> {
   const apiKey = await getApiKey()
 
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 30000)
+
   const response = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+    signal: controller.signal,
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
@@ -53,9 +57,14 @@ async function callOpenRouter(
     }),
   })
 
+  clearTimeout(timeoutId)
+
   if (!response.ok) {
-    const error = await response.text()
-    console.error('OpenRouter error:', error)
+    const errorText = await response.text()
+    console.error('OpenRouter error:', response.status, errorText)
+    if (response.status === 429) {
+      throw new Error('AI service rate limited. Please try again later.')
+    }
     throw new Error('Failed to call AI service')
   }
 

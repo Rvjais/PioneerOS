@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 // ==================== DESIGN CATEGORIES ====================
 const DESIGN_CATEGORIES = [
@@ -258,6 +259,14 @@ const PRINT_DELIVERABLES: PrintDeliverable[] = [
 ]
 
 export default function PrintDesigningPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-400">Loading...</div>}>
+      <PrintDesigningContent />
+    </Suspense>
+  )
+}
+
+function PrintDesigningContent() {
   const [projects] = useState(PRINT_PROJECTS)
   const [deliverables] = useState(PRINT_DELIVERABLES)
   const [statusFilter, setStatusFilter] = useState<string>('ALL')
@@ -266,6 +275,14 @@ export default function PrintDesigningPage() {
   const [priorityFilter, setPriorityFilter] = useState<string>('ALL')
   const [monthFilter, setMonthFilter] = useState<string>('MAR')
   const [showAddModal, setShowAddModal] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const cat = searchParams.get('category')
+    if (cat && DESIGN_CATEGORIES.some(c => c.id === cat)) {
+      setCategoryFilter(cat)
+    }
+  }, [searchParams])
 
   const filteredProjects = projects.filter(p => {
     const matchesMonth = p.month === monthFilter

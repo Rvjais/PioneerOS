@@ -9,8 +9,8 @@
  * which fetches data directly via Prisma. Use that version in Server Components for better performance.
  */
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useFetch } from '@/client/hooks/useFetch'
 
 interface Celebration {
   userId: string
@@ -38,16 +38,10 @@ interface CelebrationsData {
 }
 
 export function CelebrationsCard() {
-  const [data, setData] = useState<CelebrationsData | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetch('/api/celebrations?days=14')
-      .then(res => res.json())
-      .then(setData)
-      .catch(console.error)
-      .finally(() => setLoading(false))
-  }, [])
+  const { data, isLoading: loading } = useFetch<CelebrationsData>(
+    '/api/celebrations?days=14',
+    { immediate: true }
+  )
 
   if (loading) {
     return (

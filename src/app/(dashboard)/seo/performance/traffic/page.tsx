@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 interface DashboardData {
   tasksByStatus: Record<string, number>
@@ -23,7 +24,7 @@ export default function SeoTrafficGrowthPage() {
       .then(data => {
         setDashboard(data)
       })
-      .catch(() => {})
+      .catch(() => { setDashboard(null); toast.error('Failed to load traffic data') })
       .finally(() => setLoading(false))
   }, [])
 

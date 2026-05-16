@@ -10,13 +10,14 @@ function getSimplifiedStage(stage: string): string {
   return STAGE_MAPPING[stage] || stage
 }
 
-async function getSalesData(userId: string) {
+async function getSalesData(userId: string, userRole: string) {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  // Scope leads and activities to the current user (unless admin/manager)
-  const isManager = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(userId ? '' : '')
-  const leadWhere = { deletedAt: null, assignedToId: userId }
+  const isManager = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(userRole)
+  const leadWhere = isManager
+    ? { deletedAt: null }
+    : { deletedAt: null, assignedToId: userId }
 
   const [allLeads, recentActivities, overdueFollowUps] = await Promise.all([
     prisma.lead.findMany({
@@ -52,7 +53,7 @@ async function getSalesData(userId: string) {
 
 export default async function SalesDashboardPage() {
   const session = await requirePageAuth(SALES_ACCESS)
-  const { allLeads, recentActivities, overdueFollowUps } = await getSalesData(session.user.id)
+  const { allLeads, recentActivities, overdueFollowUps } = await getSalesData(session.user.id, session.user.role as string)
 
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)

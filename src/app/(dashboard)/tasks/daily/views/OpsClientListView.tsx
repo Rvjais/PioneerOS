@@ -88,12 +88,10 @@ export function OpsClientListView({ dailyTasks, clients }: Props) {
           paymentStatus: c.paymentStatus || ['ON_TIME', 'PENDING', 'OVERDUE'][Math.floor(Math.random() * 3)],
         })))
       } else {
-        // Use mock data if API not available
         setClientsData(clients.map(c => ({
           ...c,
-          npsScore: Math.floor(Math.random() * 100) - 20,
-          healthStatus: c.healthStatus || ['GREEN', 'YELLOW', 'RED'][Math.floor(Math.random() * 3)],
-          paymentStatus: c.paymentStatus || ['ON_TIME', 'PENDING', 'OVERDUE'][Math.floor(Math.random() * 3)],
+          healthStatus: c.healthStatus || 'GREEN',
+          paymentStatus: c.paymentStatus || 'PENDING',
         })))
       }
     } catch (error) {

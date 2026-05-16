@@ -93,8 +93,8 @@ export function WorkTimer() {
       {/* Live Clock */}
       <div className="p-4 border-b border-white/5 text-center">
         <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Current Time</p>
-        <p className="text-2xl font-bold text-white font-mono tracking-wide">{currentTime || '--:--:-- --'}</p>
-        <p className="text-xs text-slate-500 mt-0.5">{currentDate || '---'}</p>
+        <p className="text-2xl font-bold text-white font-mono tracking-wide" suppressHydrationWarning>{currentTime || '--:--:-- --'}</p>
+        <p className="text-xs text-slate-500 mt-0.5" suppressHydrationWarning>{currentDate || '---'}</p>
       </div>
 
       {/* Pomodoro Timer */}

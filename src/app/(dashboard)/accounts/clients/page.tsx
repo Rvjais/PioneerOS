@@ -54,14 +54,29 @@ export default function AccountsClientsPage() {
     try {
       const res = await fetch('/api/clients')
       if (!res.ok) throw new Error('Failed to load clients')
-      const data = await res.json()
-      setClients(data.clients || [])
+      const raw = await res.json()
+      const mapped = (raw.clients || []).map((c: Record<string, unknown>) => ({
+        ...c,
+        billingCycle: (c as Record<string, string>).billingType || 'Monthly',
+        paymentMethod: (c as Record<string, string>).paymentStatus || 'N/A',
+        pendingAmount: (c as Record<string, number>).pendingAmount || 0,
+        servicePackage: deriveServicePackage(c as Record<string, string>),
+      })) as Client[]
+      setClients(mapped)
     } catch (err) {
       console.error('Error fetching clients:', err)
       setError('Failed to load clients. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  const deriveServicePackage = (c: Record<string, string>): string => {
+    if (c.servicePackage) return c.servicePackage
+    let services: string[] = []
+    try { if (c.selectedServices) { const p = JSON.parse(c.selectedServices); services = (Array.isArray(p) ? p : []).map((s: unknown) => typeof s === 'string' ? s : (s as Record<string, string>).name || '') } } catch { /* */ }
+    if (!services.length) try { if (c.services) services = JSON.parse(c.services) } catch { /* */ }
+    return services.length > 0 ? services.join(', ') : ''
   }
 
   const filteredClients = clients

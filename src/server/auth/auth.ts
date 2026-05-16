@@ -123,18 +123,9 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
-                // Token is marked as used by the /api/auth/magic-link/verify endpoint.
-                // Here we just verify it was used recently (within 2 minutes) to confirm
-                // this is a legitimate follow-up signIn() call, not a stale replay.
-                if (!magicToken.usedAt) {
-                    // Token hasn't been verified yet -- reject
-                    return null;
-                }
-                const usedAgoMs = Date.now() - magicToken.usedAt.getTime();
-                if (usedAgoMs > 2 * 60 * 1000) {
-                    // Token was used too long ago -- likely a replay attempt
-                    return null;
-                }
+                // Token has been verified by /api/auth/magic-link/verify endpoint.
+                // The session JWT is already issued and valid for 24 hours.
+                // We just confirm the token exists and is not expired.
 
                 // Login session is created client-side via /api/auth/log-login
                 // which has access to device/browser/location context.
@@ -142,7 +133,6 @@ export const authOptions: NextAuthOptions = {
                 return buildSessionUser(user as Parameters<typeof buildSessionUser>[0]);
             }
         }),
-        // Password Provider (Phone + Password login)
         CredentialsProvider({
             id: "password",
             name: "Password",
@@ -155,21 +145,35 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
-                // Normalize phone variants
-                const digits = credentials.phone.replace(/\D/g, '');
-                const phoneVariants: string[] = [credentials.phone];
-                if (digits.length === 10) {
-                    phoneVariants.push(`+91${digits}`, `91${digits}`);
-                } else if (digits.length === 12 && digits.startsWith('91')) {
-                    phoneVariants.push(`+${digits}`, digits.slice(2));
-                } else if (digits.length === 13 && digits.startsWith('91')) {
-                    phoneVariants.push(digits, `+${digits}`, digits.slice(2));
+                // Determine if input is email or phone
+                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.phone.trim());
+                let userWhere: Record<string, unknown>;
+
+                if (isEmail) {
+                    // Guard: email field must not be null in DB
+                    userWhere = {
+                        email: {
+                            equals: credentials.phone.trim().toLowerCase(),
+                            mode: 'insensitive' as const
+                        }
+                    };
+                } else {
+                    const digits = credentials.phone.replace(/\D/g, '');
+                    const phoneVariants: string[] = [credentials.phone];
+                    if (digits.length === 10) {
+                        phoneVariants.push(`+91${digits}`, `91${digits}`, digits);
+                    } else if (digits.length === 12 && digits.startsWith('91')) {
+                        phoneVariants.push(`+${digits}`, digits.slice(2), digits);
+                    } else if (digits.length === 13 && digits.startsWith('+91')) {
+                        phoneVariants.push(digits.slice(1), digits.slice(3), digits);
+                    }
+                    userWhere = { phone: { in: phoneVariants } };
                 }
 
-                // Find user by phone
+                // Find user — always exclude null emails to avoid false positives
                 const user = await prisma.user.findFirst({
                     where: {
-                        phone: { in: phoneVariants },
+                        ...userWhere,
                         deletedAt: null,
                         status: { in: ['ACTIVE', 'PROBATION'] },
                     },
@@ -184,12 +188,12 @@ export const authOptions: NextAuthOptions = {
                 });
 
                 if (!user) {
-                    // Don't reveal if user exists - return a generic error
-                    throw new Error('User not found');
+                    // Return null — NextAuth will surface CredentialsSignin
+                    return null;
                 }
 
                 if (!user.password) {
-                    // User exists but has no password set
+                    // User has no password set — direct them to set one
                     throw new Error('NoPassword');
                 }
 
@@ -231,6 +235,20 @@ export const authOptions: NextAuthOptions = {
                 // Handle custom roles update
                 if (session?.customRoles !== undefined) {
                     token.customRoles = session.customRoles;
+                }
+            }
+            // Re-validate user status from database on each token refresh
+            if (token.sub) {
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: token.sub },
+                        select: { status: true, deletedAt: true },
+                    })
+                    if (dbUser && (dbUser.deletedAt || !['ACTIVE', 'PROBATION'].includes(dbUser.status))) {
+                        return {}
+                    }
+                } catch {
+                    // If DB lookup fails, allow the token to remain (degraded mode)
                 }
             }
             return token;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth/withAuth'
+import { softDelete } from '@/server/db/softDelete'
 
 const updateLeadSchema = z.object({
   stage: z.string().max(50).optional(),
@@ -188,9 +189,7 @@ export const DELETE = withAuth(async (req, { params }) => {
       return NextResponse.json({ error: 'Lead ID required' }, { status: 400 })
     }
 
-    await prisma.lead.delete({
-      where: { id: leadId },
-    })
+    await softDelete('lead', leadId)
 
     return NextResponse.json({ success: true })
   } catch (error) {

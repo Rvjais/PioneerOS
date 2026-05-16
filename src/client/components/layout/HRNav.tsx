@@ -12,7 +12,7 @@ const hrNavigation = [
     items: [
       { name: 'HR Dashboard', href: '/hr', icon: 'dashboard' },
       { name: 'Daily Planner', href: '/tasks/daily', icon: 'planner' },
-      { name: 'Calendar', href: '/hr/calendar', icon: 'calendar' },
+      { name: 'Calendar', href: '/calendar', icon: 'calendar' },
     ]
   },
   {
@@ -21,7 +21,7 @@ const hrNavigation = [
       { name: 'Team Directory', href: '/directory', icon: 'users' },
       { name: 'Employee Profiles', href: '/team', icon: 'profiles' },
       { name: 'Org Chart', href: '/team/org-chart', icon: 'orgchart' },
-      { name: 'Client Feedback', href: '/hr/client-feedback', icon: 'recognition' },
+      { name: 'Employee Client Feedback', href: '/hr/client-feedback', icon: 'recognition' },
       { name: 'Escalations', href: '/hr/escalations', icon: 'escalation' },
     ]
   },
@@ -106,6 +106,13 @@ const hrNavigation = [
     category: 'Culture',
     items: [
       { name: 'Recognition', href: '/recognition', icon: 'recognition' },
+    ]
+  },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: 'ideas' },
+      { name: 'SOP Library', href: '/sop', icon: 'checklist' },
     ]
   }
 ]

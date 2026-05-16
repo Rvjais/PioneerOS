@@ -86,11 +86,11 @@ export default function ClientPortalLayout({
     const handleLogoUpdate = (e: CustomEvent<{ logoUrl: string | null }>) => {
       setPortalData(prev => prev ? { ...prev, logoUrl: e.detail.logoUrl } : null)
     }
-    window.addEventListener('client-logo-updated', handleLogoUpdate as EventListener)
+    window.addEventListener('client-logo-updated', handleLogoUpdate as unknown as EventListener)
 
     return () => {
       controller.abort()
-      window.removeEventListener('client-logo-updated', handleLogoUpdate as EventListener)
+      window.removeEventListener('client-logo-updated', handleLogoUpdate as unknown as EventListener)
     }
   }, [])
 

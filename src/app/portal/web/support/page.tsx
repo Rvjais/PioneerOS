@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import InfoTip from '@/client/components/ui/InfoTip'
-import { BRAND } from '@/shared/constants/constants'
+import { supportConfig } from '@/shared/constants/supportConfig'
 
 export default function WebSupportPage() {
   const [subject, setSubject] = useState('')
@@ -212,7 +212,7 @@ export default function WebSupportPage() {
             </div>
             <div>
               <span className="text-sm text-slate-400">Email</span>
-              <p className="font-medium text-white">{BRAND.supportEmail}</p>
+              <p className="font-medium text-white">{supportConfig.email.support}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -224,12 +224,12 @@ export default function WebSupportPage() {
             <div>
               <span className="text-sm text-slate-400">WhatsApp</span>
               <a
-                href={`https://wa.me/${BRAND.supportPhone.replace(/[^0-9]/g, '')}`}
+                href={supportConfig.whatsapp.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-white hover:text-teal-400 transition-colors"
               >
-                {BRAND.supportPhone}
+                {supportConfig.phone.display}
               </a>
             </div>
           </div>

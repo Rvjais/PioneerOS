@@ -4,7 +4,7 @@ import { authOptions } from '@/server/auth/auth'
 import { redirect } from 'next/navigation'
 import { Breadcrumb } from '@/client/components/ui/Breadcrumb'
 
-async function getPipelineTasks(userId: string) {
+async function getPipelineTasks(userId: string, isManagerOrAdmin: boolean) {
   // Get client assignments for this user
   const assignments = await prisma.clientTeamMember.findMany({
     where: { userId },
@@ -14,13 +14,18 @@ async function getPipelineTasks(userId: string) {
 
   const tasks = await prisma.task.findMany({
     where: {
-      OR: [
-        { assigneeId: userId },
-        { clientId: { in: clientIds } }
-      ],
+      ...(isManagerOrAdmin
+        ? {}
+        : {
+            OR: [
+              { assigneeId: userId },
+              { creatorId: userId },
+              { clientId: { in: clientIds } }
+            ]
+          }),
       department: { in: ['DEVELOPMENT', 'WEB', 'DESIGN'] },
       type: { in: ['PROJECT', 'TASK'] },
-      status: { notIn: ['COMPLETED', 'CANCELLED'] }
+      status: { notIn: ['DONE', 'COMPLETED', 'CANCELLED'] }
     },
     include: {
       client: { select: { id: true, name: true } },
@@ -35,7 +40,7 @@ async function getPipelineTasks(userId: string) {
 const COLUMNS = [
   { status: 'TODO', label: 'To Do', color: 'border-slate-500', headerBg: 'bg-slate-500/10', headerText: 'text-slate-400' },
   { status: 'IN_PROGRESS', label: 'In Progress', color: 'border-blue-500', headerBg: 'bg-blue-500/10', headerText: 'text-blue-400' },
-  { status: 'REVIEW', label: 'In Review', color: 'border-purple-500', headerBg: 'bg-purple-500/10', headerText: 'text-purple-400' },
+  { status: 'IN_REVIEW', label: 'In Review', color: 'border-purple-500', headerBg: 'bg-purple-500/10', headerText: 'text-purple-400' },
   { status: 'REVISION', label: 'Revision', color: 'border-orange-500', headerBg: 'bg-orange-500/10', headerText: 'text-orange-400' },
   { status: 'BLOCKED', label: 'Blocked', color: 'border-red-500', headerBg: 'bg-red-500/10', headerText: 'text-red-400' },
 ]
@@ -51,7 +56,8 @@ export default async function WebPipelinePage() {
   const session = await getServerSession(authOptions)
   if (!session) redirect('/login')
 
-  const tasks = await getPipelineTasks(session.user.id)
+  const isManagerOrAdmin = ['SUPER_ADMIN', 'MANAGER', 'WEB_MANAGER', 'OPERATIONS_HEAD'].includes(session.user.role as string)
+  const tasks = await getPipelineTasks(session.user.id, isManagerOrAdmin)
 
   const tasksByStatus = COLUMNS.reduce((acc, col) => {
     acc[col.status] = tasks.filter(t => t.status === col.status)

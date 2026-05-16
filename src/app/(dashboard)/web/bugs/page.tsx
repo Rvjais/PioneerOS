@@ -26,8 +26,8 @@ async function getBugs(userId: string, userRole: string) {
             client: { select: { id: true, name: true } },
           },
         },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
-        resolvedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+        User_WebBugReport_resolvedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
       orderBy: [
         { priority: 'asc' },
@@ -56,7 +56,14 @@ async function getBugs(userId: string, userRole: string) {
     total: bugs.length,
   }
 
-  return { bugs, projects, teamMembers, stats, isManager }
+  // Map the long relation names to shorter ones for the client component
+  const mappedBugs = bugs.map(bug => ({
+    ...bug,
+    assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
+    resolvedBy: (bug as any).User_WebBugReport_resolvedByIdToUser,
+  }))
+
+  return { bugs: mappedBugs, projects, teamMembers, stats, isManager }
 }
 
 export default async function WebBugsPage() {

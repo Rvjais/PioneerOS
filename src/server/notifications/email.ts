@@ -34,8 +34,7 @@ interface EmailResult {
 async function sendViaSMTP(options: EmailOptions): Promise<EmailResult> {
   try {
     // Dynamic import to handle cases where nodemailer isn't installed
-    // @ts-ignore - nodemailer may not be installed
-    const nodemailer = await import('nodemailer').catch(() => null)
+    const nodemailer = await import('nodemailer').catch(() => null) as typeof import('nodemailer') | null
 
     if (!nodemailer) {
       return {

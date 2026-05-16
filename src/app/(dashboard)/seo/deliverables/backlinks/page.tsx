@@ -43,7 +43,7 @@ export default function SeoBacklinkDeliverablesPage() {
     fetch('/api/clients?status=ACTIVE&limit=100')
       .then(r => r.json())
       .then(d => setClients(d.clients || []))
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load clients') })
   }, [])
 
   const fetchBacklinks = async () => {

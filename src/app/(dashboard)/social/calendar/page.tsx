@@ -56,7 +56,7 @@ export default function SocialCalendarPage() {
         })
         setEvents(eventMap)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load calendar events:', error); toast.error('Failed to load calendar events. Please try again.') })
   }, [currentYear, currentMonth])
 
   const handleAddEvent = async () => {

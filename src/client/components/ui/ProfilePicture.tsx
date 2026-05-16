@@ -240,7 +240,7 @@ export function ProfilePicture({
                         width={64}
                         height={64}
                         className="w-full h-full object-cover"
-                        onError={() => {}}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
                     </div>
                   </div>

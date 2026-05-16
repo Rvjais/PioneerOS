@@ -30,13 +30,20 @@ export const GET = withAuth(async (req: NextRequest, { params }) => {
       where: { id },
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true, role: true } },
-        completedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true, role: true } },
+        User_WebChangeRequest_completedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
 
     if (!request) return NextResponse.json({ error: 'Change request not found' }, { status: 404 })
-    return NextResponse.json(request)
+    
+    const mappedRequest = {
+      ...request,
+      assignedTo: (request as any).User_WebChangeRequest_assignedToIdToUser,
+      completedBy: (request as any).User_WebChangeRequest_completedByIdToUser,
+    }
+
+    return NextResponse.json(mappedRequest)
   } catch (error) {
     console.error('Failed to fetch change request:', error)
     return NextResponse.json({ error: 'Failed to fetch change request' }, { status: 500 })
@@ -87,12 +94,18 @@ export const PATCH = withAuth(async (req: NextRequest, { user, params }) => {
       data: updateData,
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
-        completedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_completedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
 
-    return NextResponse.json(request)
+    const mappedUpdated = {
+      ...request,
+      assignedTo: (request as any).User_WebChangeRequest_assignedToIdToUser,
+      completedBy: (request as any).User_WebChangeRequest_completedByIdToUser,
+    }
+
+    return NextResponse.json(mappedUpdated)
   } catch (error) {
     console.error('Failed to update change request:', error)
     return NextResponse.json({ error: 'Failed to update change request' }, { status: 500 })

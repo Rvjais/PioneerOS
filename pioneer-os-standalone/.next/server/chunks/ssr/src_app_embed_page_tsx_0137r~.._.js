@@ -1,4 +1,3 @@
-;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="a3c5ad37-b487-823b-291e-f7d28dbf0e1e")}catch(e){}}();
 module.exports=[630303,a=>{"use strict";var b=a.i(187924),c=a.i(572131);let d=[{name:"Career Application Form",path:"/embed/careers",description:"Job application form for candidates",color:"blue",params:["dept=WEB","dept=SOCIAL","dept=ADS"]},{name:"RFP / Quote Request",path:"/embed/rfp",description:"Request for proposal form for prospects",color:"orange",params:[]},{name:"Client Onboarding",path:"/embed/welcome",description:"Onboarding form for new clients",color:"purple",params:[]}];a.s(["default",0,function(){let[a,e]=(0,c.useState)(null);return(0,b.jsx)("div",{className:"min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8",children:(0,b.jsxs)("div",{className:"max-w-4xl mx-auto",children:[(0,b.jsxs)("div",{className:"text-center mb-12",children:[(0,b.jsx)("h1",{className:"text-4xl font-bold text-white mb-4",children:"Embeddable Forms"}),(0,b.jsx)("p",{className:"text-slate-400",children:"Copy the iframe code to embed these forms on your website"})]}),(0,b.jsx)("div",{className:"space-y-6",children:d.map((c,d)=>{let f=`<iframe
   src="https://app.brandingpioneers.in${c.path}"
   width="100%"
@@ -14,5 +13,4 @@ module.exports=[630303,a=>{"use strict";var b=a.i(187924),c=a.i(572131);let d=[{
   }
 })`})})]})})]})})}])}];
 
-//# debugId=a3c5ad37-b487-823b-291e-f7d28dbf0e1e
 //# sourceMappingURL=src_app_embed_page_tsx_0137r~.._.js.map

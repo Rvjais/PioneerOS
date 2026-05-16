@@ -2,6 +2,7 @@
 
 // Index page showing all available embeds with iframe code snippets
 import { useState } from 'react'
+import { generateIframeCode, EMBEDDABLE_FORMS } from '@/shared/utils/embedUtils'
 
 const EMBEDS = [
   {
@@ -47,7 +48,13 @@ export default function EmbedIndexPage() {
 
         <div className="space-y-6">
           {EMBEDS.map((embed, index) => {
-            const iframeCode = `<iframe
+            const formKey =
+              index === 0 ? 'careers' :
+              index === 1 ? 'rfp' :
+              index === 2 ? 'client-onboarding' : null
+            const iframeCode = formKey
+              ? generateIframeCode(formKey, { width: '100%', height: '700', color: 'indigo' })
+              : `<iframe
   src="${baseUrl}${embed.path}"
   width="100%"
   height="700"

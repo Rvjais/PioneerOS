@@ -17,7 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import PageGuide from '@/client/components/ui/PageGuide'
-import { dashboardTour } from '@/shared/constants/tourDefinitions'
+
 
 interface Task {
   id: string
@@ -123,7 +123,7 @@ export function DashboardClient({ data, userName, department, today, isManager }
   const displayTasks = todaysTasks.length > 0 ? todaysTasks.slice(0, 5) : data.tasks.slice(0, 5)
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="min-h-full space-y-6">
       <PageGuide
         pageKey="dashboard"
         title="Dashboard"
@@ -138,19 +138,20 @@ export function DashboardClient({ data, userName, department, today, isManager }
       {/* ── Welcome Bar ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-semibold text-lg shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#c96442] to-[#b5563a] flex items-center justify-center text-white font-semibold text-lg shrink-0 shadow-lg shadow-orange-500/20">
             {getInitials(userName)}
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-white">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               {getGreeting()}, {firstName}!{' '}
               <span className="inline-block animate-[wave_1.5s_ease-in-out_infinite] origin-[70%_70%]">
                 👋
               </span>
             </h1>
-            <div className="flex items-center gap-3 mt-1">
-              <span className="text-sm text-slate-400">{formatDateDDMMYYYY(new Date())}</span>
-              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/20">
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs font-medium text-slate-500">{today}</span>
+              <span className="w-1 h-1 rounded-full bg-slate-300" />
+              <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#fbeee8] text-[#6e2f1c] border border-[#fbeee8]">
                 {DEPARTMENT_LABELS[department] || department}
               </span>
             </div>
@@ -159,76 +160,57 @@ export function DashboardClient({ data, userName, department, today, isManager }
       </div>
 
       {/* ── Row 1: Quick Stats ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Tasks Due Today */}
-        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                data.stats.dueToday > 0 ? 'bg-orange-500/15' : 'bg-slate-800/60'
-              }`}
-            >
-              <AlertCircle
-                className={`w-5 h-5 ${data.stats.dueToday > 0 ? 'text-orange-400' : 'text-slate-500'}`}
-              />
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${data.stats.dueToday > 0 ? 'bg-orange-50' : 'bg-slate-50'}`}>
+              <AlertCircle className={`w-6 h-6 ${data.stats.dueToday > 0 ? 'text-orange-500' : 'text-slate-400'}`} />
             </div>
             <div>
-              <p
-                className={`text-2xl font-bold ${
-                  data.stats.dueToday > 0 ? 'text-orange-400' : 'text-white'
-                }`}
-              >
-                {data.stats.dueToday}
-              </p>
-              <p className="text-xs text-slate-500">Due Today</p>
+              <p className={`text-2xl font-bold ${data.stats.dueToday > 0 ? 'text-orange-600' : 'text-slate-900'}`}>{data.stats.dueToday}</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Due Today</p>
             </div>
           </div>
         </div>
 
         {/* In Progress */}
-        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/15 flex items-center justify-center">
-              <Loader className="w-5 h-5 text-blue-400" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+              <Loader className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{data.stats.inProgress}</p>
-              <p className="text-xs text-slate-500">In Progress</p>
+              <p className="text-2xl font-bold text-slate-900">{data.stats.inProgress}</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">In Progress</p>
             </div>
           </div>
         </div>
 
-        {/* Completed / Assigned */}
-        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+        {/* Total Assigned */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-emerald-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{data.stats.assigned}</p>
-              <p className="text-xs text-slate-500">Total Assigned</p>
+              <p className="text-2xl font-bold text-slate-900">{data.stats.assigned}</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Assigned</p>
             </div>
           </div>
         </div>
 
-        {/* Learning Progress */}
-        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                data.learning.isCompliant ? 'bg-emerald-500/15' : 'bg-amber-500/15'
-              }`}
-            >
-              <BookOpen
-                className={`w-5 h-5 ${data.learning.isCompliant ? 'text-emerald-400' : 'text-amber-400'}`}
-              />
+        {/* Learning Hours */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${data.learning.isCompliant ? 'bg-emerald-50' : 'bg-amber-50'}`}>
+              <BookOpen className={`w-6 h-6 ${data.learning.isCompliant ? 'text-emerald-500' : 'text-amber-500'}`} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">
-                {data.learning.hours}
-                <span className="text-sm font-normal text-slate-500">/{data.learning.target}h</span>
+              <p className="text-2xl font-bold text-slate-900">
+                {data.learning.hours}<span className="text-sm font-normal text-slate-400">/{data.learning.target}h</span>
               </p>
-              <p className="text-xs text-slate-500">Learning Hours</p>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Learning</p>
             </div>
           </div>
         </div>
@@ -236,97 +218,79 @@ export function DashboardClient({ data, userName, department, today, isManager }
 
       {/* ── Row 2: Tasks + Quick Actions ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* My Tasks Today (2/3) */}
-        <div className="lg:col-span-2 bg-slate-900/40 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 flex items-center justify-between border-b border-white/5">
-            <h2 className="text-sm font-semibold text-white tracking-wide">My Tasks Today</h2>
-            <Link
-              href="/tasks/daily"
-              className="text-xs text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-1"
-            >
+        {/* My Tasks Today */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
+            <h2 className="text-base font-bold text-slate-900">My Tasks Today</h2>
+            <Link href="/tasks/daily" className="text-xs font-bold text-[#c96442] hover:text-[#b5563a] transition-colors flex items-center gap-1 uppercase tracking-wider">
               View All <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
 
-          {displayTasks.length > 0 ? (
-            <div className="divide-y divide-white/5">
-              {displayTasks.map((task) => (
-                <Link
-                  key={task.id}
-                  href={`/tasks/${task.id}`}
-                  className="flex items-center gap-3 px-5 py-3.5 hover:bg-white/[0.03] transition-colors group"
-                >
-                  {/* Priority dot */}
-                  <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${PRIORITY_DOT[task.priority] || 'bg-slate-500'}`}
-                  />
-
-                  {/* Title + Client */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-200 truncate group-hover:text-white transition-colors">
-                      {task.title}
-                    </p>
-                    <p className="text-xs text-slate-500 truncate">{task.project}</p>
-                  </div>
-
-                  {/* Due time */}
-                  {task.dueDate && (
-                    <span className="text-xs text-slate-500 shrink-0">
-                      {formatDueTime(task.dueDate)}
-                    </span>
-                  )}
-
-                  <ChevronRight className="w-4 h-4 text-slate-600 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500/40 mb-3" />
-              <p className="text-sm text-slate-400">All caught up! No tasks due today.</p>
-            </div>
-          )}
+          <div className="flex-1">
+            {displayTasks.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {displayTasks.map((task) => (
+                  <Link
+                    key={task.id}
+                    href={`/tasks/${task.id}`}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-all group"
+                  >
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 shadow-sm ${PRIORITY_DOT[task.priority] || 'bg-slate-400'}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-800 truncate group-hover:text-slate-900 transition-colors">
+                        {task.title}
+                      </p>
+                      <p className="text-xs font-medium text-slate-500 truncate">{task.project}</p>
+                    </div>
+                    {task.dueDate && (
+                      <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md shrink-0 uppercase">
+                        {formatDueTime(task.dueDate)}
+                      </span>
+                    )}
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400 transition-colors shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-center p-6">
+                <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                </div>
+                <h3 className="text-slate-900 font-bold mb-1">All caught up!</h3>
+                <p className="text-sm text-slate-500">No tasks due for today. Great job!</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Quick Actions (1/3) */}
-        <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-          <h2 className="text-sm font-semibold text-white tracking-wide mb-4">Quick Actions</h2>
+        {/* Quick Actions */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="text-base font-bold text-slate-900 mb-5">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
-            <Link
-              href="/meetings/tactical"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
-            >
-              <MessageSquare className="w-5 h-5 text-slate-400 group-hover:text-orange-400 transition-colors" />
-              <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors text-center">
-                Daily Standup
-              </span>
+            <Link href="/meetings/tactical" className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:bg-orange-50 transition-all group">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                <MessageSquare className="w-5 h-5 text-slate-500 group-hover:text-orange-500" />
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 group-hover:text-orange-700 uppercase tracking-wider text-center">Standup</span>
             </Link>
-            <Link
-              href="/tasks/daily"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
-            >
-              <ClipboardList className="w-5 h-5 text-slate-400 group-hover:text-orange-400 transition-colors" />
-              <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors text-center">
-                Log Work
-              </span>
+            <Link href="/tasks/daily" className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:bg-orange-50 transition-all group">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                <ClipboardList className="w-5 h-5 text-slate-500 group-hover:text-orange-500" />
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 group-hover:text-orange-700 uppercase tracking-wider text-center">Log Work</span>
             </Link>
-            <Link
-              href="/hr/leave"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
-            >
-              <PlaneTakeoff className="w-5 h-5 text-slate-400 group-hover:text-orange-400 transition-colors" />
-              <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors text-center">
-                Request Leave
-              </span>
+            <Link href="/hr/leave" className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:bg-orange-50 transition-all group">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                <PlaneTakeoff className="w-5 h-5 text-slate-500 group-hover:text-orange-500" />
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 group-hover:text-orange-700 uppercase tracking-wider text-center">Leave</span>
             </Link>
-            <Link
-              href="/performance"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-orange-500/30 hover:bg-orange-500/5 transition-all group"
-            >
-              <CalendarDays className="w-5 h-5 text-slate-400 group-hover:text-orange-400 transition-colors" />
-              <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors text-center">
-                View Schedule
-              </span>
+            <Link href="/performance" className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:bg-orange-50 transition-all group">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                <CalendarDays className="w-5 h-5 text-slate-500 group-hover:text-orange-500" />
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 group-hover:text-orange-700 uppercase tracking-wider text-center">Schedule</span>
             </Link>
           </div>
         </div>
@@ -334,85 +298,83 @@ export function DashboardClient({ data, userName, department, today, isManager }
 
       {/* ── Row 3: Active Projects + Celebrations/Learning ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Active Projects (2/3) */}
-        <div className="lg:col-span-2 bg-slate-900/40 border border-white/10 rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 flex items-center justify-between border-b border-white/5">
-            <h2 className="text-sm font-semibold text-white tracking-wide">Active Projects</h2>
-            <Link
-              href="/projects"
-              className="text-xs text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-1"
-            >
+        {/* Active Projects */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-4 flex items-center justify-between border-b border-slate-100">
+            <h2 className="text-base font-bold text-slate-900">Active Projects</h2>
+            <Link href="/projects" className="text-xs font-bold text-[#c96442] hover:text-[#b5563a] transition-colors flex items-center gap-1 uppercase tracking-wider">
               View All <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
 
-          {data.projects.length > 0 ? (
-            <div className="divide-y divide-white/5">
-              {data.projects.map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/projects/${project.id}`}
-                  className="flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] transition-colors group"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                    <CircleDot className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-200 font-medium truncate group-hover:text-white transition-colors">
-                      {project.name}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {project.taskCount} task{project.taskCount !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-2.5 py-1 text-[10px] font-medium rounded-full shrink-0 ${
-                      project.status === 'ACTIVE'
-                        ? 'bg-emerald-500/15 text-emerald-400'
-                        : project.status === 'ONBOARDING'
-                          ? 'bg-blue-500/15 text-blue-400'
-                          : 'bg-slate-800/60 text-slate-400'
-                    }`}
+          <div className="flex-1">
+            {data.projects.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {data.projects.map((project) => (
+                  <Link
+                    key={project.id}
+                    href={`/projects/${project.id}`}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-all group"
                   >
-                    {project.status.replace(/_/g, ' ')}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-600 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <CircleDot className="w-10 h-10 text-slate-600 mb-3" />
-              <p className="text-sm text-slate-400">No active projects assigned.</p>
-            </div>
-          )}
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                      <CircleDot className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-slate-800 truncate group-hover:text-slate-900 transition-colors">
+                        {project.name}
+                      </p>
+                      <p className="text-xs font-medium text-slate-500">
+                        {project.taskCount} active task{project.taskCount !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 text-[10px] font-bold rounded-full shrink-0 border uppercase tracking-wider ${
+                      project.status === 'ACTIVE'
+                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                        : project.status === 'ONBOARDING'
+                          ? 'bg-blue-50 text-blue-600 border-blue-100'
+                          : 'bg-slate-50 text-slate-500 border-slate-200'
+                    }`}>
+                      {project.status.replace(/_/g, ' ')}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400 transition-colors shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-center p-6">
+                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                  <CircleDot className="w-8 h-8 text-slate-300" />
+                </div>
+                <h3 className="text-slate-900 font-bold mb-1">No active projects</h3>
+                <p className="text-sm text-slate-500">You haven&apos;t been assigned to any projects yet.</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right sidebar (1/3) */}
+        {/* Right sidebar */}
         <div className="space-y-6">
           {/* Learning Progress */}
-          <div className="bg-slate-900/40 border border-white/10 rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-white tracking-wide">Learning Progress</h2>
-              <span
-                className={`px-2 py-0.5 text-[10px] font-semibold rounded-full ${
-                  data.learning.isCompliant
-                    ? 'bg-emerald-500/15 text-emerald-400'
-                    : 'bg-amber-500/15 text-amber-400'
-                }`}
-              >
-                {data.learning.isCompliant ? 'On Track' : 'Behind'}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-base font-bold text-slate-900">Learning</h2>
+              <span className={`px-2.5 py-1 text-[10px] font-bold rounded-full border uppercase tracking-wider ${
+                data.learning.isCompliant
+                  ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                  : 'bg-amber-50 text-amber-600 border-amber-100'
+              }`}>
+                {data.learning.isCompliant ? 'Compliant' : 'Pending'}
               </span>
             </div>
 
-            <div className="flex items-end gap-2 mb-3">
-              <span className="text-3xl font-bold text-white">{data.learning.hours}</span>
-              <span className="text-sm text-slate-500 mb-1">/ {data.learning.target} hours</span>
+            <div className="flex items-baseline gap-2 mb-4">
+              <span className="text-4xl font-black text-slate-900 tracking-tight">{data.learning.hours}</span>
+              <span className="text-sm font-bold text-slate-400 uppercase">/ {data.learning.target}h</span>
             </div>
 
-            <div className="h-2 bg-slate-800/60 rounded-full overflow-hidden mb-4">
+            <div className="h-3 bg-slate-100 rounded-full overflow-hidden mb-6 shadow-inner">
               <div
-                className={`h-full rounded-full transition-all duration-500 ${
+                className={`h-full rounded-full transition-all duration-700 ease-out ${
                   data.learning.isCompliant ? 'bg-emerald-500' : 'bg-amber-500'
                 }`}
                 style={{
@@ -423,15 +385,17 @@ export function DashboardClient({ data, userName, department, today, isManager }
 
             <Link
               href="/learning"
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-medium bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 border border-orange-500/20 transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs font-bold bg-orange-50 text-[#c96442] hover:bg-orange-100 border border-orange-100 transition-all uppercase tracking-widest"
             >
-              {data.learning.isCompliant ? 'View Learning Log' : 'Add Learning Hours'}
+              {data.learning.isCompliant ? 'View Archive' : 'Add Progress'}
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
           {/* Celebrations */}
-          <CelebrationsCard />
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+             <CelebrationsCard />
+          </div>
         </div>
       </div>
     </div>

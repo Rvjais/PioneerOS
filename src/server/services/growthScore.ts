@@ -115,12 +115,18 @@ async function calculatePerformanceScore(
   let totalScore = 0
   let metricCount = 0
 
-  // Helper to safely calculate growth and score, avoiding division by zero and clamping negatives
+  // Helper to safely calculate growth and score, avoiding division by zero and allowing zero baselines
   const calcGrowth = (current: number | null | undefined, prev: number | null | undefined, key: string) => {
-    if (!current || !prev || prev <= 0) return
+    if (current === null || current === undefined) return
+    if (prev === null || prev === undefined || prev <= 0) {
+      breakdown[key] = current > 0 ? 100 : 0
+      totalScore += current > 0 ? 100 : 0
+      metricCount++
+      return
+    }
     const growth = ((current - prev) / prev) * 100
-    breakdown[key] = Math.max(0, Math.min(growth, 100))
-    totalScore += Math.max(0, Math.min(growth * 2, 100))
+    breakdown[key] = Math.max(-100, Math.min(growth, 100))
+    totalScore += Math.max(-100, Math.min(growth * 2, 100))
     metricCount++
   }
 
@@ -229,12 +235,12 @@ async function calculateDisciplineScore(
     if (record.status === 'PRESENT' || record.status === 'WFH') {
       presentDays++
 
-      // Check if late
+      // Check if late (convert UTC to IST)
       if (record.checkIn) {
         const checkInTime = new Date(record.checkIn)
-        const checkInHour = checkInTime.getHours()
-        const checkInMinute = checkInTime.getMinutes()
-        const isLate = checkInHour > 11 || (checkInHour === 11 && checkInMinute > 5)
+        const istHour = parseInt(new Intl.DateTimeFormat('en-IN', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(checkInTime))
+        const istMinute = parseInt(new Intl.DateTimeFormat('en-IN', { minute: 'numeric', timeZone: 'Asia/Kolkata' }).format(checkInTime))
+        const isLate = istHour > 11 || (istHour === 11 && istMinute > 5)
 
         if (isLate) {
           lateDays++

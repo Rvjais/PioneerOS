@@ -140,7 +140,7 @@ export const POST = withAuth(async (req, { user, params }) => {
 
     // Auto-generate enhanced checklist
     try {
-      await generateExitChecklist(exitProcess.id, userId, dbUser.firstName || 'General')
+      await generateExitChecklist(exitProcess.id, userId, dbUser.department || 'General')
     } catch {
       // Continue even if checklist generation fails
     }
@@ -150,7 +150,7 @@ export const POST = withAuth(async (req, { user, params }) => {
       await createExitNotifications(
         exitProcess.id,
         `${dbUser.firstName} ${dbUser.lastName || ''}`.trim(),
-        'General'
+        dbUser.department || 'General'
       )
     } catch {
       // Continue even if notifications fail

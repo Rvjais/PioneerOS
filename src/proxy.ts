@@ -1,10 +1,11 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { logRequest, logResponse } from "@/server/security/requestLogger";
 
 export async function proxy(req: NextRequest) {
-  // Inject request ID for tracing
-  const requestId = crypto.randomUUID()
+  const startTime = Date.now();
+  const requestId = await logRequest(req)
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set('x-request-id', requestId)
 
@@ -47,7 +48,6 @@ export async function proxy(req: NextRequest) {
 
     // API routes (public)
     '/api/auth',
-    '/api/hr',
     '/api/onboarding',
     '/api/employee-onboarding',
     '/api/hr/assessment',
@@ -152,6 +152,7 @@ export async function proxy(req: NextRequest) {
     request: { headers: requestHeaders },
   })
   response.headers.set('x-request-id', requestId)
+  logResponse(requestId, response.status, startTime)
 
   // Security headers
   response.headers.set('X-Content-Type-Options', 'nosniff')

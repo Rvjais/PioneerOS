@@ -104,23 +104,23 @@ export const POST = withAuth(async (req, { user, params: routeParams }) => {
       return NextResponse.json({ client: updatedClient })
     }
 
-    // Normal stage transition
-    const updatedClient = await prisma.client.update({
-      where: { id: clientId },
-      data: getLifecycleUpdateData(stage as LifecycleStage),
-    })
-
-    // Create lifecycle event
-    await prisma.clientLifecycleEvent.create({
-      data: {
-        clientId,
-        fromStage: client.lifecycleStage,
-        toStage: stage,
-        reason,
-        notes,
-        triggeredBy: user.id,
-      },
-    })
+    // Normal stage transition (atomic)
+    const [updatedClient] = await prisma.$transaction([
+      prisma.client.update({
+        where: { id: clientId },
+        data: getLifecycleUpdateData(stage as LifecycleStage),
+      }),
+      prisma.clientLifecycleEvent.create({
+        data: {
+          clientId,
+          fromStage: client.lifecycleStage,
+          toStage: stage,
+          reason,
+          notes,
+          triggeredBy: user.id,
+        },
+      }),
+    ])
 
     return NextResponse.json({ client: updatedClient })
   } catch (error) {

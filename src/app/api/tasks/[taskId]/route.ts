@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth/withAuth'
+import { softDelete } from '@/server/db/softDelete'
 
 type RouteParams = {
   params: Promise<{ taskId: string }>
@@ -258,9 +259,7 @@ export const DELETE = withAuth(async (req, { user, params: routeParams }) => {
       return NextResponse.json({ error: 'Permission denied' }, { status: 403 })
     }
 
-    await prisma.task.delete({
-      where: { id: taskId },
-    })
+    await softDelete('task', taskId, user.id)
 
     return NextResponse.json({ success: true })
   } catch (error) {

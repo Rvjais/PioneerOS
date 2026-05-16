@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Calendar, FileText, Palette, Clock, Send, CheckCircle, TrendingUp, Heart } from 'lucide-react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -30,7 +31,7 @@ export default function SocialDashboardPage() {
     fetch('/api/social/dashboard')
       .then(res => res.json())
       .then(result => setDashboardData(result.data || result))
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load dashboard data:', error); toast.error('Failed to load dashboard data. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 

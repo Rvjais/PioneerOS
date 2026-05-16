@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -50,7 +51,7 @@ export default function SocialTaskBoardPage() {
         })
         setTasksByStatus(grouped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load tasks:', error); toast.error('Failed to load tasks. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
   const columns = [

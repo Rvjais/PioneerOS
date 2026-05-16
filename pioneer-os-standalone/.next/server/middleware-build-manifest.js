@@ -7,18 +7,18 @@ globalThis.__BUILD_MANIFEST = {
     "static/chunks/03~yq9q893hmn.js"
   ],
   "lowPriorityFiles": [
-    "static/OKFjF1-vEcfG8GRJqRN0y/_buildManifest.js",
-    "static/OKFjF1-vEcfG8GRJqRN0y/_ssgManifest.js",
-    "static/OKFjF1-vEcfG8GRJqRN0y/_clientMiddlewareManifest.js"
+    "static/OddOEXYkcy_mW_n4QHXUr/_buildManifest.js",
+    "static/OddOEXYkcy_mW_n4QHXUr/_ssgManifest.js",
+    "static/OddOEXYkcy_mW_n4QHXUr/_clientMiddlewareManifest.js"
   ],
   "rootMainFiles": [
-    "static/chunks/0j~jzq8zhfotk.js",
-    "static/chunks/00tlc1sigugmo.js",
-    "static/chunks/023drk7_tfmlp.js",
-    "static/chunks/136p02_k1ewwi.js",
-    "static/chunks/0xmi0_0_ccimj.js",
-    "static/chunks/0uqljc8kh342..js",
-    "static/chunks/0..nuy3fz.nj5.js",
-    "static/chunks/turbopack-07xhpuj-c0xdk.js"
+    "static/chunks/0w-bhbd5f8q-2.js",
+    "static/chunks/10oxoae~4jti..js",
+    "static/chunks/0~k6u5_j-9bf2.js",
+    "static/chunks/0vv52~q77k-.e.js",
+    "static/chunks/10~ybk84fbtqk.js",
+    "static/chunks/0vgmd88n8.urc.js",
+    "static/chunks/0c-okoss7ztem.js",
+    "static/chunks/turbopack-0z.pxvj6l.km5.js"
   ]
 };

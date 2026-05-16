@@ -23,7 +23,15 @@ echo ""
 
 # ── Step 1: Build ─────────────────────────────────────────────
 echo "[1/5] Building Next.js production..."
-NODE_ENV=production npx next build
+# Optimization: Skip memory-heavy Sentry/PWA wrappers during build
+# Set memory limit to 2.5GB to force tighter garbage collection
+# Disable telemetry to save a bit of overhead
+NODE_ENV=production \
+SKIP_SENTRY=true \
+SKIP_PWA=true \
+NEXT_TELEMETRY_DISABLED=1 \
+NODE_OPTIONS="--max-old-space-size=2560" \
+npm run build
 echo "      ✅ Build complete"
 echo ""
 
@@ -38,14 +46,8 @@ mkdir -p "$OUT_DIR/.next/static"
 cp -r .next/static/. "$OUT_DIR/.next/static/"
 cp -r public/. "$OUT_DIR/public/"
 
-# Bundle environment variables
-if [ -f .env ]; then
-  cp .env "$OUT_DIR/"
-  echo "      ✅ .env bundled"
-else
-  echo "      ⚠️  Warning: .env not found, skipping bundle"
-fi
-
+# Do NOT bundle local .env to avoid overwriting production variables
+# We will preserve the remote .env during the atomic swap instead.
 # Bundle Prisma engines
 mkdir -p "$OUT_DIR/prisma"
 cp prisma/schema.prisma "$OUT_DIR/prisma/"
@@ -79,15 +81,6 @@ RETENTION=3
 
 echo "  → Pre-flight checks..."
 
-# Check disk space (need at least 500MB free)
-# Temporarily disabled — uncomment if needed
-# FREE_SPACE=$(df -BG "$DEPLOY_DIR" 2>/dev/null | awk 'NR==2 {print $4}' | tr -d 'G')
-# if [ -z "$FREE_SPACE" ] || [ "$FREE_SPACE" -lt 500 ]; then
-#   echo "    ❌ Insufficient disk space (${FREE_SPACE}MB free, need 500MB)"
-#   exit 1
-# fi
-echo "    Disk space check skipped"
-
 # Clean old temp directories
 rm -rf /tmp/pioneeros-deploy-* 2>/dev/null || true
 
@@ -117,22 +110,32 @@ tar -xzf "/tmp/$BUNDLE" -C "$TEMP_DIR"
 # Atomic swap: rename old dir, move new dir into place
 if [ -d "$DEPLOY_DIR" ]; then
   mv "$DEPLOY_DIR" "${DEPLOY_DIR}.old"
+  
+  # Preserve ownership
+  OWNER=$(stat -c '%U:%G' "${DEPLOY_DIR}.old" 2>/dev/null || echo "brand7748:brand7748")
+else
+  OWNER="brand7748:brand7748"
 fi
+
 mv "$TEMP_DIR" "$DEPLOY_DIR"
+
+# Restore production .env if it exists
+if [ -d "${DEPLOY_DIR}.old" ] && [ -f "${DEPLOY_DIR}.old/.env" ]; then
+  cp "${DEPLOY_DIR}.old/.env" "$DEPLOY_DIR/.env"
+  echo "    Restored production .env"
+fi
+
+# Fix ownership for LiteSpeed
+chown -R $OWNER "$DEPLOY_DIR"
+echo "    Set ownership to $OWNER"
 
 # Clean up old directory
 rm -rf "${DEPLOY_DIR}.old"
 
 echo "  → Restarting PM2 process..."
-if pm2 show "$PM2_PROCESS" > /dev/null 2>&1; then
-    echo "    Reloading existing process..."
-    PORT=3010 HOSTNAME=0.0.0.0 pm2 reload "$PM2_PROCESS" --update-env
-else
-    echo "    Starting new process..."
-    cd "$DEPLOY_DIR"
-    PORT=3010 HOSTNAME=0.0.0.0 pm2 start server.js --name "$PM2_PROCESS"
-fi
-
+pm2 delete "$PM2_PROCESS" > /dev/null 2>&1 || true
+cd "$DEPLOY_DIR"
+PORT=3010 HOSTNAME=0.0.0.0 pm2 start server.js --name "$PM2_PROCESS"
 pm2 save
 
 echo "  → Health check (waiting 8s for server to start)..."
@@ -146,9 +149,9 @@ else
       rm -rf "$DEPLOY_DIR"
       mv "/tmp/$BACKUP_NAME" "$DEPLOY_DIR"
 
-      if pm2 show "$PM2_PROCESS" > /dev/null 2>&1; then
-        PORT=3010 HOSTNAME=0.0.0.0 pm2 reload "$PM2_PROCESS" --update-env
-      fi
+      pm2 delete "$PM2_PROCESS" > /dev/null 2>&1 || true
+      cd "$DEPLOY_DIR"
+      PORT=3010 HOSTNAME=0.0.0.0 pm2 start server.js --name "$PM2_PROCESS"
       pm2 save
 
       echo "    ✅ Rollback complete"

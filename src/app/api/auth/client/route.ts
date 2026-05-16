@@ -112,11 +112,23 @@ export async function POST(req: NextRequest) {
 
       // Compare hash of submitted OTP against stored hash
       const submittedHash = createHash('sha256').update((otp || '').toUpperCase()).digest('hex')
-      if (clientUser.otpCode !== submittedHash) {
-        // Invalidate OTP after failed attempt
+
+      // SECURITY FIX: Check attempt count before verifying
+      const MAX_OTP_ATTEMPTS = 3;
+      if ((clientUser.otpAttempts || 0) >= MAX_OTP_ATTEMPTS) {
+        // Invalidate OTP after max attempts
         await prisma.clientUser.update({
           where: { id: clientUser.id },
-          data: { otpCode: null, otpExpiresAt: null },
+          data: { otpCode: null, otpExpiresAt: null, otpAttempts: 0 },
+        })
+        return NextResponse.json({ error: 'Too many attempts. Please request a new OTP.' }, { status: 400 })
+      }
+
+      if (clientUser.otpCode !== submittedHash) {
+        // Increment attempt counter instead of invalidating immediately
+        await prisma.clientUser.update({
+          where: { id: clientUser.id },
+          data: { otpAttempts: (clientUser.otpAttempts || 0) + 1 },
         })
         return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 })
       }

@@ -191,14 +191,7 @@ export default function UsersTab({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <button
-                        onClick={() => {
-                          try {
-                            console.log('UsersTab: Edit button clicked for user:', user.id, user.firstName)
-                            onEditUser(user)
-                          } catch (error) {
-                            console.error('UsersTab: Error in edit handler:', error)
-                          }
-                        }}
+                        onClick={() => onEditUser(user)}
                         className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded"
                         title="Edit"
                       >

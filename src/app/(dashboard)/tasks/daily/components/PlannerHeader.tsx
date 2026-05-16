@@ -26,18 +26,18 @@ export function PlannerHeader({
   setViewMode,
 }: PlannerHeaderProps) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
       <div>
-        <h1 className="text-2xl font-bold text-white">Daily Task Planner</h1>
-        <p className="text-slate-400 mt-1">
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Daily Task Planner</h1>
+        <p className="text-slate-400 text-sm sm:text-base mt-1">
           {isMonday && <span className="text-purple-400 font-medium">Weekly Planning Day - </span>}
           Plan and track your daily tasks. Submit before 11 AM huddle.
         </p>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <Link
           href="/tasks/daily/history"
-          className="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-slate-700 hover:text-slate-900 text-sm flex items-center gap-2 transition-colors font-medium"
+          className="hidden sm:flex px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-slate-700 hover:text-slate-900 text-sm items-center gap-2 transition-colors font-medium"
         >
           <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -58,7 +58,7 @@ export function PlannerHeader({
             </svg>
           </button>
           <div className="relative flex items-center gap-2 px-2 cursor-pointer">
-            <span className="text-slate-900 font-medium">
+            <span className="text-slate-900 font-medium text-sm sm:text-base">
               {formatDateDDMMYYYY(selectedDate)}
             </span>
             <input
@@ -89,7 +89,7 @@ export function PlannerHeader({
           <div className="flex bg-slate-100 border border-slate-200 rounded-lg p-1">
             <button
               onClick={() => setActiveView('default')}
-              className={`px-3 py-2 rounded-md text-sm transition-colors font-medium ${
+              className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm transition-colors font-medium ${
                 activeView === 'default' ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
@@ -97,11 +97,11 @@ export function PlannerHeader({
             </button>
             <button
               onClick={() => setActiveView(viewType)}
-              className={`px-3 py-2 rounded-md text-sm transition-colors font-medium ${
+              className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm transition-colors font-medium ${
                 activeView === viewType ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
-              {viewType === 'bd' ? 'CRM Tracker' : viewType === 'hr' ? 'HR Pipeline' : 'Client Ops'}
+              {viewType === 'bd' ? 'CRM' : viewType === 'hr' ? 'HR' : 'Ops'}
             </button>
           </div>
         )}
@@ -109,19 +109,19 @@ export function PlannerHeader({
           <div className="flex bg-slate-100 border border-slate-200 rounded-lg p-1">
             <button
               onClick={() => setViewMode('my')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 viewMode === 'my' ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
-              My Tasks
+              My
             </button>
             <button
               onClick={() => setViewMode('team')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                 viewMode === 'team' ? 'bg-purple-500 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
-              Team View
+              Team
             </button>
           </div>
         )}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 const APPROVE_ROLES = ['SUPER_ADMIN', 'MANAGER']
@@ -51,7 +52,7 @@ export default function InternalApprovalsPage() {
         }))
         setAllApprovals(mapped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load internal approvals:', error); toast.error('Failed to load internal approvals. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 
@@ -70,8 +71,9 @@ export default function InternalApprovalsPage() {
       if (res.ok) {
         fetchApprovals()
       }
-    } catch {
-      // silently fail
+    } catch (error) {
+      console.error('Failed to update approval:', error)
+      toast.error('Failed to update approval. Please try again.')
     } finally {
       setActionLoading(null)
     }

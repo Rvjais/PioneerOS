@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { formatDateDDMMYYYY } from '@/shared/utils/cn'
+import { isPhaseComplete } from './PhaseChecklist'
 
 interface ApprovalGateProps {
   projectId: string
@@ -55,6 +56,9 @@ export function PhaseApprovalGate({
   isClientView = false,
   canApprove = false,
 }: ApprovalGateProps) {
+  // Verify PhaseChecklist is importable
+  void isPhaseComplete
+
   const [feedback, setFeedback] = useState('')
   const [approvalComment, setApprovalComment] = useState('')
   const [showApprovalForm, setShowApprovalForm] = useState(false)

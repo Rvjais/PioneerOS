@@ -45,14 +45,11 @@ interface SettlementBreakdown {
   type: 'credit' | 'debit'
 }
 
-const mockSettlement: SettlementBreakdown[] = [
-  { label: 'Pending Salary (15 days)', amount: 37500, type: 'credit' },
-  { label: 'Leave Encashment (8 days)', amount: 20000, type: 'credit' },
+const defaultSettlement: SettlementBreakdown[] = [
+  { label: 'Pending Salary', amount: 0, type: 'credit' },
+  { label: 'Leave Encashment', amount: 0, type: 'credit' },
   { label: 'Gratuity', amount: 0, type: 'credit' },
-  { label: 'RBC Pot Balance', amount: 12500, type: 'credit' },
-  { label: 'Notice Period Recovery', amount: -25000, type: 'debit' },
-  { label: 'Asset Recovery (Laptop damage)', amount: -5000, type: 'debit' },
-  { label: 'Advance Salary Recovery', amount: 0, type: 'debit' },
+  { label: 'Notice Period Recovery', amount: 0, type: 'debit' },
 ]
 
 export default function ExitFormPage() {
@@ -88,8 +85,8 @@ export default function ExitFormPage() {
     setForm(prev => ({ ...prev, [field]: value }))
   }
 
-  const totalCredit = mockSettlement.filter(s => s.type === 'credit').reduce((sum, s) => sum + s.amount, 0)
-  const totalDebit = mockSettlement.filter(s => s.type === 'debit').reduce((sum, s) => sum + Math.abs(s.amount), 0)
+  const totalCredit = defaultSettlement.filter(s => s.type === 'credit').reduce((sum, s) => sum + s.amount, 0)
+  const totalDebit = defaultSettlement.filter(s => s.type === 'debit').reduce((sum, s) => sum + Math.abs(s.amount), 0)
   const netSettlement = totalCredit - totalDebit
 
   const formatCurrency = (amount: number) => {
@@ -474,7 +471,7 @@ export default function ExitFormPage() {
             <h3 className="font-medium text-white mb-4">Settlement Breakdown</h3>
 
             <div className="space-y-3">
-              {mockSettlement.map((item, index) => (
+              {defaultSettlement.map((item, index) => (
                 <div key={item.label} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
                   <span className="text-sm text-slate-300">{item.label}</span>
                   <span className={`font-medium ${item.type === 'credit' ? 'text-green-400' : 'text-red-400'}`}>

@@ -9,7 +9,7 @@ import { prisma } from '@/server/db/prisma'
 export const GET = withAuth(async (req: NextRequest, { user }) => {
   try {
     const { searchParams } = new URL(req.url)
-    const month = parseInt(searchParams.get('month') || '0')
+    const month = parseInt(searchParams.get('month') || new Date().getMonth().toString())
     const year = parseInt(searchParams.get('year') || new Date().getFullYear().toString())
 
     // Calculate date range for the month

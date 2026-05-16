@@ -105,16 +105,38 @@ function isValidExtension(
 }
 
 /**
+ * Magic bytes signatures for common file types
+ * Used to verify file content matches declared MIME type
+ */
+const MAGIC_BYTES: Record<string, Uint8Array[]> = {
+  'image/jpeg': [new Uint8Array([0xFF, 0xD8, 0xFF])],
+  'image/png': [new Uint8Array([0x89, 0x50, 0x4E, 0x47])],
+  'image/gif': [new Uint8Array([0x47, 0x49, 0x46])],
+  'image/webp': [new Uint8Array([0x52, 0x49, 0x46, 0x46])],
+  'application/pdf': [new Uint8Array([0x25, 0x50, 0x44, 0x46])],
+}
+
+async function checkMagicBytes(file: File, mimeType: string): Promise<boolean> {
+  const signatures = MAGIC_BYTES[mimeType]
+  if (!signatures) return true // No magic byte check for this type
+  const header = await file.slice(0, 8).arrayBuffer()
+  const headerBytes = new Uint8Array(header)
+  return signatures.some(sig =>
+    sig.every((byte, i) => byte === headerBytes[i])
+  )
+}
+
+/**
  * Validate a file upload
  *
  * @param file - The File object to validate
  * @param options - Validation options
  * @returns Validation result with sanitized filename if valid
  */
-export function validateFileUpload(
+export async function validateFileUpload(
   file: File,
   options: FileValidationOptions
-): FileValidationResult {
+): Promise<FileValidationResult> {
   const {
     category,
     maxSize = MAX_FILE_SIZES[category] ?? MAX_FILE_SIZES.default,
@@ -156,6 +178,12 @@ export function validateFileUpload(
       valid: false,
       error: `Invalid file extension. Allowed extensions: ${allowed.join(', ')}`,
     }
+  }
+
+  // Verify magic bytes match declared MIME type
+  const magicMatch = await checkMagicBytes(file, file.type)
+  if (!magicMatch) {
+    return { valid: false, error: 'File content does not match declared file type' }
   }
 
   // Sanitize filename

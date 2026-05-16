@@ -8,4 +8,4 @@ Disallow: /portal/
 Disallow: /embed/
 Disallow: /client-portal/
 
-Sitemap: https://brandingpioneers.in/sitemap.xml
+Sitemap: http://localhost:3000/sitemap.xml

@@ -32,7 +32,13 @@ export function parseUserAgent(ua: string): {
     browser = 'Opera'
   }
 
-  if (ua.includes('Windows')) {
+  if (ua.includes('Android')) {
+    os = 'Android'
+    deviceType = 'Android'
+  } else if (ua.includes('iPhone') || ua.includes('iPad')) {
+    os = 'iOS'
+    deviceType = ua.includes('iPad') ? 'iPad' : 'iPhone'
+  } else if (ua.includes('Windows')) {
     os = 'Windows'
     deviceType = 'Windows'
   } else if (ua.includes('Mac OS X')) {
@@ -41,12 +47,6 @@ export function parseUserAgent(ua: string): {
   } else if (ua.includes('Linux')) {
     os = 'Linux'
     deviceType = 'Linux'
-  } else if (ua.includes('Android')) {
-    os = 'Android'
-    deviceType = 'Android'
-  } else if (ua.includes('iPhone') || ua.includes('iPad')) {
-    os = 'iOS'
-    deviceType = ua.includes('iPad') ? 'iPad' : 'iPhone'
   }
 
   return { browser, os, deviceType }

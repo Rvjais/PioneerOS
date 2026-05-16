@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { formatDateDDMMYYYY } from '@/shared/utils/cn'
+import { formatDateDDMMYYYY, cn } from '@/shared/utils/cn'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { QuickAddModal, EMPLOYEE_FIELDS } from '@/client/components/QuickAddModal'
@@ -38,6 +38,7 @@ const STATUSES = ['ACTIVE', 'PROBATION', 'PIP', 'INACTIVE']
 const EMPLOYEE_TYPES = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN', 'FREELANCER']
 
 // Safe Edit User Modal - uses local state to avoid re-render crashes
+// Safe Edit User Modal - uses local state to avoid re-render crashes
 function EditUserModal({ user, onClose, onSave, saving }: {
   user: User
   onClose: () => void
@@ -53,7 +54,8 @@ function EditUserModal({ user, onClose, onSave, saving }: {
   const [employeeType, setEmployeeType] = useState(user.employeeType)
   const [status, setStatus] = useState(user.status)
 
-  const handleSave = () => {
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault()
     onSave({
       firstName,
       lastName: lastName || null,
@@ -67,248 +69,124 @@ function EditUserModal({ user, onClose, onSave, saving }: {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 50,
-      padding: '16px'
-    }}>
-      <div 
-        style={{ position: 'fixed', inset: 0 }} 
-        onClick={onClose} 
-      />
-      <div style={{
-        backgroundColor: '#1e293b',
-        borderRadius: '12px',
-        padding: '24px',
-        width: '100%',
-        maxWidth: '32rem',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        position: 'relative',
-        zIndex: 51,
-        border: '1px solid rgba(255,255,255,0.1)',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px'
-        }}>
-          <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Edit User</h2>
-          <button
-            onClick={onClose}
-            style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}
-          >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <div className="fixed inset-0 z-[120] overflow-y-auto" suppressHydrationWarning>
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <h3 className="text-xl font-bold text-slate-900 tracking-tight">Edit Employee</h3>
+            <button onClick={onClose} className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>First Name</label>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
-              />
+          <form onSubmit={handleSave} className="p-6 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">First Name</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Last Name</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none"
+                />
+              </div>
+              <div className="sm:col-span-2 space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none appearance-none cursor-pointer"
+                >
+                  {ROLES.map((r) => (
+                    <option key={r} value={r}>{r.replace(/_/g, ' ')}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
+                <select
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none appearance-none cursor-pointer"
+                >
+                  {DEPARTMENTS.map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Employee Type</label>
+                <select
+                  value={employeeType}
+                  onChange={(e) => setEmployeeType(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none appearance-none cursor-pointer"
+                >
+                  {EMPLOYEE_TYPES.map((t) => (
+                    <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Status</label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none appearance-none cursor-pointer"
+                >
+                  {STATUSES.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="sm:col-span-2 space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone</label>
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none"
+                />
+              </div>
             </div>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Last Name</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
-              />
-            </div>
-          </div>
 
-          <div>
-            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                backgroundColor: '#334155',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: 'white',
-                fontSize: '14px'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Phone</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                backgroundColor: '#334155',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                color: 'white',
-                fontSize: '14px'
-              }}
-            />
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Role</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest transition-all order-2 sm:order-1"
               >
-                {ROLES.map(r => (
-                  <option key={r} value={r} style={{ backgroundColor: '#1e293b' }}>{r.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Department</label>
-              <select
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex-1 px-6 py-3 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all disabled:opacity-50 order-1 sm:order-2"
               >
-                {DEPARTMENTS.map(d => (
-                  <option key={d} value={d} style={{ backgroundColor: '#1e293b' }}>{d}</option>
-                ))}
-              </select>
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Employee Type</label>
-              <select
-                value={employeeType}
-                onChange={(e) => setEmployeeType(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
-              >
-                {EMPLOYEE_TYPES.map(t => (
-                  <option key={t} value={t} style={{ backgroundColor: '#1e293b' }}>{t.replace(/_/g, ' ')}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '14px', marginBottom: '4px' }}>Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: '#334155',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  fontSize: '14px'
-                }}
-              >
-                {STATUSES.map(s => (
-                  <option key={s} value={s} style={{ backgroundColor: '#1e293b' }}>{s}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '12px',
-          marginTop: '24px',
-          paddingTop: '16px',
-          borderTop: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '8px 16px',
-              color: '#cbd5e1',
-              fontSize: '14px',
-              cursor: 'pointer',
-              background: 'none',
-              border: 'none'
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              fontSize: '14px',
-              borderRadius: '8px',
-              cursor: saving ? 'not-allowed' : 'pointer',
-              opacity: saving ? 0.5 : 1,
-              border: 'none'
-            }}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+          </form>
         </div>
       </div>
     </div>
@@ -482,67 +360,35 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
   }
 
   return (
-    <div className="glass-card rounded-xl border border-white/10 overflow-hidden" suppressHydrationWarning>
+    <div className="bg-white" suppressHydrationWarning>
       {/* Viewing As Banner */}
       {viewingAs && (
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <span className="text-sm font-medium">
-              Viewing as <strong>{viewingAs.firstName} {viewingAs.lastName || ''}</strong>
-              <span className="ml-2 text-xs opacity-75">({formatRoleLabel(viewingAs.role)} - {viewingAs.department})</span>
+        <div className="bg-gradient-to-r from-[#c96442] to-[#b5563a] px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-orange-500/10">
+          <div className="flex items-center gap-3 text-white">
+            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+            <span className="text-sm font-bold">
+              Viewing as <span className="underline decoration-white/40">{viewingAs.firstName} {viewingAs.lastName || ''}</span>
+              <span className="ml-2 text-[10px] font-black uppercase bg-white/20 px-1.5 py-0.5 rounded tracking-widest">{formatRoleLabel(viewingAs.role)}</span>
             </span>
           </div>
-          <div className="flex items-center gap-2 text-white mb-2">
-            {/* Quick nav to key department dashboards */}
-            <Link
-              href="/accounts"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              Finance
-            </Link>
-            <Link
-              href="/sales"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              Sales
-            </Link>
-            <Link
-              href="/hr"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              HR
-            </Link>
-            <Link
-              href="/seo"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              SEO
-            </Link>
-            <Link
-              href="/web"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              Web
-            </Link>
-            <Link
-              href="/ads"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              Ads
-            </Link>
-            <Link
-              href="/social"
-              className="text-xs px-2 py-1 bg-white/20 hover:bg-white/30 text-white rounded"
-            >
-              Social
-            </Link>
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            {['HR', 'SALES', 'ACCOUNTS', 'WEB', 'ADS', 'SEO'].map((dept) => (
+              <Link
+                key={dept}
+                href={`/${dept.toLowerCase()}`}
+                className="text-[10px] font-black px-2 py-1 bg-white/10 hover:bg-white/30 text-white rounded transition-colors uppercase"
+              >
+                {dept}
+              </Link>
+            ))}
             <button
               onClick={handleExitView}
-              className="text-xs px-3 py-1 bg-white/20 hover:bg-white/30 text-white rounded font-medium"
+              className="text-[10px] font-black px-3 py-1 bg-white hover:bg-slate-100 text-[#c96442] rounded shadow-sm transition-colors uppercase ml-2"
             >
               Exit View
             </button>
@@ -551,118 +397,131 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
       )}
 
       {/* Filters */}
-      <div className="p-4 border-b border-white/10 flex flex-wrap gap-4 items-center">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, email, or ID..."
-          className="px-3 py-2 bg-slate-900/40 border border-white/10 rounded-lg text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-        />
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="px-3 py-2 bg-slate-900/40 border border-white/10 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-          style={{ colorScheme: 'dark' }}
-        >
-          <option value="ALL">All Roles</option>
-          <option value="SUPER_ADMIN">Super Admin</option>
-          <option value="MANAGER">Manager</option>
-          <option value="EMPLOYEE">Employee</option>
-          <option value="SALES">Sales</option>
-          <option value="ACCOUNTS">Accounts</option>
-          <option value="FREELANCER">Freelancer</option>
-          <option value="INTERN">Intern</option>
-        </select>
-        <span className="text-sm text-slate-400">
-          Showing {filteredUsers.length} of {users.length} users
-        </span>
-        <button
-          onClick={() => setShowQuickAdd(true)}
-          className="ml-auto flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col lg:flex-row gap-4 items-stretch lg:items-center bg-slate-50/30">
+        <div className="relative flex-1">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          Quick Add
-        </button>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search employees..."
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all"
+          />
+        </div>
+        <div className="flex flex-wrap sm:flex-nowrap gap-3 items-center">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="flex-1 sm:flex-none px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all appearance-none cursor-pointer pr-10"
+            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\' /%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '16px' }}
+          >
+            <option value="ALL">All Roles</option>
+            {ROLES.map(role => (
+              <option key={role} value={role}>{formatRoleLabel(role)}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => setShowQuickAdd(true)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Quick Add
+          </button>
+        </div>
       </div>
 
-      {/* Table */}
+      {/* Table Section */}
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-slate-900/40">
-            <tr>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">User</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Role</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Department</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Type</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Status</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Joined</th>
-              <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase">Actions</th>
+        <table className="w-full text-left border-collapse min-w-[800px] lg:min-w-0">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-100">
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden sm:table-cell">Role</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:table-cell">Department</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hidden lg:table-cell text-center">Status</th>
+              <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-slate-50">
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-slate-900/40">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <UserAvatar user={user} size="sm" showPreview={false} />
-                    <div>
-                      <p className="font-medium text-white">
+              <tr key={user.id} className="group hover:bg-slate-50/50 transition-colors">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-4">
+                    <UserAvatar user={user} size="sm" showPreview={false} className="ring-2 ring-white shadow-sm" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-slate-900 truncate">
                         {user.firstName} {user.lastName || ''}
                       </p>
-                      <p className="text-xs text-slate-400">{user.empId} | {user.email || user.phone}</p>
+                      <p className="text-[11px] font-medium text-slate-400 truncate">
+                        {user.empId} • {user.email || user.phone}
+                      </p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full ${roleColors[user.role]}`}>
+                <td className="px-6 py-4 hidden sm:table-cell">
+                  <span className={cn(
+                    "text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-widest border",
+                    roleColors[user.role] || "bg-slate-100 text-slate-500 border-slate-100"
+                  )}>
                     {formatRoleLabel(user.role)}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-slate-300">{user.department}</td>
-                <td className="px-4 py-3 text-sm text-slate-300">{user.employeeType.replace(/_/g, ' ')}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full ${statusColors[user.status]}`}>
+                <td className="px-6 py-4 hidden md:table-cell">
+                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+                    {user.department}
+                  </span>
+                </td>
+                <td className="px-6 py-4 hidden lg:table-cell text-center">
+                  <span className={cn(
+                    "inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-1 rounded-full border uppercase tracking-wider",
+                    statusColors[user.status] || "bg-slate-50 text-slate-400 border-slate-100"
+                  )}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
                     {user.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-sm text-slate-300">{formatDate(user.joiningDate as Date)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-end gap-2">
                     <button
                       onClick={() => handleViewDashboard(user)}
-                      className="text-xs px-2 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded flex items-center gap-1"
-                      title="View this user's dashboard"
+                      className="p-2 text-slate-400 hover:text-[#c96442] hover:bg-orange-50 rounded-xl transition-all"
+                      title="View Dashboard"
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
-                      Dashboard
-                    </button>
-                    <button
-                      onClick={() => setMagicLinkUser(user)}
-                      className="text-xs px-2 py-1 bg-amber-500/20 hover:bg-amber-600/30 text-amber-400 rounded border border-amber-500/20"
-                      title="Generate magic link for this user"
-                    >
-                      <svg className="w-3.5 h-3.5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Magic Link
                     </button>
                     <button
                       onClick={() => setEditingUser(user)}
-                      className="text-xs px-2 py-1 bg-blue-500/20 hover:bg-blue-600/30 text-blue-400 rounded border border-blue-500/20"
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                      title="Edit Employee"
                     >
-                      Edit
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setMagicLinkUser(user)}
+                      className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
+                      title="Magic Link"
+                    >
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
                     </button>
                     <button
                       onClick={() => setRemovingUser(user)}
-                      className="text-xs px-2 py-1 bg-red-500/20 hover:bg-red-600/30 text-red-400 rounded border border-red-500/20"
+                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                      title="Remove"
                     >
-                      Remove
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
                   </div>
                 </td>
@@ -670,6 +529,11 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
             ))}
           </tbody>
         </table>
+        {filteredUsers.length === 0 && (
+          <div className="py-20 text-center">
+            <p className="text-slate-500 font-medium">No employees found matching your criteria.</p>
+          </div>
+        )}
       </div>
 
       {/* Edit User Modal */}
@@ -683,93 +547,38 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
         />
       )}
 
-      {/* Remove User Confirmation - Custom Modal for guaranteed visibility */}
+      {/* Remove User Confirmation */}
       {removingUser && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.7)',
-          backdropFilter: 'blur(4px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: '16px'
-        }}>
-          <div 
-            style={{ position: 'fixed', inset: 0 }} 
-            onClick={() => !saving && setRemovingUser(null)} 
-          />
-          <div style={{
-            backgroundColor: '#1e293b',
-            borderRadius: '16px',
-            padding: '32px',
-            width: '100%',
-            maxWidth: '28rem',
-            position: 'relative',
-            zIndex: 10000,
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px',
-              color: '#ef4444'
-            }}>
-              <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            
-            <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Remove Employee</h2>
-            <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.5', marginBottom: '32px' }}>
-              Are you sure you want to remove <strong>{removingUser.firstName} {removingUser.lastName || ''}</strong>? <br/>
-              This will mark them as inactive and remove them from all active lists.
-            </p>
-            
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button
-                onClick={() => setRemovingUser(null)}
-                disabled={saving}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  backgroundColor: '#334155',
-                  color: 'white',
-                  borderRadius: '12px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 600
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleRemoveUser}
-                disabled={saving}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  backgroundColor: '#ef4444',
-                  color: 'white',
-                  borderRadius: '12px',
-                  border: 'none',
-                  cursor: saving ? 'not-allowed' : 'pointer',
-                  opacity: saving ? 0.7 : 1,
-                  fontSize: '14px',
-                  fontWeight: 700
-                }}
-              >
-                {saving ? 'Removing...' : 'Yes, Remove'}
-              </button>
+        <div className="fixed inset-0 z-[120] overflow-y-auto" suppressHydrationWarning>
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => !saving && setRemovingUser(null)} />
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 text-center">
+              <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Remove Employee</h3>
+              <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+                Are you sure you want to remove <strong>{removingUser.firstName} {removingUser.lastName || ''}</strong>? <br/>
+                This will mark them as inactive and remove them from all active lists.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setRemovingUser(null)}
+                  disabled={saving}
+                  className="flex-1 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest transition-all order-2 sm:order-1"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleRemoveUser}
+                  disabled={saving}
+                  className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-red-500/20 transition-all disabled:opacity-50 order-1 sm:order-2"
+                >
+                  {saving ? 'Removing...' : 'Yes, Remove'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -787,96 +596,35 @@ export function UserManagementClient({ users }: UserManagementClientProps) {
 
       {/* Magic Link Modal */}
       {magicLinkUser && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50,
-          padding: '16px'
-        }}>
-          <div
-            style={{ position: 'fixed', inset: 0 }}
-            onClick={() => setMagicLinkUser(null)}
-          />
-          <div style={{
-            backgroundColor: '#1e293b',
-            borderRadius: '12px',
-            padding: '24px',
-            width: '100%',
-            maxWidth: '28rem',
-            position: 'relative',
-            zIndex: 51,
-            border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '24px'
-            }}>
-              <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600 }}>Generate Magic Link</h2>
-              <button onClick={() => setMagicLinkUser(null)} style={{ color: '#94a3b8', cursor: 'pointer', background: 'none', border: 'none' }}>
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <div className="fixed inset-0 z-[120] overflow-y-auto" suppressHydrationWarning>
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setMagicLinkUser(null)} />
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 text-center">
+              <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
+                <svg className="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.2)',
-                borderRadius: '8px',
-                padding: '12px',
-                fontSize: '14px',
-                color: '#fbbf24'
-              }}>
-                <strong>Magic Link for:</strong> {magicLinkUser.firstName} {magicLinkUser.lastName || ''} ({magicLinkUser.empId})<br/>
-                <span className="text-slate-400">This link expires in 24 hours and will be copied to your clipboard.</span>
               </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '12px',
-              marginTop: '24px',
-              paddingTop: '16px',
-              borderTop: '1px solid rgba(255,255,255,0.1)'
-            }}>
-              <button
-                onClick={() => setMagicLinkUser(null)}
-                style={{
-                  padding: '8px 16px',
-                  color: '#cbd5e1',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  background: 'none',
-                  border: 'none'
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleGenerateMagicLink}
-                disabled={generatingMagicLink}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#d97706',
-                  color: 'white',
-                  fontSize: '14px',
-                  borderRadius: '8px',
-                  cursor: generatingMagicLink ? 'not-allowed' : 'pointer',
-                  opacity: generatingMagicLink ? 0.5 : 1,
-                  border: 'none'
-                }}
-              >
-                {generatingMagicLink ? 'Generating...' : 'Generate & Copy Link'}
-              </button>
+              <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Magic Link</h3>
+              <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+                Generate a one-time login link for <strong>{magicLinkUser.firstName}</strong>. <br/>
+                This link expires in 24 hours and will be copied to your clipboard.
+              </p>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleGenerateMagicLink}
+                  disabled={generatingMagicLink}
+                  className="w-full px-6 py-3 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all disabled:opacity-50"
+                >
+                  {generatingMagicLink ? 'Generating...' : 'Generate & Copy Link'}
+                </button>
+                <button
+                  onClick={() => setMagicLinkUser(null)}
+                  className="w-full px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>

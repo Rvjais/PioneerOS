@@ -123,6 +123,14 @@ const webNavigation: NavSection[] = [
       { name: 'Arcade', href: '/arcade', icon: 'arcade' },
     ],
   },
+  {
+    category: 'Resources',
+    icon: 'folder',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: 'ideas' },
+      { name: 'SOP Library', href: '/sop', icon: 'active' },
+    ],
+  },
 ]
 
 const getIcon = (icon: string) => {

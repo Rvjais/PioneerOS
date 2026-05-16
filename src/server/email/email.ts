@@ -103,8 +103,13 @@ interface SendMagicLinkOptions {
   firstName: string
 }
 
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
+}
+
 export async function sendMagicLinkEmail({ to, token, firstName }: SendMagicLinkOptions) {
   const magicLink = `${APP_URL}/auth/magic?token=${token}`
+  const safeFirstName = escapeHtml(firstName)
 
   return sendEmail({
     to,
@@ -447,6 +452,34 @@ interface PaymentReceivedData {
   amount: string
   transactionRef?: string
   currency: string
+}
+
+// ---------------------------------------------------------------------------
+// Template Builders (from sender.ts)
+// ---------------------------------------------------------------------------
+
+export function onboardingLinkEmail(name: string, link: string, type: 'client' | 'employee'): SendEmailOptions {
+  return {
+    to: '',
+    subject: type === 'client' ? `Complete Your Onboarding - ${BRAND.name}` : `Welcome! Complete Your Onboarding - ${BRAND.name}`,
+    html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><h2>Hi ${name},</h2><p>${type === 'client' ? 'We\'re excited to get started!' : 'Welcome to the team!'} Please complete your onboarding by clicking the link below:</p><a href="${link}" style="display:inline-block;background:#F97316;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">Complete Onboarding</a><p style="color:#666;margin-top:20px">This link is valid for 30 days. If you have questions, reply to this email.</p><p>Best regards,<br>${BRAND.name}</p></div>`,
+  }
+}
+
+export function magicLinkEmail(name: string, link: string): SendEmailOptions {
+  return {
+    to: '',
+    subject: `Your Login Link - ${BRAND.name}`,
+    html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><h2>Hi ${name},</h2><p>Click below to access your portal:</p><a href="${link}" style="display:inline-block;background:#3B82F6;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">Access Portal</a><p style="color:#666;margin-top:20px">This link is for your use only.</p><p>Best regards,<br>${BRAND.name}</p></div>`,
+  }
+}
+
+export function paymentConfirmationEmail(clientName: string, amount: string, invoiceNumber: string): SendEmailOptions {
+  return {
+    to: '',
+    subject: `Payment Confirmed - ${invoiceNumber}`,
+    html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><h2>Payment Confirmed</h2><p>Dear ${clientName},</p><p>We've received your payment of <strong>${amount}</strong> against invoice <strong>${invoiceNumber}</strong>.</p><p>Thank you for your prompt payment!</p><p>Best regards,<br>${BRAND.name}</p></div>`,
+  }
 }
 
 export async function sendPaymentReceivedEmail(to: string, data: PaymentReceivedData): Promise<EmailResult> {

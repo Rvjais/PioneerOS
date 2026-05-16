@@ -285,10 +285,11 @@ export function FormLayout({
           <footer className={`${t.footerBg} mt-auto`}>
             <div className={`${maxWidths[maxWidth]} mx-auto px-4 sm:px-6 lg:px-8 py-6`}>
               <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 text-sm ${t.textSecondary}`}>
-                <p>© {new Date().getFullYear()} Branding Pioneers. All rights reserved.</p>
+                <p suppressHydrationWarning>© {new Date().getFullYear()} Branding Pioneers. All rights reserved.</p>
                 <div className="flex items-center gap-4">
                   <a href="mailto:support@brandingpioneers.in" className={`hover:${t.textPrimary} transition-colors`}>Support</a>
                   <a href="tel:+919876543210" className={`hover:${t.textPrimary} transition-colors`}>Contact</a>
+                  {/* TODO: Use supportConfig for these links */}
                 </div>
               </div>
             </div>

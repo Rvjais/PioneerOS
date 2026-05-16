@@ -148,10 +148,7 @@ export async function POST(request: Request) {
         role: user.role,
         department: user.department,
       },
-      magicLinkToken: magicToken, // Admin shares this link securely with the new user
-      magicLinkExpiry: magicLinkExpiry.toISOString(),
-      tempPassword, // Legacy: still generated for backward compatibility
-      message: 'User created. Share the magic link for first login (valid 72 hours).',
+      message: 'User created. Magic link instructions have been generated. Share them securely with the user.',
     })
   } catch (error) {
     console.error('Failed to create user:', error)

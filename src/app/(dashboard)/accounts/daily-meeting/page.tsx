@@ -88,7 +88,6 @@ export default function DailyMeetingPage() {
       }
     } catch (error) {
       console.error('Error fetching tasks:', error)
-      // Use mock data for demo
       setTasks([])
     } finally {
       setLoading(false)

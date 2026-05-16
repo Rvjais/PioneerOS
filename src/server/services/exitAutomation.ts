@@ -101,13 +101,25 @@ export async function checkAndAdvanceExitStatus(exitProcessId: string) {
     const allCompleted = checklist.every((item) => item.status === 'COMPLETED')
 
     if (allCompleted) {
-      // Get exit process with user info for deactivation
+      // Get exit process with user info and settlement for deactivation
       const exitProcess = await tx.exitProcess.findUnique({
         where: { id: exitProcessId },
-        include: { user: { select: { id: true, firstName: true, lastName: true } } },
+        include: {
+          user: { select: { id: true, firstName: true, lastName: true } },
+          settlement: { select: { status: true, netPayable: true } },
+        },
       })
 
       if (!exitProcess) return null
+
+      // Verify FnF settlement is paid before deactivating user
+      const fnfSettled = exitProcess.settlement &&
+        exitProcess.settlement.status === 'PAID' &&
+        exitProcess.settlement.netPayable <= 0
+      if (!fnfSettled) {
+        // Don't deactivate yet - FnF settlement must be completed
+        return null
+      }
 
       // Update exit to COMPLETED
       const updated = await tx.exitProcess.update({

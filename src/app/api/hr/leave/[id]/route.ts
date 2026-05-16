@@ -141,43 +141,102 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
         (1000 * 60 * 60 * 24)
       ) + 1
 
-      const currentYear = new Date(leaveRequest.startDate).getFullYear()
+      const startYear = new Date(leaveRequest.startDate).getFullYear()
+      const endYear = new Date(leaveRequest.endDate).getFullYear()
 
       // If approving, validate and update leave balance
       if (status === 'APPROVED') {
-        // Check if balance exists
-        const balance = await tx.leaveBalance.findUnique({
-          where: {
-            userId_year_type: {
-              userId: leaveRequest.userId,
-              year: currentYear,
-              type: leaveRequest.type,
+        // Skip balance deduction for unpaid leave
+        if (leaveRequest.type === 'UNPAID') {
+          // Unpaid leave doesn't consume leave balance
+        } else if (startYear !== endYear) {
+          // Cross-year leave: split deduction across years
+          const yearEnd = new Date(startYear, 11, 31)
+          const daysInStartYear = Math.ceil((yearEnd.getTime() - new Date(leaveRequest.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1
+          const daysInEndYear = days - daysInStartYear
+
+          // Deduct from start year
+          const balanceStart = await tx.leaveBalance.findUnique({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: startYear,
+                type: leaveRequest.type,
+              }
             }
-          }
-        })
+          })
+          if (!balanceStart) throw new Error(`No ${leaveRequest.type} balance found for ${startYear}`)
+          if (balanceStart.remaining < daysInStartYear) throw new Error(`Insufficient balance for ${startYear}. Need ${daysInStartYear}, have ${balanceStart.remaining}`)
 
-        if (!balance) {
-          throw new Error(`No ${leaveRequest.type} leave balance found for this year`)
-        }
+          await tx.leaveBalance.update({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: startYear,
+                type: leaveRequest.type,
+              }
+            },
+            data: { used: { increment: daysInStartYear }, remaining: { decrement: daysInStartYear } },
+          })
 
-        if (balance.remaining < days) {
-          throw new Error(`Insufficient ${leaveRequest.type} balance. Available: ${balance.remaining} days, Requested: ${days} days`)
-        }
-
-        // Deduct from balance atomically
-        await tx.leaveBalance.update({
-          where: {
-            userId_year_type: {
-              userId: leaveRequest.userId,
-              year: currentYear,
-              type: leaveRequest.type,
+          // Deduct from end year
+          const balanceEnd = await tx.leaveBalance.findUnique({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: endYear,
+                type: leaveRequest.type,
+              }
             }
-          },
-          data: {
-            used: { increment: days },
-            remaining: { decrement: days },
+          })
+          if (!balanceEnd) throw new Error(`No ${leaveRequest.type} balance found for ${endYear}`)
+          if (balanceEnd.remaining < daysInEndYear) throw new Error(`Insufficient balance for ${endYear}. Need ${daysInEndYear}, have ${balanceEnd.remaining}`)
+
+          await tx.leaveBalance.update({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: endYear,
+                type: leaveRequest.type,
+              }
+            },
+            data: { used: { increment: daysInEndYear }, remaining: { decrement: daysInEndYear } },
+          })
+        } else {
+          // Single year leave: normal deduction
+          const balance = await tx.leaveBalance.findUnique({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: startYear,
+                type: leaveRequest.type,
+              }
+            }
+          })
+
+          if (!balance) {
+            throw new Error(`No ${leaveRequest.type} leave balance found for this year`)
           }
-        })
+
+          if (balance.remaining < days) {
+            throw new Error(`Insufficient ${leaveRequest.type} balance. Available: ${balance.remaining} days, Requested: ${days} days`)
+          }
+
+          // Deduct from balance atomically
+          await tx.leaveBalance.update({
+            where: {
+              userId_year_type: {
+                userId: leaveRequest.userId,
+                year: startYear,
+                type: leaveRequest.type,
+              }
+            },
+            data: {
+              used: { increment: days },
+              remaining: { decrement: days },
+            }
+          })
+        }
       }
 
       // Auto-create attendance records for approved leave dates

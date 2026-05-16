@@ -85,7 +85,6 @@ export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) 
       }
       if (e.key === 'Escape') {
         setShowSearch(false)
-        setShowImpersonateDropdown(false)
         setShowUserMenu(false)
         setShowNotifications(false)
       }
@@ -519,7 +518,7 @@ export function DashboardHeader({ showHamburger = true }: DashboardHeaderProps) 
                       <span className="text-sm font-semibold transition-colors text-slate-600 group-hover:text-blue-400">Assign Task</span>
                     </Link>
                     <Link
-                      href="/accounts/onboarding/create"
+                      href="/accounts/client-onboarding"
                       onClick={() => setShowSearch(false)}
                       className="flex items-center gap-4 p-4 border border-slate-200 hover:border-slate-200 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all group"
                     >

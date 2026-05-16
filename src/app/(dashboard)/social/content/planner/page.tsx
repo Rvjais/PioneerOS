@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -66,7 +67,7 @@ export default function ContentPlannerPage() {
         }))
         setPosts(mapped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load content plans:', error); toast.error('Failed to load content plans. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 

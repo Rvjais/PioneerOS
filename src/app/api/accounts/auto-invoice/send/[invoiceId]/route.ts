@@ -165,6 +165,12 @@ export const POST = withAuth(async (req, { user, params: routeParams }) => {
         data: { status: 'SENT' }
       })
 
+      // Update the client's invoice delivery status
+      await prisma.client.update({
+        where: { id: client.id },
+        data: { invoiceStatus: 'SENT' }
+      })
+
       // Update config if exists
       if (config) {
         await prisma.autoInvoiceConfig.update({

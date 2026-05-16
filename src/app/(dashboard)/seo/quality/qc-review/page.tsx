@@ -1,36 +1,165 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 interface QCReview {
   id: string
   task: string
   taskType: string
   client: string
+  clientId?: string
   submittedBy: string
+  submittedById?: string
   submittedDate: string
   reviewer: string
+  reviewerId?: string
   status: 'PENDING_REVIEW' | 'APPROVED' | 'RETURNED'
   feedback?: string
+  priority?: string
+  deadline?: string | null
 }
 
-const QC_REVIEWS: QCReview[] = [
-  { id: '1', task: 'Blog: Best Cardiologist Delhi', taskType: 'Content', client: 'Apollo Hospitals', submittedBy: 'Neha', submittedDate: '2024-03-11', reviewer: 'Priya', status: 'PENDING_REVIEW' },
-  { id: '2', task: 'Mobile usability fix', taskType: 'Technical', client: 'MedPlus Clinics', submittedBy: 'Rahul', submittedDate: '2024-03-10', reviewer: 'Priya', status: 'PENDING_REVIEW' },
-  { id: '3', task: 'Meta optimization - Service pages', taskType: 'On Page', client: 'MaxCare Clinic', submittedBy: 'Rahul', submittedDate: '2024-03-09', reviewer: 'Priya', status: 'RETURNED', feedback: 'Meta descriptions too short. Need 150-160 characters. Also missing target keywords in 3 pages.' },
-  { id: '4', task: 'Blog: Health Tips for Summer', taskType: 'Content', client: 'WellnessHub', submittedBy: 'Neha', submittedDate: '2024-03-06', reviewer: 'Priya', status: 'APPROVED', feedback: 'Well-written content. Good keyword placement. Approved for publishing.' },
-  { id: '5', task: 'Backlink submission - Health directories', taskType: 'Off Page', client: 'HealthFirst Labs', submittedBy: 'Amit', submittedDate: '2024-03-08', reviewer: 'Rahul', status: 'APPROVED', feedback: 'Good DA sites selected. All anchor texts look natural.' },
-  { id: '6', task: 'Schema markup implementation', taskType: 'Technical', client: 'Apollo Hospitals', submittedBy: 'Rahul', submittedDate: '2024-03-05', reviewer: 'Priya', status: 'RETURNED', feedback: 'FAQ schema has errors. Use structured data testing tool to validate.' },
-]
+interface Client {
+  id: string
+  name: string
+}
 
 export default function SeoQCReviewPage() {
+  const [reviews, setReviews] = useState<QCReview[]>([])
+  const [clients, setClients] = useState<Client[]>([])
+  const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<string>('all')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedReview, setSelectedReview] = useState<QCReview | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [formData, setFormData] = useState({
+    clientId: '',
+    taskTitle: '',
+    taskType: 'Content',
+    priority: 'MEDIUM',
+    deadline: ''
+  })
 
-  const filteredReviews = filter === 'all' ? QC_REVIEWS : QC_REVIEWS.filter(r => r.status === filter)
+  useEffect(() => {
+    fetchReviews()
+    fetchClients()
+  }, [])
 
-  const pendingCount = QC_REVIEWS.filter(r => r.status === 'PENDING_REVIEW').length
-  const approvedCount = QC_REVIEWS.filter(r => r.status === 'APPROVED').length
-  const returnedCount = QC_REVIEWS.filter(r => r.status === 'RETURNED').length
+  const fetchClients = async () => {
+    try {
+      const res = await fetch('/api/clients?status=ACTIVE&limit=100')
+      if (res.ok) {
+        const data = await res.json()
+        setClients(data.clients || [])
+      }
+    } catch {
+      // silently fail
+    }
+  }
+
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch('/api/seo/qc-reviews')
+      if (!res.ok) throw new Error('Failed to fetch')
+      const data = await res.json()
+      setReviews(data.reviews || [])
+    } catch (err) {
+      console.error('Failed to fetch QC reviews:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAddReview = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/qc-reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      if (!res.ok) throw new Error('Failed to create review')
+      toast.success('QC Review added successfully')
+      setShowAddModal(false)
+      setFormData({ clientId: '', taskTitle: '', taskType: 'Content', priority: 'MEDIUM', deadline: '' })
+      fetchReviews()
+    } catch (err: any) {
+      toast.error(err.message || 'Error adding review')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleApprove = async (id: string) => {
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/qc-reviews', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'APPROVED', feedback: 'Approved during review.' })
+      })
+      if (!res.ok) throw new Error('Failed to approve')
+      toast.success('Review approved successfully')
+      fetchReviews()
+    } catch (err: any) {
+      toast.error(err.message || 'Error approving review')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleReturn = async (id: string) => {
+    const feedback = prompt('Enter rejection reason:')
+    if (!feedback) return
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/qc-reviews', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'RETURNED', feedback })
+      })
+      if (!res.ok) throw new Error('Failed to return')
+      toast.success('Review returned for fixes')
+      fetchReviews()
+    } catch (err: any) {
+      toast.error(err.message || 'Error returning review')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleFixAndResubmit = async (id: string) => {
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/qc-reviews', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'PENDING_REVIEW', feedback: null })
+      })
+      if (!res.ok) throw new Error('Failed to resubmit')
+      toast.success('Review resubmitted for QC')
+      fetchReviews()
+    } catch (err: any) {
+      toast.error(err.message || 'Error resubmitting review')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleViewDetails = (review: QCReview) => {
+    setSelectedReview(review)
+    setShowDetailsModal(true)
+  }
+
+  const filteredReviews = filter === 'all' ? reviews : reviews.filter(r => r.status === filter)
+
+  const pendingCount = reviews.filter(r => r.status === 'PENDING_REVIEW').length
+  const approvedCount = reviews.filter(r => r.status === 'APPROVED').length
+  const returnedCount = reviews.filter(r => r.status === 'RETURNED').length
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -51,6 +180,18 @@ export default function SeoQCReviewPage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-24 bg-white/5 rounded-xl animate-pulse" />
+        <div className="grid grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-white/5 rounded-xl animate-pulse" />)}
+        </div>
+        <div className="h-48 bg-white/5 rounded-xl animate-pulse" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -60,16 +201,12 @@ export default function SeoQCReviewPage() {
             <h1 className="text-2xl font-bold">QC Review</h1>
             <p className="text-teal-200">Quality control for SEO deliverables</p>
           </div>
-          <div className="flex gap-6">
-            <div className="text-right">
-              <p className="text-teal-200 text-sm">Pending Review</p>
-              <p className="text-3xl font-bold">{pendingCount}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-teal-200 text-sm">Returned</p>
-              <p className="text-3xl font-bold text-red-300">{returnedCount}</p>
-            </div>
-          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2 bg-white text-teal-600 rounded-lg font-medium hover:bg-teal-50 transition-colors"
+          >
+            + Add Review
+          </button>
         </div>
       </div>
 
@@ -143,27 +280,53 @@ export default function SeoQCReviewPage() {
 
             {review.status === 'PENDING_REVIEW' && (
               <div className="mt-3 flex gap-2">
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm font-medium text-green-400 bg-green-500/10 rounded-lg opacity-50 cursor-not-allowed">
+                <button
+                  onClick={() => handleApprove(review.id)}
+                  disabled={submitting}
+                  className="px-3 py-1.5 text-sm font-medium text-green-400 bg-green-500/10 rounded-lg hover:bg-green-500/20 transition-colors disabled:opacity-50"
+                >
                   Approve
                 </button>
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 rounded-lg opacity-50 cursor-not-allowed">
+                <button
+                  onClick={() => handleReturn(review.id)}
+                  disabled={submitting}
+                  className="px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                >
                   Return for Fix
                 </button>
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-900/40 rounded-lg opacity-50 cursor-not-allowed">
-                  Preview
+                <button
+                  onClick={() => handleViewDetails(review)}
+                  className="px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-900/40 rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  View Details
                 </button>
               </div>
             )}
 
             {review.status === 'RETURNED' && (
-              <div className="mt-3">
-                <button disabled title="Coming soon" className="px-3 py-1.5 text-sm font-medium text-teal-400 bg-teal-500/10 rounded-lg opacity-50 cursor-not-allowed">
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={() => handleFixAndResubmit(review.id)}
+                  disabled={submitting}
+                  className="px-3 py-1.5 text-sm font-medium text-teal-400 bg-teal-500/10 rounded-lg hover:bg-teal-500/20 transition-colors disabled:opacity-50"
+                >
                   Fix & Resubmit
+                </button>
+                <button
+                  onClick={() => handleViewDetails(review)}
+                  className="px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-900/40 rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  View Details
                 </button>
               </div>
             )}
           </div>
         ))}
+        {filteredReviews.length === 0 && (
+          <div className="glass-card rounded-xl border border-white/10 p-8 text-center">
+            <p className="text-slate-400">No QC reviews found</p>
+          </div>
+        )}
       </div>
 
       {/* QC Guidelines */}
@@ -208,6 +371,159 @@ export default function SeoQCReviewPage() {
           </div>
         </div>
       </div>
+
+      {/* Add Review Modal */}
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Add QC Review" size="md">
+        <form onSubmit={handleAddReview}>
+          <ModalBody>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Client *</label>
+              <select
+                required
+                value={formData.clientId}
+                onChange={e => setFormData({...formData, clientId: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+              >
+                <option value="">Select a client</option>
+                {clients.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Task Title *</label>
+              <input
+                required
+                type="text"
+                value={formData.taskTitle}
+                onChange={e => setFormData({...formData, taskTitle: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                placeholder="e.g. Blog: Best Cardiologist Delhi"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Task Type</label>
+                <select
+                  value={formData.taskType}
+                  onChange={e => setFormData({...formData, taskType: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                >
+                  <option value="Content">Content</option>
+                  <option value="On Page">On Page</option>
+                  <option value="Off Page">Off Page</option>
+                  <option value="Technical">Technical</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Priority</label>
+                <select
+                  value={formData.priority}
+                  onChange={e => setFormData({...formData, priority: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                >
+                  <option value="LOW">Low</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="HIGH">High</option>
+                  <option value="URGENT">Urgent</option>
+                </select>
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Deadline (optional)</label>
+              <input
+                type="date"
+                value={formData.deadline}
+                onChange={e => setFormData({...formData, deadline: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-6 py-2 text-sm text-white bg-teal-600 rounded-lg disabled:opacity-50">
+              {submitting ? 'Adding...' : 'Add Review'}
+            </button>
+          </ModalFooter>
+        </form>
+      </Modal>
+
+      {/* View Details Modal */}
+      <Modal isOpen={showDetailsModal} onClose={() => setShowDetailsModal(false)} title="QC Review Details" size="md">
+        <ModalBody>
+          {selectedReview && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-slate-400">Task</p>
+                  <p className="font-medium text-white">{selectedReview.task}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Client</p>
+                  <p className="font-medium text-white">{selectedReview.client}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Task Type</p>
+                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getTypeColor(selectedReview.taskType)}`}>
+                    {selectedReview.taskType}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Status</p>
+                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getStatusColor(selectedReview.status)}`}>
+                    {selectedReview.status.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Submitted By</p>
+                  <p className="font-medium text-white">{selectedReview.submittedBy}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Reviewer</p>
+                  <p className="font-medium text-white">{selectedReview.reviewer}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Submitted Date</p>
+                  <p className="font-medium text-white">{new Date(selectedReview.submittedDate).toLocaleDateString('en-IN')}</p>
+                </div>
+                {selectedReview.deadline && (
+                  <div>
+                    <p className="text-sm text-slate-400">Deadline</p>
+                    <p className="font-medium text-white">{new Date(selectedReview.deadline).toLocaleDateString('en-IN')}</p>
+                  </div>
+                )}
+              </div>
+              {selectedReview.feedback && (
+                <div className="border-t border-white/10 pt-4 mt-4">
+                  <p className="text-sm text-slate-400 mb-1">Feedback</p>
+                  <p className="text-white">{selectedReview.feedback}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          {selectedReview?.status === 'PENDING_REVIEW' && (
+            <div className="flex gap-2 mr-auto">
+              <button
+                onClick={() => { handleApprove(selectedReview.id); setShowDetailsModal(false) }}
+                disabled={submitting}
+                className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50"
+              >
+                Approve
+              </button>
+              <button
+                onClick={() => { handleReturn(selectedReview.id); setShowDetailsModal(false) }}
+                disabled={submitting}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                Return for Fix
+              </button>
+            </div>
+          )}
+          <button onClick={() => setShowDetailsModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Close</button>
+        </ModalFooter>
+      </Modal>
     </div>
   )
 }

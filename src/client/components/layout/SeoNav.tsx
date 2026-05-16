@@ -11,8 +11,8 @@ const seoNavigation = [
     category: 'Main',
     items: [
       { name: 'Dashboard', href: '/seo', icon: 'dashboard' },
-      { name: 'Daily Planner', href: '/seo/daily-planner', icon: 'planner' },
-      { name: 'Calendar', href: '/seo/calendar', icon: 'calendar' },
+      { name: 'Daily Planner', href: '/tasks/daily', icon: 'planner' },
+      { name: 'Calendar', href: '/calendar', icon: 'calendar' },
     ]
   },
   {
@@ -69,6 +69,13 @@ const seoNavigation = [
       { name: 'Directory', href: '/directory', icon: 'users' },
       { name: 'Ideas', href: '/ideas', icon: 'ideas' },
       { name: 'Arcade', href: '/arcade', icon: 'arcade' },
+    ]
+  },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: 'ideas' },
+      { name: 'SOP Library', href: '/sop', icon: 'dashboard' },
     ]
   },
 ]
@@ -202,6 +209,10 @@ const getIcon = (icon: string) => {
   return icons[icon] || icons.dashboard
 }
 
+// Reporting is for leads/managers only — regular SEO staff don't need these
+const seoLeadRoles = ['MANAGER', 'OPERATIONS_HEAD', 'SUPER_ADMIN']
+const seoLeadOnlyCategories = ['Reporting']
+
 export function SeoNav() {
   const pathname = usePathname()
   const { data: session } = useSession()
@@ -253,7 +264,14 @@ export function SeoNav() {
 
         {/* Navigation */}
         <nav className="space-y-4">
-          {seoNavigation.map((section) => (
+          {seoNavigation
+            .filter(section => {
+              if (seoLeadOnlyCategories.includes(section.category)) {
+                return seoLeadRoles.includes(userRole || '') || userRole === 'SEO'
+              }
+              return true
+            })
+            .map((section) => (
             <div key={section.category}>
               <button
                 onClick={() => toggleCategory(section.category)}

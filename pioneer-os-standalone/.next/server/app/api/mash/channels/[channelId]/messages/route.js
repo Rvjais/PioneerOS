@@ -1,6 +1,6 @@
 var R=require("../../../../../../chunks/[turbopack]_runtime.js")("server/app/api/mash/channels/[channelId]/messages/route.js")
 R.c("server/chunks/[root-of-the-server]__0ib01w7._.js")
-R.c("server/chunks/[root-of-the-server]__06s~3qv._.js")
+R.c("server/chunks/[root-of-the-server]__13askjy._.js")
 R.c("server/chunks/node_modules_bcryptjs_index_0bjz0ul.js")
 R.c("server/chunks/node_modules_next_124cnn1._.js")
 R.c("server/chunks/[root-of-the-server]__0la1agp._.js")

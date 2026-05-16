@@ -11,7 +11,7 @@ import { z } from 'zod'
 
 const createRequestSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().min(1, 'Description is required').max,
+  description: z.string().min(1, 'Description is required').max(2000),
   projectId: z.string().min(1, 'Project is required'),
   type: z.enum(['MINOR', 'MAJOR', 'FEATURE', 'ENHANCEMENT']).default('MINOR'),
   pageUrl: z.string().url().optional().or(z.literal('')),
@@ -50,8 +50,8 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
         where,
         include: {
           project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-          assignedTo: { select: { id: true, firstName: true, lastName: true } },
-          completedBy: { select: { id: true, firstName: true, lastName: true } },
+          User_WebChangeRequest_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+          User_WebChangeRequest_completedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
         },
         orderBy: [{ type: 'asc' }, { createdAt: 'desc' }],
         skip: (page - 1) * limit,
@@ -62,8 +62,14 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       prisma.webChangeRequest.count({ where: { ...where, status: 'CLIENT_APPROVED' } }),
     ])
 
+    const mappedRequests = requests.map(req => ({
+      ...req,
+      assignedTo: (req as any).User_WebChangeRequest_assignedToIdToUser,
+      completedBy: (req as any).User_WebChangeRequest_completedByIdToUser,
+    }))
+
     return NextResponse.json({
-      requests,
+      requests: mappedRequests,
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
       stats: { pending: pendingCount, approved: approvedCount, total },
     })
@@ -100,9 +106,14 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
       },
       include: {
         project: { select: { id: true, name: true, client: { select: { id: true, name: true } } } },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
     })
+
+    const mappedRequest = {
+      ...request,
+      assignedTo: (request as any).User_WebChangeRequest_assignedToIdToUser,
+    }
 
     if (assignedToId && assignedToId !== user.id) {
       await prisma.notification.create({
@@ -117,7 +128,7 @@ export const POST = withAuth(async (req: NextRequest, { user }) => {
       })
     }
 
-    return NextResponse.json(request, { status: 201 })
+    return NextResponse.json(mappedRequest, { status: 201 })
   } catch (error) {
     console.error('Failed to create change request:', error)
     return NextResponse.json({ error: 'Failed to create change request' }, { status: 500 })

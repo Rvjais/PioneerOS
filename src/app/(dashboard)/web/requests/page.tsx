@@ -26,8 +26,8 @@ async function getRequests(userId: string, userRole: string) {
             client: { select: { id: true, name: true } },
           },
         },
-        assignedTo: { select: { id: true, firstName: true, lastName: true } },
-        completedBy: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_assignedToIdToUser: { select: { id: true, firstName: true, lastName: true } },
+        User_WebChangeRequest_completedByIdToUser: { select: { id: true, firstName: true, lastName: true } },
       },
       orderBy: [
         { type: 'asc' },
@@ -56,7 +56,14 @@ async function getRequests(userId: string, userRole: string) {
     total: requests.length,
   }
 
-  return { requests, projects, teamMembers, stats, isManager }
+  // Map the long relation names to shorter ones for the client component
+  const mappedRequests = requests.map(req => ({
+    ...req,
+    assignedTo: (req as any).User_WebChangeRequest_assignedToIdToUser,
+    completedBy: (req as any).User_WebChangeRequest_completedByIdToUser,
+  }))
+
+  return { requests: mappedRequests, projects, teamMembers, stats, isManager }
 }
 
 export default async function WebRequestsPage() {
@@ -65,7 +72,7 @@ export default async function WebRequestsPage() {
 
   const { requests, projects, teamMembers, stats, isManager } = await getRequests(
     session.user.id,
-    session.user.role
+    session.user.role as string
   )
 
   return (

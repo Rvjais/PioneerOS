@@ -15,16 +15,32 @@ const CATEGORY_COLORS: Record<string, string> = {
 }
 
 export function DailyLearning() {
-  const todayTerm = getTermOfTheDay()
-  const todayQuote = getQuoteOfTheDay()
+  const [mounted, setMounted] = useState(false)
+  const [data, setData] = useState<{ term: GlossaryTerm; quote: { text: string; author: string }; bonus: GlossaryTerm[] } | null>(null)
   const [showMore, setShowMore] = useState(false)
 
-  // Get 2 bonus random terms (different from today's)
-  const day = new Date().getDate()
-  const bonusTerms = [
-    GLOSSARY_TERMS[(day * 7 + 3) % GLOSSARY_TERMS.length],
-    GLOSSARY_TERMS[(day * 13 + 11) % GLOSSARY_TERMS.length],
-  ].filter(t => t.term !== todayTerm.term)
+  useEffect(() => {
+    const term = getTermOfTheDay()
+    const quote = getQuoteOfTheDay()
+    const day = new Date().getDate()
+    const bonus = [
+      GLOSSARY_TERMS[(day * 7 + 3) % GLOSSARY_TERMS.length],
+      GLOSSARY_TERMS[(day * 13 + 11) % GLOSSARY_TERMS.length],
+    ].filter(t => t.term !== term.term)
+
+    setData({ term, quote, bonus })
+    setMounted(true)
+  }, [])
+
+  if (!mounted || !data) {
+    return (
+      <div className="bg-slate-900/40 rounded-xl border border-white/5 p-4 h-48 animate-pulse flex items-center justify-center text-slate-500 text-xs">
+        Loading daily learning...
+      </div>
+    )
+  }
+
+  const { term: todayTerm, quote: todayQuote, bonus: bonusTerms } = data
 
   return (
     <div className="bg-slate-900/40 rounded-xl border border-white/5 overflow-hidden">

@@ -132,11 +132,10 @@ export function withAuth(handler: AuthenticatedHandler, options?: AuthOptions) {
 
       const user = session.user as AuthenticatedUser
 
-      // SECURITY FIX: Check user status from database - inactive users should not access APIs
-      // JWT may not contain current status, so we query the DB
-      const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { status: true } })
-      if (dbUser && !['ACTIVE', 'PROBATION'].includes(dbUser.status)) {
-        return forbidden('Account is inactive')
+      // SECURITY FIX: Check user status AND deletedAt from database
+      const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { status: true, deletedAt: true } })
+      if (dbUser && (dbUser.deletedAt || !['ACTIVE', 'PROBATION'].includes(dbUser.status))) {
+        return forbidden('Account is inactive or deleted')
       }
 
       // Check NDA requirement
@@ -196,7 +195,12 @@ export function withAuth(handler: AuthenticatedHandler, options?: AuthOptions) {
 
     } catch (error) {
       console.error('[withAuth] Error:', error)
-      return NextResponse.json({ error: 'Authentication error' }, { status: 500 })
+      // Distinguish auth errors from handler errors
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (errorMessage.includes('Authentication') || errorMessage.includes('Unauthorized') || errorMessage.includes('Not authenticated')) {
+        return unauthorized('Authentication failed')
+      }
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
   }
 }

@@ -4,6 +4,7 @@ import { authOptions } from '@/server/auth/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { UserAvatar } from '@/client/components/ui/UserAvatar'
+import { cn } from '@/shared/utils/cn'
 
 async function getProjectsData(userId: string, role: string) {
   const fullAccessRoles = ['SUPER_ADMIN', 'MANAGER', 'ACCOUNTS', 'OPERATIONS_HEAD']
@@ -75,19 +76,19 @@ export default async function ProjectsPage() {
   }
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-8 pb-12">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Projects</h1>
-          <p className="text-slate-400 mt-1">Client projects and progress overview</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Projects</h1>
+          <p className="text-slate-500 mt-1 font-medium">Client projects and progress overview</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-none">
             <input
               type="text"
               placeholder="Search projects..."
-              className="pl-10 pr-4 py-2 border border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+              className="w-full sm:w-64 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all"
             />
             <svg className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -96,120 +97,125 @@ export default async function ProjectsPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <p className="text-3xl font-bold text-white">{stats.total}</p>
-          <p className="text-sm text-slate-400">Active Projects</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <p className="text-3xl font-bold text-blue-400">{stats.totalTasks}</p>
-          <p className="text-sm text-slate-400">Total Tasks</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <p className="text-3xl font-bold text-green-400">{stats.completedTasks}</p>
-          <p className="text-sm text-slate-400">Completed</p>
-        </div>
-        <div className="glass-card rounded-xl border border-white/10 p-4">
-          <p className="text-3xl font-bold text-purple-400">{stats.avgProgress}%</p>
-          <p className="text-sm text-slate-400">Avg Progress</p>
-        </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {[
+          { label: 'Active Projects', value: stats.total, color: 'text-slate-900', bg: 'bg-slate-50' },
+          { label: 'Total Tasks', value: stats.totalTasks, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Completed', value: stats.completedTasks, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Avg Progress', value: `${stats.avgProgress}%`, color: 'text-[#c96442]', bg: 'bg-orange-50' },
+        ].map((stat, i) => (
+          <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <p className={`text-2xl sm:text-3xl font-bold ${stat.color} tracking-tight`}>{stat.value}</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{stat.label}</p>
+          </div>
+        ))}
       </div>
 
       {/* Projects Grid */}
       {projects.length === 0 ? (
-        <div className="glass-card rounded-2xl border border-white/10 p-12 text-center">
-          <svg className="w-16 h-16 mx-auto text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
-          <p className="text-slate-300 mt-4 font-medium">No active projects</p>
-          <p className="text-slate-400 text-sm mt-1">Projects will appear when you have active clients with tasks</p>
+        <div className="bg-white rounded-3xl border border-slate-100 p-12 text-center shadow-sm">
+          <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-300">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </div>
+          <p className="text-xl font-bold text-slate-900">No active projects</p>
+          <p className="text-slate-500 font-medium mt-2 max-w-sm mx-auto">Projects will appear here once you have active clients with tasks assigned.</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
             <Link
               key={project.id}
               href={`/clients/${project.id}`}
-              className="glass-card rounded-2xl border border-white/10 overflow-hidden hover:shadow-none transition-shadow group"
+              className="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden"
             >
               {/* Project Header */}
-              <div className="p-5 border-b border-white/5">
+              <div className="p-6 border-b border-slate-50 bg-slate-50/30">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-lg font-bold">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-[#c96442] to-[#b5563a] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform">
                       {project.name.substring(0, 2).toUpperCase()}
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-slate-900 group-hover:text-[#c96442] transition-colors truncate text-lg tracking-tight">
                         {project.name}
                       </h3>
-                      <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full mt-1 ${tierColors[project.tier]}`}>
+                      <span className={cn(
+                        "inline-flex px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded-lg mt-1 border",
+                        project.tier === 'ENTERPRISE' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                        project.tier === 'GROWTH' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                        'bg-slate-100 text-slate-600 border-slate-200'
+                      )}>
                         {project.tier}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className={`w-2.5 h-2.5 rounded-full ${healthColors[project.healthStatus || 'HEALTHY']}`} />
-                  </div>
+                  <span className={cn(
+                    "w-3 h-3 rounded-full shadow-sm ring-4 ring-white",
+                    project.healthStatus === 'HEALTHY' ? 'bg-emerald-500' :
+                    project.healthStatus === 'WARNING' ? 'bg-amber-500' :
+                    'bg-red-500'
+                  )} />
                 </div>
               </div>
 
-              {/* Progress Bar */}
-              <div className="px-5 py-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-slate-300">Progress</span>
-                  <span className="text-sm font-semibold text-white">{project.progress}%</span>
+              {/* Progress Section */}
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Execution Progress</span>
+                  <span className="text-sm font-black text-slate-900">{project.progress}%</span>
                 </div>
-                <div className="h-2 bg-slate-800/50 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-[#c96442] to-[#b5563a] rounded-full transition-all duration-700 ease-out"
                     style={{ width: `${project.progress}%` }}
                   />
                 </div>
               </div>
 
-              {/* Task Stats */}
-              <div className="px-5 pb-4">
+              {/* Task Breakdown */}
+              <div className="px-6 pb-6">
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="text-center p-2 bg-slate-900/40 rounded-lg">
-                    <p className="text-lg font-bold text-white">{project.taskStats.pending}</p>
-                    <p className="text-xs text-slate-400">Pending</p>
+                  <div className="text-center p-3 bg-slate-50 border border-slate-100 rounded-2xl">
+                    <p className="text-xl font-black text-slate-900">{project.taskStats.pending}</p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Pending</p>
                   </div>
-                  <div className="text-center p-2 bg-blue-500/10 rounded-lg">
-                    <p className="text-lg font-bold text-blue-400">{project.taskStats.inProgress}</p>
-                    <p className="text-xs text-slate-400">In Progress</p>
+                  <div className="text-center p-3 bg-orange-50/50 border border-orange-100 rounded-2xl">
+                    <p className="text-xl font-black text-[#c96442]">{project.taskStats.inProgress}</p>
+                    <p className="text-[9px] font-bold text-[#c96442] uppercase tracking-widest mt-0.5">Active</p>
                   </div>
-                  <div className="text-center p-2 bg-green-500/10 rounded-lg">
-                    <p className="text-lg font-bold text-green-400">{project.taskStats.completed}</p>
-                    <p className="text-xs text-slate-400">Done</p>
+                  <div className="text-center p-3 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                    <p className="text-xl font-black text-emerald-600">{project.taskStats.completed}</p>
+                    <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5">Done</p>
                   </div>
                 </div>
               </div>
 
-              {/* Team */}
-              <div className="px-5 py-4 border-t border-white/5 bg-slate-900/40">
-                <div className="flex items-center justify-between">
-                  <div className="flex -space-x-2">
-                    {project.teamMembers.slice(0, 4).map((member) => (
-                      <div key={member.id} className="ring-2 ring-white rounded-full">
-                        <UserAvatar
-                          user={{ id: member.user.id, firstName: member.user.firstName, lastName: member.user.lastName }}
-                          size="sm"
-                          showPreview={false}
-                        />
-                      </div>
-                    ))}
-                    {project.teamMembers.length > 4 && (
-                      <div className="w-8 h-8 rounded-full bg-white/10 border-2 border-white flex items-center justify-center text-xs font-medium text-slate-300">
-                        +{project.teamMembers.length - 4}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    {project.taskStats.total} tasks
-                  </div>
+              {/* Team Footer */}
+              <div className="px-6 py-4 border-t border-slate-50 bg-slate-50/20 flex items-center justify-between">
+                <div className="flex -space-x-3">
+                  {project.teamMembers.slice(0, 4).map((member) => (
+                    <div key={member.id} className="ring-4 ring-white rounded-full shadow-sm hover:z-10 transition-all">
+                      <UserAvatar
+                        user={{ id: member.user.id, firstName: member.user.firstName, lastName: member.user.lastName }}
+                        size="sm"
+                        showPreview={false}
+                      />
+                    </div>
+                  ))}
+                  {project.teamMembers.length > 4 && (
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border-4 border-white flex items-center justify-center text-[10px] font-black text-slate-500 shadow-sm">
+                      +{project.teamMembers.length - 4}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  {project.taskStats.total} tasks
                 </div>
               </div>
             </Link>
@@ -217,17 +223,18 @@ export default async function ProjectsPage() {
         </div>
       )}
 
-      {/* Quick Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm text-slate-400">Filter by:</span>
+      {/* Footer Filters */}
+      <div className="flex items-center gap-3 flex-wrap pt-4">
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quick Filters:</span>
         {['All', 'Enterprise', 'Growth', 'Starter', 'At Risk'].map((filter) => (
           <button
             key={filter}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg ${
+            className={cn(
+              "px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border",
               filter === 'All'
-                ? 'bg-blue-500/20 text-blue-400'
-                : 'text-slate-300 hover:bg-slate-800/50'
-            }`}
+                ? 'bg-[#c96442] text-white border-[#c96442] shadow-lg shadow-orange-500/20'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-[#c96442] hover:text-[#c96442]'
+            )}
           >
             {filter}
           </button>

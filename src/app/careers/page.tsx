@@ -613,7 +613,7 @@ function CareersContent() {
                   <Checkbox
                     label={
                       <span>
-                        I confirm that the information provided is accurate and I consent to Branding Pioneers processing my application. I have read and agree to the <a href="/policies" className="text-blue-400 hover:underline">Privacy Policy</a>.
+                        I confirm that the information provided is accurate and I consent to Branding Pioneers processing my application. I have read and agree to the <a href="/privacy-policy" className="text-blue-400 hover:underline">Privacy Policy</a>.
                       </span>
                     }
                     name="privacyAccepted"

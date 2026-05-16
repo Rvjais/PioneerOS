@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 interface TaskData {
   id: string
@@ -23,6 +25,33 @@ interface ClientPlan {
 export default function SeoPlansPage() {
   const [plans, setPlans] = useState<ClientPlan[]>([])
   const [loading, setLoading] = useState(true)
+  const [showPlanModal, setShowPlanModal] = useState(false)
+  const [editingPlanClient, setEditingPlanClient] = useState<string | null>(null)
+  const [planFormData, setPlanFormData] = useState({ client: '', monthlyGoal: '' })
+
+  const handlePlanSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      const res = await fetch('/api/seo/plans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(planFormData)
+      })
+
+      if (!res.ok) throw new Error('Failed to save SEO plan')
+      
+      toast.success(editingPlanClient ? `Plan for ${editingPlanClient} updated` : 'New plan created')
+      setShowPlanModal(false)
+      setPlanFormData({ client: '', monthlyGoal: '' })
+      setEditingPlanClient(null)
+      
+      // Force reload to sync UI if needed
+      window.location.reload()
+    } catch (err: any) {
+      toast.error(err.message || 'An error occurred')
+    }
+  }
 
   useEffect(() => {
     fetch('/api/seo/tasks')
@@ -56,7 +85,7 @@ export default function SeoPlansPage() {
 
         setPlans(Object.values(clientMap))
       })
-      .catch(() => {})
+      .catch(() => { setPlans([]); toast.error('Failed to load SEO plans') })
       .finally(() => setLoading(false))
   }, [])
 
@@ -85,7 +114,14 @@ export default function SeoPlansPage() {
             <h1 className="text-2xl font-bold">Client SEO Plans</h1>
             <p className="text-teal-200">Strategy and monthly targets for each client</p>
           </div>
-          <button disabled title="Coming soon" className="px-4 py-2 glass-card text-teal-600 rounded-lg font-medium opacity-50 cursor-not-allowed">
+          <button 
+            onClick={() => {
+              setEditingPlanClient(null)
+              setPlanFormData({ client: '', monthlyGoal: '' })
+              setShowPlanModal(true)
+            }}
+            className="px-4 py-2 bg-white text-teal-600 rounded-lg font-medium hover:bg-teal-50 transition-colors"
+          >
             + New Plan
           </button>
         </div>
@@ -97,7 +133,14 @@ export default function SeoPlansPage() {
           <div key={plan.client} className="glass-card rounded-xl border border-white/10 overflow-hidden">
             <div className="p-4 border-b border-white/10 bg-slate-900/40 flex items-center justify-between">
               <h2 className="font-semibold text-white">{plan.client}</h2>
-              <button disabled title="Coming soon" className="text-teal-600 text-sm font-medium opacity-50 cursor-not-allowed">
+              <button 
+                onClick={() => {
+                  setEditingPlanClient(plan.client)
+                  setPlanFormData({ client: plan.client, monthlyGoal: 'Increase organic traffic by 15%' })
+                  setShowPlanModal(true)
+                }}
+                className="text-teal-400 hover:text-teal-300 text-sm font-medium transition-colors"
+              >
                 Edit Plan
               </button>
             </div>
@@ -217,6 +260,25 @@ export default function SeoPlansPage() {
           </div>
         ))}
       </div>
+
+      <Modal isOpen={showPlanModal} onClose={() => setShowPlanModal(false)} title={editingPlanClient ? `Edit Plan: ${editingPlanClient}` : "New SEO Plan"} size="md">
+        <form onSubmit={handlePlanSubmit}>
+          <ModalBody>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Client *</label>
+              <input required type="text" value={planFormData.client} onChange={e => setPlanFormData({...planFormData, client: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" placeholder="Client Name" />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Monthly Goal</label>
+              <textarea rows={3} value={planFormData.monthlyGoal} onChange={e => setPlanFormData({...planFormData, monthlyGoal: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200 resize-none" placeholder="Target metrics and focus areas" />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowPlanModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" className="px-6 py-2 text-sm text-white bg-teal-600 rounded-lg">{editingPlanClient ? 'Save Changes' : 'Create Plan'}</button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </div>
   )
 }

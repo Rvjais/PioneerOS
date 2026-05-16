@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { formatDateDDMMYYYY } from '@/shared/utils/cn'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 interface GBPProfile {
   id: string
   client: string
+  clientId?: string
   profileName: string
   location: string
   category: string
@@ -22,6 +25,7 @@ interface GBPProfile {
 interface GBPPost {
   id: string
   client: string
+  profileId: string
   postType: 'UPDATE' | 'OFFER' | 'EVENT' | 'PRODUCT'
   content: string
   proofLink: string
@@ -29,16 +33,52 @@ interface GBPPost {
   publishedDate: string
 }
 
+interface Client {
+  id: string
+  name: string
+}
+
 export default function GBPManagementPage() {
   const [profiles, setProfiles] = useState<GBPProfile[]>([])
   const [posts, setPosts] = useState<GBPPost[]>([])
+  const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<string>('ALL')
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [showPostModal, setShowPostModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedProfile, setSelectedProfile] = useState<GBPProfile | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [profileForm, setProfileForm] = useState({
+    clientId: '',
+    profileName: '',
+    location: '',
+    category: 'Business'
+  })
+  const [postForm, setPostForm] = useState({
+    profileId: '',
+    postType: 'UPDATE' as 'UPDATE' | 'OFFER' | 'EVENT' | 'PRODUCT',
+    content: '',
+    proofLink: ''
+  })
 
   useEffect(() => {
     fetchGBPData()
+    fetchClients()
   }, [])
+
+  const fetchClients = async () => {
+    try {
+      const res = await fetch('/api/clients?status=ACTIVE&limit=100')
+      if (res.ok) {
+        const data = await res.json()
+        setClients(data.clients || [])
+      }
+    } catch {
+      // silently fail
+    }
+  }
 
   const fetchGBPData = async () => {
     try {
@@ -46,14 +86,89 @@ export default function GBPManagementPage() {
       const res = await fetch('/api/seo/gbp')
       if (!res.ok) throw new Error('Failed to fetch GBP data')
       const data = await res.json()
-      setProfiles(data.profiles || [])
-      setPosts(data.posts || [])
+      const formattedProfiles: GBPProfile[] = (data.profiles || []).map((p: any) => ({
+        id: p.id,
+        client: p.client?.name || '-',
+        clientId: p.clientId,
+        profileName: p.profileName,
+        location: p.location,
+        category: p.category || 'Business',
+        totalReviews: p.totalReviews || 0,
+        rating: p.rating || 0,
+        monthlyPosts: p.monthlyPosts || 0,
+        calls: p.calls || 0,
+        directions: p.directions || 0,
+        profileViews: p.profileViews || 0,
+        websiteClicks: p.websiteClicks || 0,
+        status: p.status || 'OPTIMIZING'
+      }))
+      setProfiles(formattedProfiles)
+      const formattedPosts: GBPPost[] = (data.profiles || []).flatMap((p: any) =>
+        (p.posts || []).map((post: any) => ({
+          id: post.id,
+          client: p.client?.name || '-',
+          profileId: p.id,
+          postType: post.postType || 'UPDATE',
+          content: post.content || '',
+          proofLink: post.proofLink || '',
+          views: post.views || 0,
+          publishedDate: post.publishedAt || post.createdAt || ''
+        }))
+      )
+      setPosts(formattedPosts)
     } catch (err) {
       console.error('Failed to fetch GBP data:', err)
       setError('Failed to load GBP data. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleAddProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/gbp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...profileForm, action: 'profile' })
+      })
+      if (!res.ok) throw new Error('Failed to create profile')
+      toast.success('GBP Profile added successfully')
+      setShowProfileModal(false)
+      setProfileForm({ clientId: '', profileName: '', location: '', category: 'Business' })
+      fetchGBPData()
+    } catch (err: any) {
+      toast.error(err.message || 'Error adding profile')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleAddPost = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/seo/gbp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...postForm, action: 'post' })
+      })
+      if (!res.ok) throw new Error('Failed to create post')
+      toast.success('GBP Post added successfully')
+      setShowPostModal(false)
+      setPostForm({ profileId: '', postType: 'UPDATE', content: '', proofLink: '' })
+      fetchGBPData()
+    } catch (err: any) {
+      toast.error(err.message || 'Error adding post')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleViewDetails = (profile: GBPProfile) => {
+    setSelectedProfile(profile)
+    setShowDetailsModal(true)
   }
 
   const filteredProfiles = filter === 'ALL' ? profiles : profiles.filter(p => p.status === filter)
@@ -133,7 +248,10 @@ export default function GBPManagementPage() {
             <h1 className="text-2xl font-bold">GBP Management</h1>
             <p className="text-green-200">Google Business Profile optimization & tracking</p>
           </div>
-          <button className="px-4 py-2 glass-card text-green-400 rounded-lg font-medium hover:bg-green-500/10">
+          <button
+            onClick={() => setShowProfileModal(true)}
+            className="px-4 py-2 glass-card text-green-400 rounded-lg font-medium hover:bg-green-500/10"
+          >
             + Add GBP Profile
           </button>
         </div>
@@ -221,7 +339,10 @@ export default function GBPManagementPage() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-center">
-                    <button className="text-green-400 hover:text-green-400 text-sm font-medium">
+                    <button
+                      onClick={() => handleViewDetails(profile)}
+                      className="text-green-400 hover:text-green-400 text-sm font-medium"
+                    >
                       View Details
                     </button>
                   </td>
@@ -236,7 +357,16 @@ export default function GBPManagementPage() {
       <div className="glass-card rounded-xl border border-white/10 overflow-hidden">
         <div className="p-4 border-b border-white/10 bg-slate-900/40 flex items-center justify-between">
           <h2 className="font-semibold text-white">Recent GBP Posts</h2>
-          <button className="text-green-400 hover:text-green-400 text-sm font-medium">
+          <button
+            onClick={() => {
+              if (profiles.length === 0) {
+                toast.error('Please add a GBP profile first')
+                return
+              }
+              setShowPostModal(true)
+            }}
+            className="text-green-400 hover:text-green-400 text-sm font-medium"
+          >
             + Add Post
           </button>
         </div>
@@ -264,6 +394,198 @@ export default function GBPManagementPage() {
         </div>
       </div>
 
+      {/* Add Profile Modal */}
+      <Modal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} title="Add GBP Profile" size="md">
+        <form onSubmit={handleAddProfile}>
+          <ModalBody>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Client *</label>
+              <select
+                required
+                value={profileForm.clientId}
+                onChange={e => setProfileForm({...profileForm, clientId: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+              >
+                <option value="">Select a client</option>
+                {clients.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Profile Name *</label>
+              <input
+                required
+                type="text"
+                value={profileForm.profileName}
+                onChange={e => setProfileForm({...profileForm, profileName: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                placeholder="e.g. Main Location"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Location / Address *</label>
+              <input
+                required
+                type="text"
+                value={profileForm.location}
+                onChange={e => setProfileForm({...profileForm, location: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                placeholder="e.g. Sector 15, Noida"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Business Category</label>
+              <input
+                type="text"
+                value={profileForm.category}
+                onChange={e => setProfileForm({...profileForm, category: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                placeholder="e.g. Hospital, Restaurant"
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowProfileModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-6 py-2 text-sm text-white bg-green-600 rounded-lg disabled:opacity-50">
+              {submitting ? 'Adding...' : 'Add Profile'}
+            </button>
+          </ModalFooter>
+        </form>
+      </Modal>
+
+      {/* Add Post Modal */}
+      <Modal isOpen={showPostModal} onClose={() => setShowPostModal(false)} title="Add GBP Post" size="md">
+        <form onSubmit={handleAddPost}>
+          <ModalBody>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Profile *</label>
+              <select
+                required
+                value={postForm.profileId}
+                onChange={e => setPostForm({...postForm, profileId: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+              >
+                <option value="">Select a profile</option>
+                {profiles.map(p => (
+                  <option key={p.id} value={p.id}>{p.client} - {p.profileName}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Post Type</label>
+              <select
+                value={postForm.postType}
+                onChange={e => setPostForm({...postForm, postType: e.target.value as any})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+              >
+                <option value="UPDATE">Update</option>
+                <option value="OFFER">Offer</option>
+                <option value="EVENT">Event</option>
+                <option value="PRODUCT">Product</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Post Content *</label>
+              <textarea
+                required
+                rows={4}
+                value={postForm.content}
+                onChange={e => setPostForm({...postForm, content: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200 resize-none"
+                placeholder="Write your Google Business Post content..."
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Proof Link (optional)</label>
+              <input
+                type="url"
+                value={postForm.proofLink}
+                onChange={e => setPostForm({...postForm, proofLink: e.target.value})}
+                className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200"
+                placeholder="https://..."
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowPostModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-6 py-2 text-sm text-white bg-green-600 rounded-lg disabled:opacity-50">
+              {submitting ? 'Adding...' : 'Add Post'}
+            </button>
+          </ModalFooter>
+        </form>
+      </Modal>
+
+      {/* View Details Modal */}
+      <Modal isOpen={showDetailsModal} onClose={() => setShowDetailsModal(false)} title="GBP Profile Details" size="lg">
+        <ModalBody>
+          {selectedProfile && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-slate-400">Client</p>
+                  <p className="font-medium text-white">{selectedProfile.client}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Profile Name</p>
+                  <p className="font-medium text-white">{selectedProfile.profileName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Location</p>
+                  <p className="font-medium text-white">{selectedProfile.location}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Category</p>
+                  <p className="font-medium text-white">{selectedProfile.category}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Status</p>
+                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getStatusColor(selectedProfile.status)}`}>
+                    {selectedProfile.status.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-400">Rating</p>
+                  <p className="font-medium text-amber-400">{selectedProfile.rating} / 5</p>
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-4 mt-4">
+                <h4 className="font-medium text-white mb-3">Performance Metrics</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-blue-400">{selectedProfile.calls}</p>
+                    <p className="text-xs text-slate-400">Calls (Month)</p>
+                  </div>
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-purple-400">{selectedProfile.directions}</p>
+                    <p className="text-xs text-slate-400">Directions</p>
+                  </div>
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-400">{selectedProfile.profileViews}</p>
+                    <p className="text-xs text-slate-400">Profile Views</p>
+                  </div>
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-amber-400">{selectedProfile.totalReviews}</p>
+                    <p className="text-xs text-slate-400">Total Reviews</p>
+                  </div>
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-pink-400">{selectedProfile.monthlyPosts}</p>
+                    <p className="text-xs text-slate-400">Monthly Posts</p>
+                  </div>
+                  <div className="bg-slate-900/40 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-slate-300">{selectedProfile.websiteClicks}</p>
+                    <p className="text-xs text-slate-400">Website Clicks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <button onClick={() => setShowDetailsModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Close</button>
+        </ModalFooter>
+      </Modal>
       {/* GBP Optimization Tips */}
       <div className="bg-green-500/10 rounded-xl border border-green-200 p-4">
         <h3 className="font-semibold text-green-800 mb-3">GBP Optimization Checklist</h3>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -36,7 +37,7 @@ export default function ContentCalendarPage() {
     fetch(`/api/social/posts?month=${monthStr}`)
       .then(res => res.json())
       .then(result => {
-        const items = result.data || result || []
+        const items = result.posts || result.data || []
         const grouped: Record<string, CalendarPost[]> = {}
         items.forEach((item: any) => {
           const dateStr = (item.scheduledDate || item.publishedDate || item.createdAt || '').slice(0, 10)
@@ -54,7 +55,7 @@ export default function ContentCalendarPage() {
         })
         setCalendarPosts(grouped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load calendar posts:', error); toast.error('Failed to load calendar posts. Please try again.') })
       .finally(() => setLoading(false))
   }, [year, month])
 

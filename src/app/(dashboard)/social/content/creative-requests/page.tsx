@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -24,6 +26,68 @@ export default function CreativeRequestsPage() {
 
   const [requests, setRequests] = useState<CreativeRequest[]>([])
   const [loading, setLoading] = useState(true)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [formData, setFormData] = useState({
+    clientId: '',
+    postTopic: '',
+    designType: 'Static Post',
+    designInstructions: '',
+    dueDate: '',
+  })
+  const [clients, setClients] = useState<any[]>([])
+
+  useEffect(() => {
+    fetch('/api/clients')
+      .then(res => res.json())
+      .then(data => setClients(data.clients || []))
+      .catch((error) => { console.error('Failed to load clients:', error); toast.error('Failed to load clients. Please try again.') })
+  }, [])
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/social/approvals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientId: formData.clientId,
+          title: formData.postTopic,
+          description: formData.designInstructions,
+          type: 'CREATIVE',
+          contentType: formData.designType,
+          dueDate: formData.dueDate || undefined,
+          status: 'PENDING',
+          priority: 'NORMAL',
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to create request')
+      setShowAddModal(false)
+      setFormData({ clientId: '', postTopic: '', designType: 'Static Post', designInstructions: '', dueDate: '' })
+      // Refresh
+      const result = await (await fetch('/api/social/approvals?type=CREATIVE')).json()
+      const items = result.approvals || result.data || []
+      const mapped: CreativeRequest[] = items.map((item: any) => ({
+        id: item.id,
+        client: item.client?.name || '',
+        postTopic: item.title || '',
+        designType: item.contentType || 'Static Post',
+        designInstructions: item.description || '',
+        assignedDesigner: item.reviewedBy?.name || '',
+        status: item.status === 'PENDING' ? 'REQUESTED' : item.status === 'APPROVED' ? 'DELIVERED' : item.status === 'REVISION_REQUESTED' ? 'CHANGES_NEEDED' : 'IN_DESIGN',
+        requestDate: item.createdAt || '',
+        dueDate: item.dueDate || '',
+      }))
+      setRequests(mapped)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   useEffect(() => {
     fetch('/api/social/approvals?type=CREATIVE')
@@ -43,7 +107,7 @@ export default function CreativeRequestsPage() {
         }))
         setRequests(mapped)
       })
-      .catch(() => {})
+      .catch((error) => { console.error('Failed to load creative requests:', error); toast.error('Failed to load creative requests. Please try again.') })
       .finally(() => setLoading(false))
   }, [])
 
@@ -95,8 +159,8 @@ export default function CreativeRequestsPage() {
           </div>
           {canEdit && (
             <button
-              onClick={() => alert('Coming soon: New Request feature is under development.')}
-              className="px-4 py-2 glass-card text-pink-600 rounded-lg font-medium hover:bg-pink-50"
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-white text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-colors"
             >
               + New Request
             </button>
@@ -192,6 +256,48 @@ export default function CreativeRequestsPage() {
           </div>
         </div>
       </div>
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="New Creative Request" size="lg">
+        <form onSubmit={handleSubmit}>
+          <ModalBody>
+            {error && <div className="mb-4 text-red-400 text-sm bg-red-500/10 p-3 rounded">{error}</div>}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Client *</label>
+              <select required value={formData.clientId} onChange={e => setFormData({...formData, clientId: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200">
+                <option value="">Select a client...</option>
+                {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Post Topic / Title *</label>
+              <input required type="text" value={formData.postTopic} onChange={e => setFormData({...formData, postTopic: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Design Type</label>
+                <select value={formData.designType} onChange={e => setFormData({...formData, designType: e.target.value as CreativeRequest['designType']})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200">
+                  <option value="Static Post">Static Post</option>
+                  <option value="Carousel">Carousel</option>
+                  <option value="Reel">Reel</option>
+                  <option value="Story">Story</option>
+                  <option value="Cover Image">Cover Image</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-1.5">Due Date</label>
+                <input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" />
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Design Instructions</label>
+              <textarea rows={3} value={formData.designInstructions} onChange={e => setFormData({...formData, designInstructions: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200 resize-none" placeholder="Include text, color preferences, references..." />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" disabled={submitting} className="px-6 py-2 text-sm text-white bg-pink-600 rounded-lg disabled:opacity-50">{submitting ? 'Creating...' : 'Submit Request'}</button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </div>
   )
 }

@@ -9,6 +9,9 @@
 
 export async function register() {
   // TEMPORARILY DISABLED FOR LOCAL TESTING
+  if (process.env.NEXT_PUBLIC_ENABLE_SENTRY === 'true') {
+    await import('./instrumentation-client')
+  }
   console.log('[Instrumentation] Server starting (dev mode)...')
 }
 

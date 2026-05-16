@@ -1,14 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Providers } from "@/client/providers/Providers";
-import { ErrorBoundary } from "@/client/components/ErrorBoundary";
 import { Toaster } from "sonner";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "PioneerOS | Branding Pioneers",
@@ -54,11 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased bg-white text-slate-900`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <Providers>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
+          {children}
           <Toaster
             position="top-right"
             toastOptions={{

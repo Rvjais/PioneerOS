@@ -555,7 +555,7 @@ export function DashboardNav() {
               Hire
             </Link>
             <Link
-              href="/accounts/onboarding/create"
+              href="/accounts/client-onboarding"
               onClick={onItemClick}
               className="flex flex-col items-center gap-1 px-1 py-2 text-[10px] font-semibold text-orange-400 bg-orange-500/10 border border-orange-500/20 rounded-lg hover:bg-orange-500/20 transition-all"
             >

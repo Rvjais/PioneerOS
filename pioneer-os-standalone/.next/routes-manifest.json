@@ -66,6 +66,72 @@
       "destination": "/accounts/onboarding",
       "statusCode": 308,
       "regex": "^(?!/_next)/accounts/client-onboarding(?:/)?$"
+    },
+    {
+      "source": "/design/print",
+      "destination": "/social/print-designing?category=PRINT",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/print(?:/)?$"
+    },
+    {
+      "source": "/design/digital",
+      "destination": "/social/print-designing?category=DIGITAL",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/digital(?:/)?$"
+    },
+    {
+      "source": "/design/branding",
+      "destination": "/social/print-designing?category=BRANDING",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/branding(?:/)?$"
+    },
+    {
+      "source": "/design/thumbnails",
+      "destination": "/social/print-designing?category=SOCIAL",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/thumbnails(?:/)?$"
+    },
+    {
+      "source": "/design/delivered",
+      "destination": "/design/requests?status=DELIVERED",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/delivered(?:/)?$"
+    },
+    {
+      "source": "/design/approvals",
+      "destination": "/design/requests?status=APPROVED",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/approvals(?:/)?$"
+    },
+    {
+      "source": "/design/requests/pending",
+      "destination": "/design/requests?status=PENDING",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/requests/pending(?:/)?$"
+    },
+    {
+      "source": "/design/requests/in-progress",
+      "destination": "/design/requests?status=IN_DESIGN",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/requests/in-progress(?:/)?$"
+    },
+    {
+      "source": "/design/daily-planner",
+      "destination": "/design/calendar",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/daily-planner(?:/)?$"
+    },
+    {
+      "source": "/design/metrics",
+      "destination": "/design",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/metrics(?:/)?$"
+    },
+    {
+      "source": "/design/metrics/turnaround",
+      "destination": "/design",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/metrics/turnaround(?:/)?$"
     }
   ],
   "headers": [
@@ -121,47 +187,7 @@
   "onMatchHeaders": [],
   "rewrites": {
     "beforeFiles": [],
-    "afterFiles": [
-      {
-        "source": "/monitoring(/?)",
-        "has": [
-          {
-            "type": "query",
-            "key": "o",
-            "value": "(?<orgid>\\d*)"
-          },
-          {
-            "type": "query",
-            "key": "p",
-            "value": "(?<projectid>\\d*)"
-          },
-          {
-            "type": "query",
-            "key": "r",
-            "value": "(?<region>[a-z]{2})"
-          }
-        ],
-        "destination": "https://o:orgid.ingest.:region.sentry.io/api/:projectid/envelope/?hsts=0",
-        "regex": "^/monitoring(/?)(?:/)?$"
-      },
-      {
-        "source": "/monitoring(/?)",
-        "has": [
-          {
-            "type": "query",
-            "key": "o",
-            "value": "(?<orgid>\\d*)"
-          },
-          {
-            "type": "query",
-            "key": "p",
-            "value": "(?<projectid>\\d*)"
-          }
-        ],
-        "destination": "https://o:orgid.ingest.sentry.io/api/:projectid/envelope/?hsts=0",
-        "regex": "^/monitoring(/?)(?:/)?$"
-      }
-    ],
+    "afterFiles": [],
     "fallback": []
   },
   "dynamicRoutes": [
@@ -300,6 +326,14 @@
         "nxtPclientId": "nxtPclientId"
       },
       "namedRegex": "^/api/accounts/payment/(?<nxtPclientId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/proforma-invoice/[id]",
+      "regex": "^/api/accounts/proforma\\-invoice/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/accounts/proforma\\-invoice/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
       "page": "/api/accounts/proposals/[id]",
@@ -807,6 +841,14 @@
         "nxtPtaskId": "nxtPtaskId"
       },
       "namedRegex": "^/api/daily\\-meeting/tasks/(?<nxtPtaskId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/design/requests/[id]",
+      "regex": "^/api/design/requests/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/design/requests/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
       "page": "/api/employee-onboarding/[token]",
@@ -2535,6 +2577,12 @@
       "namedRegex": "^/api/accountability/rating(?:/)?$"
     },
     {
+      "page": "/api/accounts/achievements",
+      "regex": "^/api/accounts/achievements(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/achievements(?:/)?$"
+    },
+    {
       "page": "/api/accounts/aging-report",
       "regex": "^/api/accounts/aging\\-report(?:/)?$",
       "routeKeys": {},
@@ -2565,10 +2613,28 @@
       "namedRegex": "^/api/accounts/bank\\-statements(?:/)?$"
     },
     {
+      "page": "/api/accounts/calendar-events",
+      "regex": "^/api/accounts/calendar\\-events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/calendar\\-events(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/client-accounts",
+      "regex": "^/api/accounts/client\\-accounts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/client\\-accounts(?:/)?$"
+    },
+    {
       "page": "/api/accounts/client-profitability",
       "regex": "^/api/accounts/client\\-profitability(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/accounts/client\\-profitability(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/contracts",
+      "regex": "^/api/accounts/contracts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/contracts(?:/)?$"
     },
     {
       "page": "/api/accounts/discrepancies",
@@ -2595,16 +2661,46 @@
       "namedRegex": "^/api/accounts/follow\\-ups(?:/)?$"
     },
     {
+      "page": "/api/accounts/goals",
+      "regex": "^/api/accounts/goals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/goals(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/leaderboard",
+      "regex": "^/api/accounts/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/leaderboard(?:/)?$"
+    },
+    {
       "page": "/api/accounts/meetings/monthly",
       "regex": "^/api/accounts/meetings/monthly(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/accounts/meetings/monthly(?:/)?$"
     },
     {
+      "page": "/api/accounts/meetings/operational",
+      "regex": "^/api/accounts/meetings/operational(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/meetings/operational(?:/)?$"
+    },
+    {
       "page": "/api/accounts/meetings/quarterly",
       "regex": "^/api/accounts/meetings/quarterly(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/accounts/meetings/quarterly(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/meetings/strategic",
+      "regex": "^/api/accounts/meetings/strategic(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/meetings/strategic(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/meetings/tactical",
+      "regex": "^/api/accounts/meetings/tactical(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/meetings/tactical(?:/)?$"
     },
     {
       "page": "/api/accounts/onboarding",
@@ -2635,6 +2731,18 @@
       "regex": "^/api/accounts/payments/manual(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/accounts/payments/manual(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/performance",
+      "regex": "^/api/accounts/performance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/performance(?:/)?$"
+    },
+    {
+      "page": "/api/accounts/proforma-invoice",
+      "regex": "^/api/accounts/proforma\\-invoice(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/accounts/proforma\\-invoice(?:/)?$"
     },
     {
       "page": "/api/accounts/proposals",
@@ -2967,6 +3075,12 @@
       "namedRegex": "^/api/auth/client(?:/)?$"
     },
     {
+      "page": "/api/auth/client/logout",
+      "regex": "^/api/auth/client/logout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/client/logout(?:/)?$"
+    },
+    {
       "page": "/api/auth/client-magic",
       "regex": "^/api/auth/client\\-magic(?:/)?$",
       "routeKeys": {},
@@ -3255,6 +3369,12 @@
       "namedRegex": "^/api/client\\-portal/reports(?:/)?$"
     },
     {
+      "page": "/api/client-portal/support/tickets",
+      "regex": "^/api/client\\-portal/support/tickets(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/client\\-portal/support/tickets(?:/)?$"
+    },
+    {
       "page": "/api/client-portal/survey",
       "regex": "^/api/client\\-portal/survey(?:/)?$",
       "routeKeys": {},
@@ -3301,6 +3421,12 @@
       "regex": "^/api/client\\-portal/web/bugs(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/client\\-portal/web/bugs(?:/)?$"
+    },
+    {
+      "page": "/api/client-portal/web/dashboard",
+      "regex": "^/api/client\\-portal/web/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/client\\-portal/web/dashboard(?:/)?$"
     },
     {
       "page": "/api/client-portal/web/project",
@@ -3471,6 +3597,12 @@
       "namedRegex": "^/api/design/calendar(?:/)?$"
     },
     {
+      "page": "/api/design/requests",
+      "regex": "^/api/design/requests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/design/requests(?:/)?$"
+    },
+    {
       "page": "/api/documents",
       "regex": "^/api/documents(?:/)?$",
       "routeKeys": {},
@@ -3601,6 +3733,12 @@
       "regex": "^/api/hr/assessment/send(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/hr/assessment/send(?:/)?$"
+    },
+    {
+      "page": "/api/hr/attendance",
+      "regex": "^/api/hr/attendance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/hr/attendance(?:/)?$"
     },
     {
       "page": "/api/hr/attendance/entry",
@@ -4053,6 +4191,18 @@
       "namedRegex": "^/api/payments/verify(?:/)?$"
     },
     {
+      "page": "/api/payments/webhook",
+      "regex": "^/api/payments/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payments/webhook(?:/)?$"
+    },
+    {
+      "page": "/api/projects",
+      "regex": "^/api/projects(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/projects(?:/)?$"
+    },
+    {
       "page": "/api/public/employee-onboarding",
       "regex": "^/api/public/employee\\-onboarding(?:/)?$",
       "routeKeys": {},
@@ -4227,6 +4377,12 @@
       "namedRegex": "^/api/seo/backlinks(?:/)?$"
     },
     {
+      "page": "/api/seo/client-approvals",
+      "regex": "^/api/seo/client\\-approvals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/seo/client\\-approvals(?:/)?$"
+    },
+    {
       "page": "/api/seo/content",
       "regex": "^/api/seo/content(?:/)?$",
       "routeKeys": {},
@@ -4251,10 +4407,34 @@
       "namedRegex": "^/api/seo/keywords(?:/)?$"
     },
     {
+      "page": "/api/seo/plans",
+      "regex": "^/api/seo/plans(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/seo/plans(?:/)?$"
+    },
+    {
+      "page": "/api/seo/qc-reviews",
+      "regex": "^/api/seo/qc\\-reviews(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/seo/qc\\-reviews(?:/)?$"
+    },
+    {
+      "page": "/api/seo/reports",
+      "regex": "^/api/seo/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/seo/reports(?:/)?$"
+    },
+    {
       "page": "/api/seo/tasks",
       "regex": "^/api/seo/tasks(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/seo/tasks(?:/)?$"
+    },
+    {
+      "page": "/api/seo/youtube",
+      "regex": "^/api/seo/youtube(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/seo/youtube(?:/)?$"
     },
     {
       "page": "/api/social/approvals",
@@ -4291,6 +4471,18 @@
       "regex": "^/api/social/posts(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/social/posts(?:/)?$"
+    },
+    {
+      "page": "/api/social/strategy",
+      "regex": "^/api/social/strategy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/social/strategy(?:/)?$"
+    },
+    {
+      "page": "/api/support/tickets",
+      "regex": "^/api/support/tickets(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/support/tickets(?:/)?$"
     },
     {
       "page": "/api/tactical/auto-populate",
@@ -4407,6 +4599,12 @@
       "namedRegex": "^/api/vendors(?:/)?$"
     },
     {
+      "page": "/api/web/amc",
+      "regex": "^/api/web/amc(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/web/amc(?:/)?$"
+    },
+    {
       "page": "/api/web/bugs",
       "regex": "^/api/web/bugs(?:/)?$",
       "routeKeys": {},
@@ -4495,6 +4693,24 @@
       "regex": "^/api/web\\-portal/sitemap(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/web\\-portal/sitemap(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/campaigns",
+      "regex": "^/api/whatsapp/campaigns(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/campaigns(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/task-message",
+      "regex": "^/api/whatsapp/task\\-message(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/task\\-message(?:/)?$"
+    },
+    {
+      "page": "/api/whatsapp/templates",
+      "regex": "^/api/whatsapp/templates(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/whatsapp/templates(?:/)?$"
     },
     {
       "page": "/api/work-entries",
@@ -4821,10 +5037,28 @@
       "namedRegex": "^/day\\-zero(?:/)?$"
     },
     {
+      "page": "/design",
+      "regex": "^/design(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/design(?:/)?$"
+    },
+    {
       "page": "/design/calendar",
       "regex": "^/design/calendar(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/design/calendar(?:/)?$"
+    },
+    {
+      "page": "/design/requests",
+      "regex": "^/design/requests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/design/requests(?:/)?$"
+    },
+    {
+      "page": "/design/requests/new",
+      "regex": "^/design/requests/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/design/requests/new(?:/)?$"
     },
     {
       "page": "/directory",
@@ -5269,6 +5503,12 @@
       "regex": "^/ideas(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/ideas(?:/)?$"
+    },
+    {
+      "page": "/inbox",
+      "regex": "^/inbox(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/inbox(?:/)?$"
     },
     {
       "page": "/intern",
@@ -5797,6 +6037,12 @@
       "regex": "^/privacy(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
+      "page": "/privacy-policy",
+      "regex": "^/privacy\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy\\-policy(?:/)?$"
     },
     {
       "page": "/profile",
@@ -6463,6 +6709,12 @@
       "regex": "^/web/amc/logs(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/web/amc/logs(?:/)?$"
+    },
+    {
+      "page": "/web/amc/new",
+      "regex": "^/web/amc/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/web/amc/new(?:/)?$"
     },
     {
       "page": "/web/amc/renewals",

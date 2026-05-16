@@ -138,14 +138,7 @@ export const POST = withAuth(async (req, { user }) => {
     // relevant budget alert threshold is exceeded and create notifications.
     try {
       // Only count APPROVED expenses toward budget alerts
-      const approvedExpensesTotal = await prisma.expense.aggregate({
-        where: {
-          status: 'APPROVED',
-          ...(clientId ? { clientId } : {}),
-        },
-        _sum: { amount: true },
-      })
-
+      // Scope aggregation to match the alert's department and/or client scope
       const matchingAlerts = await prisma.budgetAlert.findMany({
         where: {
           alertsEnabled: true,
@@ -160,9 +153,21 @@ export const POST = withAuth(async (req, { user }) => {
       })
 
       for (const alert of matchingAlerts) {
-        // Recalculate spent from approved expenses only
-        const approvedTotal = approvedExpensesTotal._sum.amount || 0
-        const newSpent = approvedTotal
+        // Aggregate approved expenses scoped to this specific alert
+        const alertScope: Record<string, unknown> = { status: 'APPROVED' }
+        if (alert.clientId) {
+          alertScope.clientId = alert.clientId
+        }
+        if (alert.department) {
+          alertScope.department = alert.department
+        }
+
+        const approvedExpensesTotal = await prisma.expense.aggregate({
+          where: alertScope as Prisma.ExpenseWhereInput,
+          _sum: { amount: true },
+        })
+
+        const newSpent = approvedExpensesTotal._sum.amount || 0
         const newPercentage = (newSpent / alert.budgetAmount) * 100
 
         let newAlertLevel = 'NORMAL'

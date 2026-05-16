@@ -34,39 +34,39 @@ const designNavigation = [
     category: 'Main',
     items: [
       { name: 'Dashboard', href: '/design', icon: LayoutDashboard },
-      { name: 'Daily Planner', href: '/design/daily-planner', icon: Calendar },
-      { name: 'Calendar', href: '/design/calendar', icon: CalendarDays },
+      { name: 'Daily Planner', href: '/tasks/daily', icon: Calendar },
+      { name: 'Calendar', href: '/calendar', icon: CalendarDays },
     ],
   },
   {
     category: 'Incoming Requests',
     items: [
       { name: 'All Requests', href: '/design/requests', icon: Inbox },
-      { name: 'Pending Review', href: '/design/requests/pending', icon: Clock },
-      { name: 'In Progress', href: '/design/requests/in-progress', icon: Palette },
+      { name: 'Pending Review', href: '/design/requests?status=PENDING', icon: Clock },
+      { name: 'In Progress', href: '/design/requests?status=IN_DESIGN', icon: Palette },
     ],
   },
   {
     category: 'Creative Work',
     items: [
-      { name: 'Print Designing', href: '/design/print', icon: Printer },
-      { name: 'Digital Graphics', href: '/design/digital', icon: Monitor },
-      { name: 'Brand Identity', href: '/design/branding', icon: Sparkles },
-      { name: 'Video Thumbnails', href: '/design/thumbnails', icon: Play },
+      { name: 'Print Designing', href: '/design/requests?type=PRINT', icon: Printer },
+      { name: 'Digital Graphics', href: '/design/requests?type=DIGITAL', icon: Monitor },
+      { name: 'Brand Identity', href: '/design/requests?type=BRANDING', icon: Sparkles },
+      { name: 'Video Thumbnails', href: '/design/requests?type=THUMBNAILS', icon: Play },
     ],
   },
   {
     category: 'Delivery',
     items: [
-      { name: 'Completed Work', href: '/design/delivered', icon: CheckCircle2 },
-      { name: 'Client Approvals', href: '/design/approvals', icon: BadgeCheck },
+      { name: 'Completed Work', href: '/design/requests?status=DELIVERED', icon: CheckCircle2 },
+      { name: 'Client Approvals', href: '/design/requests?status=APPROVED', icon: BadgeCheck },
     ],
   },
   {
     category: 'Analytics',
     items: [
       { name: 'Design Metrics', href: '/design/metrics', icon: BarChart3 },
-      { name: 'Turnaround Times', href: '/design/metrics/turnaround', icon: Clock4 },
+      { name: 'Turnaround Times', href: '/design/turnaround', icon: Clock4 },
     ],
   },
   {
@@ -79,7 +79,17 @@ const designNavigation = [
       { name: 'Arcade', href: '/arcade', icon: Gamepad2 },
     ],
   },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: LightbulbIcon },
+      { name: 'SOP Library', href: '/sop', icon: CheckCircle2 },
+    ],
+  },
 ]
+
+const leadOnlyCategories = ['Analytics']
+const leadRoles = ['DESIGN_LEAD', 'MANAGER', 'OPERATIONS_HEAD', 'SUPER_ADMIN']
 
 interface TeamMember {
   name: string
@@ -186,7 +196,14 @@ export function DesignNav({ onNavigate }: DesignNavProps) {
 
       {/* Navigation */}
       <nav className="p-3">
-        {designNavigation.map((section) => (
+        {designNavigation
+          .filter(section => {
+            if (leadOnlyCategories.includes(section.category)) {
+              return leadRoles.includes(userRole || '')
+            }
+            return true
+          })
+          .map((section) => (
           <div key={section.category} className="mb-4">
             <h3 className="flex items-center justify-between w-full px-2 py-1.5 text-xs font-semibold text-slate-300 uppercase tracking-wider hover:text-slate-100">
               {section.category}

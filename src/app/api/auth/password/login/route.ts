@@ -5,9 +5,10 @@ import { checkRateLimit } from '@/server/security/rateLimit'
 import { z } from 'zod'
 
 const loginSchema = z.object({
-  phone: z.string().min(10),
+  phone: z.string().optional(),
+  email: z.string().email().optional(),
   password: z.string().min(1),
-})
+}).refine(data => data.phone || data.email, { message: 'Either phone or email is required' })
 
 // Safe JSON parse utility
 const safeJsonParse = <T,>(json: string | null, defaultValue: T): T => {
@@ -49,26 +50,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { phone, password } = parsed.data
+    const { phone, email, password } = parsed.data
 
-    // Normalize phone variants
-    const digits = phone.replace(/\D/g, '')
-    const phoneVariants: string[] = [phone]
-    if (digits.length === 10) {
-      phoneVariants.push(`+91${digits}`, `91${digits}`)
-    } else if (digits.length === 12 && digits.startsWith('91')) {
-      phoneVariants.push(`+${digits}`, digits.slice(2))
-    } else if (digits.length === 13 && digits.startsWith('91')) {
-      phoneVariants.push(digits, `+${digits}`, digits.slice(2))
+    // Build user lookup query
+    const userWhere: Record<string, unknown> = {
+      deletedAt: null,
+      status: { in: ['ACTIVE', 'PROBATION'] },
     }
 
-    // Find user by phone
+    if (email) {
+      userWhere.email = email.toLowerCase()
+    } else if (phone) {
+      // Normalize phone variants
+      const digits = phone.replace(/\D/g, '')
+      const phoneVariants: string[] = [phone]
+      if (digits.length === 10) {
+        phoneVariants.push(`+91${digits}`, `91${digits}`)
+      } else if (digits.length === 12 && digits.startsWith('91')) {
+        phoneVariants.push(`+${digits}`, digits.slice(2))
+      } else if (digits.length === 13 && digits.startsWith('91')) {
+        phoneVariants.push(digits, `+${digits}`, digits.slice(2))
+      }
+      userWhere.phone = { in: phoneVariants }
+    }
+
+    // Find user by email or phone
     const user = await prisma.user.findFirst({
-      where: {
-        phone: { in: phoneVariants },
-        deletedAt: null,
-        status: { in: ['ACTIVE', 'PROBATION'] },
-      },
+      where: userWhere,
       include: {
         profile: true,
         customRoles: {

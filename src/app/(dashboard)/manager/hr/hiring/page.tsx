@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Users, UserPlus, Clock, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Candidate {
   id: string
@@ -26,7 +27,7 @@ export default function ManagerHRHiringPage() {
         const items = Array.isArray(data) ? data : data.data || data.candidates || []
         setCandidates(items)
       })
-      .catch(() => {})
+      .catch(() => { setCandidates([]); toast.error('Failed to load candidates') })
       .finally(() => setLoading(false))
   }, [])
 

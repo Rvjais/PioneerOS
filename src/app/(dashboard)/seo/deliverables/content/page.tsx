@@ -48,11 +48,11 @@ export default function SeoContentDeliverablesPage() {
     fetch('/api/clients?status=ACTIVE&limit=100')
       .then(r => r.json())
       .then(d => setClients(d.clients || []))
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load clients') })
     fetch('/api/hr/employees?department=SEO')
       .then(r => r.json())
       .then(d => setWriters(d.employees || []))
-      .catch(() => {})
+      .catch(() => { toast.error('Failed to load writers') })
   }, [])
 
   const fetchContent = async () => {

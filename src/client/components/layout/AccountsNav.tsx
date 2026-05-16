@@ -12,7 +12,7 @@ const accountsNavigation = [
     items: [
       { name: 'Dashboard', href: '/accounts', icon: 'dashboard' },
       { name: 'Daily Planner', href: '/tasks/daily', icon: 'planner' },
-      { name: 'Calendar', href: '/accounts/calendar', icon: 'calendar' },
+      { name: 'Calendar', href: '/calendar', icon: 'calendar' },
     ]
   },
   {
@@ -51,8 +51,7 @@ const accountsNavigation = [
       { name: 'Projects', href: '/accounts/projects', icon: 'projects' },
       { name: 'Deliverables', href: '/accounts/deliverables', icon: 'deliverables' },
       { name: 'Manage', href: '/accounts/manage', icon: 'manage' },
-      { name: 'Onboardings', href: '/accounts/onboardings', icon: 'onboarding' },
-      { name: 'Handovers', href: '/accounts/handovers', icon: 'handovers' },
+      { name: 'Client Onboarding', href: '/accounts/client-onboarding', icon: 'onboarding' },
     ]
   },
   {
@@ -61,7 +60,7 @@ const accountsNavigation = [
       { name: 'Daily Meeting', href: '/accounts/daily-meeting', icon: 'operational' },
       { name: 'Tactical Meeting', href: '/accounts/meetings/tactical', icon: 'tactical' },
       { name: 'Strategic Meeting', href: '/accounts/meetings/strategic', icon: 'strategic' },
-      { name: 'Monthly Meeting', href: '/accounts/monthly', icon: 'monthly' },
+      { name: 'Monthly Meeting', href: '/accounts/meetings/monthly', icon: 'monthly' },
       { name: 'Reports', href: '/accounts/reports', icon: 'reports' },
       { name: 'Analytics', href: '/accounts/analytics', icon: 'analytics' },
     ]
@@ -87,6 +86,13 @@ const accountsNavigation = [
       { name: 'Team Chat', href: '/mash', icon: 'chat' },
       { name: 'Org Chart', href: '/team/org-chart', icon: 'orgchart' },
       { name: 'Directory', href: '/directory', icon: 'users' },
+    ]
+  },
+  {
+    category: 'Resources',
+    items: [
+      { name: 'Knowledge Base', href: '/knowledge', icon: 'ideas' },
+      { name: 'SOP Library', href: '/sop', icon: 'reports' },
     ]
   },
 ]
@@ -139,6 +145,10 @@ const icons: Record<string, ReactNode> = {
   users: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
 }
 
+// Finance and reporting sections are sensitive — restrict to senior roles
+const seniorAccountsRoles = ['MANAGER', 'OPERATIONS_HEAD', 'SUPER_ADMIN']
+const seniorOnlyCategories = ['Finance', 'Reporting']
+
 export function AccountsNav() {
   const pathname = usePathname()
   const { data: session } = useSession()
@@ -168,7 +178,14 @@ export function AccountsNav() {
       </div>
 
       <nav className="p-4 space-y-4">
-        {accountsNavigation.map((section) => (
+        {accountsNavigation
+          .filter(section => {
+            if (seniorOnlyCategories.includes(section.category)) {
+              return seniorAccountsRoles.includes(userRole || '') || userRole === 'ACCOUNTS'
+            }
+            return true
+          })
+          .map((section) => (
           <div key={section.category} className="space-y-1">
             <button
               onClick={() => toggleCategory(section.category)}

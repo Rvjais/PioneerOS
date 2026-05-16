@@ -80,10 +80,24 @@ export const POST = withAuth(async (req) => {
     return NextResponse.json({ error: result.error.issues[0]?.message }, { status: 400 })
   }
 
+  const data = result.data
+
+  let finalClientId = data.clientId
+  let client = await prisma.client.findUnique({ where: { id: finalClientId } }).catch(() => null)
+  
+  if (!client) {
+    client = await prisma.client.findFirst({ where: { name: { contains: finalClientId, mode: 'insensitive' } } })
+    if (!client) {
+      client = await prisma.client.create({ data: { name: finalClientId } })
+    }
+    finalClientId = client.id
+  }
+
   const task = await prisma.seoTask.create({
     data: {
-      ...result.data,
-      deadline: result.data.deadline ? new Date(result.data.deadline) : null,
+      ...data,
+      clientId: finalClientId,
+      deadline: data.deadline ? new Date(data.deadline) : null,
     },
     include: {
       client: { select: { id: true, name: true } },

@@ -150,7 +150,7 @@ export default async function AdminNotificationsPage() {
         <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700">
           <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
           <div className="space-y-3">
-            <div className="w-full flex items-center justify-between p-3 bg-slate-700/30 rounded-lg opacity-60 cursor-not-allowed">
+            <Link href="?action=broadcast" className="w-full flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
               <div className="flex items-center gap-3">
                 <span className="text-xl">📢</span>
                 <div className="text-left">
@@ -158,9 +158,11 @@ export default async function AdminNotificationsPage() {
                   <p className="text-xs text-slate-400">Send notification to all users</p>
                 </div>
               </div>
-              <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-1 rounded">Coming Soon</span>
-            </div>
-            <div className="w-full flex items-center justify-between p-3 bg-slate-700/30 rounded-lg opacity-60 cursor-not-allowed">
+              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link href="?action=department" className="w-full flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
               <div className="flex items-center gap-3">
                 <span className="text-xl">🏢</span>
                 <div className="text-left">
@@ -168,8 +170,10 @@ export default async function AdminNotificationsPage() {
                   <p className="text-xs text-slate-400">Notify specific department</p>
                 </div>
               </div>
-              <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-1 rounded">Coming Soon</span>
-            </div>
+              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
             <Link href="/admin/notifications/scheduled" className="w-full flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
               <div className="flex items-center gap-3">
                 <span className="text-xl">⏰</span>
@@ -182,7 +186,7 @@ export default async function AdminNotificationsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
-            <div className="w-full flex items-center justify-between p-3 bg-red-500/10 border border-red-500/30 rounded-lg opacity-60 cursor-not-allowed">
+            <Link href="?action=clear" className="w-full flex items-center justify-between p-3 bg-red-500/10 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <span className="text-xl">🗑️</span>
                 <div className="text-left">
@@ -190,8 +194,10 @@ export default async function AdminNotificationsPage() {
                   <p className="text-xs text-red-400/70">Remove read notifications older than 30 days</p>
                 </div>
               </div>
-              <span className="text-xs text-amber-400 bg-amber-500/20 px-2 py-1 rounded">Coming Soon</span>
-            </div>
+              <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
       </div>

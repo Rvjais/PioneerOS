@@ -1,6 +1,5 @@
 'use client'
 
-// @ts-nocheck — TODO: Add `name` prop to all form fields (requires refactor of FormComponents usage)
 // Embeddable Support Request form (minimal UI for iframes)
 // Usage: <iframe src="https://app.brandingpioneers.in/embed/support" />
 // Params: ?theme=dark|light&source=website&clientId=xxx

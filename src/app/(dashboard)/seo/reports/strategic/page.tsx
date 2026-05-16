@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 interface DashboardData {
   tasksByStatus: Record<string, number>
@@ -21,9 +22,27 @@ export default function SeoStrategicInsightsPage() {
     fetch('/api/seo/dashboard')
       .then(res => res.json())
       .then(data => {
-        setDashboard(data)
+        // Map nested API response to flat DashboardData interface
+        setDashboard({
+          tasksByStatus: {
+            TODO: data.tasks?.todo ?? 0,
+            IN_PROGRESS: data.tasks?.inProgress ?? 0,
+            REVIEW: data.tasks?.inReview ?? 0,
+            DONE: data.tasks?.done ?? 0,
+          },
+          contentByStatus: {
+            DRAFT: data.content?.draft ?? 0,
+            IN_REVIEW: data.content?.inReview ?? 0,
+            PUBLISHED: data.content?.published ?? 0,
+          },
+          totalKeywords: data.keywords?.total ?? 0,
+          keywordsImproved: data.rankings?.movers?.length ?? 0,
+          avgRank: 0,
+          totalBacklinks: data.backlinks?.total ?? 0,
+          liveBacklinks: data.backlinks?.live ?? 0,
+        })
       })
-      .catch(() => {})
+      .catch(() => { setDashboard(null); toast.error('Failed to load strategic insights') })
       .finally(() => setLoading(false))
   }, [])
 

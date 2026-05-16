@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
 import { cache, cacheTTL } from '@/server/cache/redis'
 import { withAuth } from '@/server/auth/withAuth'
+import { softDelete } from '@/server/db/softDelete'
 import { z } from 'zod'
 
 function serializeDate(date: Date | null): string | null {
@@ -114,8 +115,8 @@ export const GET = withAuth(async (req, { user }) => {
         take: 100,
       }),
 
-      // Payments (limited to 100 per month)
-      prisma.payment.findMany({
+      // Payment collections (limited to 100 per month)
+      prisma.paymentCollection.findMany({
         where: {
           paymentDate: {
             gte: startOfMonth,
@@ -178,7 +179,7 @@ export const GET = withAuth(async (req, { user }) => {
       id: invoice.id,
       title: `Invoice #${invoice.invoiceNumber}`,
       dueDate: serializeDate(invoice.dueDate),
-      amount: invoice.totalAmount,
+      amount: invoice.total,
       status: invoice.status,
       client: invoice.client,
     }))
@@ -413,7 +414,7 @@ export const DELETE = withAuth(async (req, { user }) => {
         return NextResponse.json({ error: 'Only the creator, assignee, or an admin can delete this task' }, { status: 403 })
       }
 
-      await prisma.task.delete({ where: { id } })
+      await softDelete('task', id)
     } else if (itemType === 'event') {
       const event = await prisma.event.findUnique({ where: { id } })
 

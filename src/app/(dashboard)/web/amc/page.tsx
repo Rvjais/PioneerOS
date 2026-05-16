@@ -85,13 +85,12 @@ export default async function AMCPage() {
           <h1 className="text-2xl font-bold text-white">AMC Management</h1>
           <p className="text-slate-400 mt-1">Annual Maintenance Contracts & Hour Tracking</p>
         </div>
-        {/* TODO: Implement create contract modal or page at /web/amc/new */}
-        {/* <Link
+        <Link
           href="/web/amc/new"
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           + New Contract
-        </Link> */}
+        </Link>
       </div>
 
       {/* Stats Overview */}

@@ -29,7 +29,7 @@ export default function PublicLayout({
 
       {/* Footer */}
       <footer className="border-t border-white/10 glass-card px-6 py-4 mt-auto">
-        <div className="max-w-4xl mx-auto text-center text-sm text-slate-400">
+        <div className="max-w-4xl mx-auto text-center text-sm text-slate-400" suppressHydrationWarning>
           &copy; {new Date().getFullYear()} Branding Pioneers. All rights reserved.
         </div>
       </footer>

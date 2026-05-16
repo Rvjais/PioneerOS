@@ -104,7 +104,7 @@ function EmbedClientOnboardingContent() {
     if (saved) {
       try {
         setForm(JSON.parse(saved))
-      } catch {}
+      } catch (e) { console.warn('Failed to restore saved form data:', e); }
     }
   }, [])
 

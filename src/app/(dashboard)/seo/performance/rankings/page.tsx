@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 interface Keyword {
   id: string
@@ -23,7 +24,7 @@ export default function SeoKeywordRankingsPage() {
         const kws: Keyword[] = data.keywords || data || []
         setKeywords(kws)
       })
-      .catch(() => {})
+      .catch(() => { setKeywords([]); toast.error('Failed to load keyword rankings') })
       .finally(() => setLoading(false))
   }, [])
 

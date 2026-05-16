@@ -94,7 +94,7 @@ export async function handleClientChurn(options: ChurnOptions): Promise<void> {
     await tx.invoice.updateMany({
       where: {
         clientId,
-        status: { in: ['DRAFT', 'SENT'] }
+        status: { in: ['DRAFT', 'SENT', 'PARTIAL', 'OVERDUE'] }
       },
       data: {
         status: 'CANCELLED',

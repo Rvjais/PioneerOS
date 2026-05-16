@@ -46,7 +46,7 @@ export default function ProfitabilityDashboard() {
   const [loading, setLoading] = useState(true)
   const [period, setPeriod] = useState('MONTHLY')
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7))
-  const [sortBy, setSortBy] = useState<'netProfit' | 'netMargin' | 'revenue'>('netProfit')
+  const [sortBy, setSortBy] = useState<'netProfit' | 'netMargin' | 'totalRevenue'>('netProfit')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function ProfitabilityDashboard() {
     return sortOrder === 'desc' ? bVal - aVal : aVal - bVal
   })
 
-  const handleSort = (key: 'netProfit' | 'netMargin' | 'revenue') => {
+  const handleSort = (key: 'netProfit' | 'netMargin' | 'totalRevenue') => {
     if (sortBy === key) {
       setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')
     } else {
@@ -240,9 +240,9 @@ export default function ProfitabilityDashboard() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">Tier</th>
                 <th
                   className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-slate-200"
-                  onClick={() => handleSort('revenue')}
+                  onClick={() => handleSort('totalRevenue')}
                 >
-                  Revenue {sortBy === 'revenue' && (sortOrder === 'desc' ? '↓' : '↑')}
+                  Revenue {sortBy === 'totalRevenue' && (sortOrder === 'desc' ? '↓' : '↑')}
                 </th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase">Costs</th>
                 <th

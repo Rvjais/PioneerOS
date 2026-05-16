@@ -51,7 +51,7 @@ const DEPT_CONFIG: Record<string, {
       { name: 'Meta Campaigns', href: '/ads/campaigns/meta', icon: 'meta' },
       { name: 'Google Campaigns', href: '/ads/campaigns/google', icon: 'google' },
       { name: 'Lead Performance', href: '/ads/leads/performance', icon: 'leads' },
-      { name: 'Budget Tracking', href: '/ads/budget', icon: 'budget' },
+      { name: 'Budget Tracking', href: '/ads/budget/allocations', icon: 'budget' },
       { name: 'Ad Creatives', href: '/ads/creatives/assets', icon: 'creatives' },
     ],
   },

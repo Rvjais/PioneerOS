@@ -102,10 +102,13 @@ export async function POST(request: NextRequest) {
       targetEmail = targetUser.email
     }
 
+    // targetUser is guaranteed non-null here (returned early above if not found)
+    const safeUser = targetUser!
+
     // Delete old unused tokens for this user
     await prisma.magicLinkToken.deleteMany({
       where: {
-        userId: targetUser!.id,
+        userId: safeUser.id,
         usedAt: null,
       },
     })
@@ -118,7 +121,7 @@ export async function POST(request: NextRequest) {
     await prisma.magicLinkToken.create({
       data: {
         token: tokenHash,
-        userId: targetUser!.id,
+        userId: safeUser.id,
         channel: 'EMAIL',
         expiresAt,
       },
@@ -128,7 +131,7 @@ export async function POST(request: NextRequest) {
     const emailResult = await sendAdminMagicLinkEmail({
       to: targetEmail,
       token,
-      firstName: targetUser!.firstName,
+      firstName: safeUser.firstName,
     })
 
     if (!emailResult.success) {
@@ -144,8 +147,8 @@ export async function POST(request: NextRequest) {
       userId: session.user.id,
       action: 'GENERATE_BRANDING_MAGIC_LINK',
       title: 'Branding Magic Link generated',
-      message: `Generated Branding Pioneers login link for ${targetUser!.firstName} ${targetUser!.lastName || ''} (${targetUser!.empId || targetUser!.id})`,
-      link: `/admin/users/${targetUser!.id}`,
+      message: `Generated Branding Pioneers login link for ${safeUser.firstName} ${safeUser.lastName || ''} (${safeUser.empId || safeUser.id})`,
+      link: `/admin/users/${safeUser.id}`,
     })
 
     return NextResponse.json({

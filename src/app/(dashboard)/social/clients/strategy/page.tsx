@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
+import { toast } from 'sonner'
 
 const SOCIAL_ROLES = ['SUPER_ADMIN', 'MANAGER', 'SOCIAL_MEDIA']
 
@@ -22,6 +24,32 @@ export default function ContentStrategyPage() {
 
   const [strategies, setStrategies] = useState<ContentStrategy[]>([])
   const [loading, setLoading] = useState(true)
+  const [showStrategyModal, setShowStrategyModal] = useState(false)
+  const [editingClient, setEditingClient] = useState<string | null>(null)
+  const [strategyFormData, setStrategyFormData] = useState({ client: '', audience: '', tone: '' })
+
+  const handleStrategySubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      const res = await fetch('/api/social/strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(strategyFormData)
+      })
+
+      if (!res.ok) throw new Error('Failed to save strategy')
+      
+      toast.success(editingClient ? `Strategy updated for ${editingClient}` : 'New strategy created')
+      setShowStrategyModal(false)
+      setStrategyFormData({ client: '', audience: '', tone: '' })
+      setEditingClient(null)
+      
+      window.location.reload()
+    } catch (err: any) {
+      toast.error(err.message || 'An error occurred')
+    }
+  }
 
   useEffect(() => {
     fetch('/api/social/clients')
@@ -68,7 +96,14 @@ export default function ContentStrategyPage() {
             <p className="text-pink-200">Content themes and goals for each client</p>
           </div>
           {canEdit && (
-            <button disabled title="Coming soon" className="px-4 py-2 glass-card text-pink-600 rounded-lg font-medium opacity-50 cursor-not-allowed">
+            <button 
+              onClick={() => {
+                setEditingClient(null)
+                setStrategyFormData({ client: '', audience: '', tone: '' })
+                setShowStrategyModal(true)
+              }}
+              className="px-4 py-2 bg-white text-pink-600 rounded-lg font-medium hover:bg-pink-50 transition-colors"
+            >
               + New Strategy
             </button>
           )}
@@ -125,7 +160,14 @@ export default function ContentStrategyPage() {
             </div>
 
             <div className="p-4 bg-slate-900/40 border-t border-white/10">
-              <button disabled title="Coming soon" className="text-sm text-pink-600 font-medium opacity-50 cursor-not-allowed">
+              <button 
+                onClick={() => {
+                  setEditingClient(strategy.client)
+                  setStrategyFormData({ client: strategy.client, audience: strategy.targetAudience, tone: strategy.toneOfVoice })
+                  setShowStrategyModal(true)
+                }}
+                className="text-pink-400 hover:text-pink-300 text-sm font-medium transition-colors"
+              >
                 Edit Strategy →
               </button>
             </div>
@@ -163,6 +205,29 @@ export default function ContentStrategyPage() {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={showStrategyModal} onClose={() => setShowStrategyModal(false)} title={editingClient ? `Edit Strategy: ${editingClient}` : "New Content Strategy"} size="md">
+        <form onSubmit={handleStrategySubmit}>
+          <ModalBody>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Client *</label>
+              <input required type="text" value={strategyFormData.client} onChange={e => setStrategyFormData({...strategyFormData, client: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" placeholder="Client Name" />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Target Audience</label>
+              <input type="text" value={strategyFormData.audience} onChange={e => setStrategyFormData({...strategyFormData, audience: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" placeholder="e.g. Gen Z, Tech Professionals" />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">Tone of Voice</label>
+              <input type="text" value={strategyFormData.tone} onChange={e => setStrategyFormData({...strategyFormData, tone: e.target.value})} className="w-full px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-slate-200" placeholder="e.g. Professional yet conversational" />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button type="button" onClick={() => setShowStrategyModal(false)} className="px-4 py-2 text-sm text-slate-200 bg-slate-800/50 rounded-lg">Cancel</button>
+            <button type="submit" className="px-6 py-2 text-sm text-white bg-pink-600 rounded-lg hover:bg-pink-700">{editingClient ? 'Save Changes' : 'Create Strategy'}</button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </div>
   )
 }
