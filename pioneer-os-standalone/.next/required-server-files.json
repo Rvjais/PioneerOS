@@ -4,7 +4,7 @@
     "env": {},
     "webpack": null,
     "typescript": {
-      "ignoreBuildErrors": true
+      "ignoreBuildErrors": false
     },
     "typedRoutes": false,
     "distDir": ".next",
@@ -143,7 +143,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/home/veer/Ranveer/PO/pioneer-os",
+    "outputFileTracingRoot": "/home/veer/Desktop/Office/PioneerOS",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -262,7 +262,6 @@
       "optimizePackageImports": [
         "recharts",
         "date-fns",
-        "@heroicons/react",
         "lucide-react",
         "framer-motion",
         "zod",
@@ -346,7 +345,6 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.ts",
     "serverExternalPackages": [
-      "jimp",
       "sharp",
       "googleapis",
       "jspdf",
@@ -354,7 +352,7 @@
       "xlsx"
     ],
     "turbopack": {
-      "root": "/home/veer/Ranveer/PO/pioneer-os"
+      "root": "/home/veer/Desktop/Office/PioneerOS"
     },
     "distDirRoot": ".next",
     "_originalRedirects": [
@@ -371,16 +369,6 @@
       {
         "source": "/expenses",
         "destination": "/finance/expenses",
-        "permanent": true
-      },
-      {
-        "source": "/employee-onboarding/v2",
-        "destination": "/hr/employee-onboarding",
-        "permanent": true
-      },
-      {
-        "source": "/employee-onboarding/v3",
-        "destination": "/hr/employee-onboarding",
         "permanent": true
       },
       {
@@ -460,7 +448,7 @@
       }
     ]
   },
-  "appDir": "/home/veer/Ranveer/PO/pioneer-os",
+  "appDir": "/home/veer/Desktop/Office/PioneerOS",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

@@ -467,7 +467,7 @@ export default function AdminDashboard() {
           </h3>
           <div className="space-y-3">
             <PublicLink href="/accounts/onboarding/create" label="Create Client Onboarding" desc="Generate token-based onboarding link" />
-            <PublicLink href="/employee-onboarding" label="Employee Onboarding" desc="For new hires to submit documents" />
+
             <PublicLink href="/hr/forms/exit" label="Exit Interview Form" desc="Trigger offboarding process" />
             <PublicLink href="/hr/vendor-onboarding" label="Vendor Registration" desc="For new vendor onboarding" />
           </div>

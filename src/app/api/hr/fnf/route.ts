@@ -174,7 +174,7 @@ const allowedRoles = ['SUPER_ADMIN', 'MANAGER', 'HR']
       const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i)
       const day = d.getDay()
       return day !== 0 && day !== 6 ? 1 : 0
-    }).reduce((a, b) => a + b, 0)
+    }).reduce((a: number, b) => a + b, 0)
     const salaryDues = roundMoney(multiplyMoney(dailyRate, workingDaysRemaining))
 
     if (salaryDues > 0) {

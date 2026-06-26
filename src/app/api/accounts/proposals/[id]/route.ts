@@ -107,8 +107,9 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
     ]
 
     for (const field of allowedFields) {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field]
+      const val = (body as Record<string, unknown>)[field]
+      if (val !== undefined) {
+        updateData[field] = val
       }
     }
 

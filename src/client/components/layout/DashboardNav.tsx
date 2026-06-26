@@ -83,7 +83,7 @@ const navigation = [
       { name: 'Vendor Onboarding', href: '/hr/vendor-onboarding', icon: 'verification' },
       { name: 'Verifications', href: '/hr/verifications', icon: 'verification' },
       { name: 'Candidate Screening', href: '/hr/assessment-pipeline', icon: 'checklist' },
-      { name: 'Employee Onboarding', href: '/hr/employee-onboarding', icon: 'checklist' },
+
       { name: 'Hiring', href: '/hiring', icon: 'hiring' },
       { name: 'Training', href: '/hr/training', icon: 'training' },
       { name: 'Appraisals', href: '/hr/appraisals', icon: 'appraisal' },
@@ -201,7 +201,7 @@ const itemRoleRestrictions: Record<string, string[]> = {
   '/hr/forms/device-allocation': ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR'],
   '/hr/forms/exit': ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR'],
   '/hr/assessment-pipeline': ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR'],
-  '/hr/employee-onboarding': ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR'],
+
   // Finance sensitive items - RESTRICT ALL FROM REGULAR EMPLOYEES
   '/finance/overview': ['SUPER_ADMIN', 'MANAGER', 'ACCOUNTS'],
   '/finance/invoices': ['SUPER_ADMIN', 'MANAGER', 'ACCOUNTS'],
@@ -544,16 +544,7 @@ export function DashboardNav() {
         <div className="shrink-0 p-3 border-t border-slate-200 bg-white">
           <p className="text-[10px] uppercase tracking-widest text-orange-400/60 font-semibold mb-2 px-1">External Forms</p>
           <div className="grid grid-cols-3 gap-2">
-            <Link
-              href="/hr/employee-onboarding"
-              onClick={onItemClick}
-              className="flex flex-col items-center gap-1 px-1 py-2 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg hover:bg-emerald-500/20 transition-all"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-              Hire
-            </Link>
+
             <Link
               href="/accounts/client-onboarding"
               onClick={onItemClick}

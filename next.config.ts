@@ -149,16 +149,7 @@ const nextConfig: NextConfig = {
         destination: '/finance/expenses',
         permanent: true,
       },
-      {
-        source: '/employee-onboarding/v2',
-        destination: '/hr/employee-onboarding',
-        permanent: true,
-      },
-      {
-        source: '/employee-onboarding/v3',
-        destination: '/hr/employee-onboarding',
-        permanent: true,
-      },
+
       {
         source: '/client-onboarding/v2',
         destination: '/accounts/onboarding/create',

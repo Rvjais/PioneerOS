@@ -49,7 +49,7 @@ export async function proxy(req: NextRequest) {
     // API routes (public)
     '/api/auth',
     '/api/onboarding',
-    '/api/employee-onboarding',
+
     '/api/hr/assessment',
     '/api/clients/rfp',
     '/api/rfp',
@@ -63,7 +63,7 @@ export async function proxy(req: NextRequest) {
     '/api/admin/test-access',
 
     // Public forms (API-based)
-    '/join-team',       // Employee onboarding wizard (token-based)
+
     '/onboarding',      // Client onboarding (token-based)
     '/rfp',             // RFP submission (token-based)
     '/careers',         // Job application

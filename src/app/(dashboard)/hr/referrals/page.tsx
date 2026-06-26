@@ -2,6 +2,7 @@ import { prisma } from '@/server/db/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/server/auth/auth'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 async function getReferralData() {
     const referrals = await prisma.referralBonus.findMany({

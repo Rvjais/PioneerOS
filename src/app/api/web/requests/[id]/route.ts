@@ -24,7 +24,7 @@ const updateRequestSchema = z.object({
 
 export const GET = withAuth(async (req: NextRequest, { params }) => {
   try {
-    const { id } = await params
+    const { id } = await params!
 
     const request = await prisma.webChangeRequest.findUnique({
       where: { id },
@@ -52,7 +52,7 @@ export const GET = withAuth(async (req: NextRequest, { params }) => {
 
 export const PATCH = withAuth(async (req: NextRequest, { user, params }) => {
   try {
-    const { id } = await params
+    const { id } = await params!
     const body = await req.json()
     const parsed = updateRequestSchema.safeParse(body)
 
@@ -114,7 +114,7 @@ export const PATCH = withAuth(async (req: NextRequest, { user, params }) => {
 
 export const DELETE = withAuth(async (req: NextRequest, { user, params }) => {
   try {
-    const { id } = await params
+    const { id } = await params!
     const isManager = ['SUPER_ADMIN', 'MANAGER', 'WEB_MANAGER', 'OPERATIONS_HEAD'].includes(user.role)
 
     if (!isManager) return NextResponse.json({ error: 'Only managers can delete change requests' }, { status: 403 })

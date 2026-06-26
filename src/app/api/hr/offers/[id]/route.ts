@@ -193,8 +193,8 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
               userId: hr.id,
               type: 'OFFER_ACCEPTED',
               title: 'Offer Accepted!',
-              message: `${offer.candidate.name} has accepted the offer! Candidate joined — initiate employee onboarding.`,
-              link: '/hr/employee-onboarding'
+              message: `${offer.candidate.name} has accepted the offer! Candidate joined.`,
+              link: '/hr'
             }
           })
         }

@@ -17,7 +17,7 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     const endDate = new Date(year, month + 1, 0, 23, 59, 59)
 
     // Fetch events from multiple sources in parallel
-    const [tasks, meetings, webProjects] = await Promise.all([
+    const allResults = await Promise.all([
       // Tasks with deadlines in web/development departments
       prisma.task.findMany({
         where: {
@@ -45,17 +45,11 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
             gte: startDate,
             lte: endDate,
           },
-          OR: [
-            { department: 'WEB' },
-            { department: null },
-            { attendeeIds: { has: user.id } },
-          ],
         },
         select: {
           id: true,
           title: true,
           date: true,
-          time: true,
         },
       }),
 
@@ -78,6 +72,10 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
       }),
     ])
 
+    const tasks: any[] = allResults[0]
+    const meetings: any[] = allResults[1]
+    const webProjects: any[] = allResults[2]
+
     // Transform and combine events
     const events: Array<{
       id: string
@@ -90,7 +88,7 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     }> = []
 
     // Add task events (deadlines)
-    tasks.forEach(task => {
+    tasks.forEach((task: any) => {
       if (task.dueDate) {
         events.push({
           id: `task-${task.id}`,
@@ -104,24 +102,24 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     })
 
     // Add meeting events
-    meetings.forEach(meeting => {
+    meetings.forEach((meeting: any) => {
       events.push({
         id: `meeting-${meeting.id}`,
         title: meeting.title,
         type: 'MEETING',
         date: meeting.date.toISOString().split('T')[0],
-        time: meeting.time,
+        time: meeting.date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
       })
     })
 
     // Add project start/end dates
-    webProjects.forEach(project => {
+    webProjects.forEach((project: any) => {
       if (project.startDate) {
         events.push({
           id: `project-start-${project.id}`,
           title: `Project Start: ${project.name}`,
           type: 'DEVELOPMENT',
-          date: project.startDate.toISOString().split('T')[0],
+          date: new Date(project.startDate).toISOString().split('T')[0],
           projectName: project.client?.name,
         })
       }
@@ -130,7 +128,7 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
           id: `project-due-${project.id}`,
           title: `Project Due: ${project.name}`,
           type: 'DEADLINE',
-          date: project.dueDate.toISOString().split('T')[0],
+          date: new Date(project.dueDate).toISOString().split('T')[0],
           projectName: project.client?.name,
         })
       }

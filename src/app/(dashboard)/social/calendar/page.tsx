@@ -72,7 +72,7 @@ export default function SocialCalendarPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: newEventTitle,
-          type: newEventType === 'content' ? 'EVENT' : newEventType === 'meeting' ? 'MEETING' : newEventType === 'task' ? 'TASK' : 'DEADLINE',
+          type: newEventType === 'content' ? 'EVENT' : newEventType === 'meeting' ? 'MEETING' : 'DEADLINE',
           date: new Date(selectedDate).toISOString(),
           description: newEventClient ? `Client: ${newEventClient}` : '',
           clientId: newEventClient,

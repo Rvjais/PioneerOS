@@ -141,7 +141,7 @@ async function getCalendarData(userId: string, department: string, isManager: bo
       id: invoice.id,
       title: `Invoice #${invoice.invoiceNumber}`,
       dueDate: serializeDate(invoice.dueDate)!,
-      amount: invoice.totalAmount,
+      amount: invoice.total,
       status: invoice.status,
       client: invoice.client,
     })),

@@ -59,11 +59,19 @@ async function getRequests(userId: string, userRole: string) {
   // Map the long relation names to shorter ones for the client component
   const mappedRequests = requests.map(req => ({
     ...req,
+    createdAt: req.createdAt.toISOString(),
+    updatedAt: req.updatedAt.toISOString(),
+    completedAt: req.completedAt?.toISOString() || null,
     assignedTo: (req as any).User_WebChangeRequest_assignedToIdToUser,
     completedBy: (req as any).User_WebChangeRequest_completedByIdToUser,
   }))
 
-  return { requests: mappedRequests, projects, teamMembers, stats, isManager }
+  const mappedTeamMembers = teamMembers.map(m => ({
+    ...m,
+    lastName: m.lastName || ''
+  }))
+
+  return { requests: mappedRequests, projects, teamMembers: mappedTeamMembers, stats, isManager }
 }
 
 export default async function WebRequestsPage() {

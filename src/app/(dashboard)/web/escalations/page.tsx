@@ -53,7 +53,20 @@ async function getEscalations(userId: string, userRole: string) {
     total: escalations.length,
   }
 
-  return { escalations, clients, teamMembers, stats, isManager }
+  const mappedEscalations = (escalations as any[]).map((e: any) => ({
+    ...e,
+    createdAt: e.createdAt.toISOString(),
+    updatedAt: e.updatedAt.toISOString(),
+    employee: e.employee ? { ...e.employee, lastName: e.employee.lastName || '' } : e.employee,
+    reporter: e.reporter ? { ...e.reporter, lastName: e.reporter.lastName || '' } : e.reporter,
+  }))
+
+  const mappedTeamMembers = teamMembers.map(m => ({
+    ...m,
+    lastName: m.lastName || ''
+  }))
+
+  return { escalations: mappedEscalations, clients, teamMembers: mappedTeamMembers, stats, isManager }
 }
 
 export default async function WebEscalationsPage() {

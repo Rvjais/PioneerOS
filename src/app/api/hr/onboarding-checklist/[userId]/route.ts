@@ -186,9 +186,10 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
     ]
 
     for (const field of booleanFields) {
-      if (field in body) {
-        updateData[field] = body[field]
-        if (body[field] === true) {
+      const bodyRecord = body as Record<string, unknown>
+      if (field in bodyRecord && typeof bodyRecord[field] === 'boolean') {
+        updateData[field] = bodyRecord[field] as boolean
+        if (bodyRecord[field] === true) {
           updateData[`${field}At`] = new Date()
         }
       }

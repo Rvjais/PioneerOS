@@ -222,7 +222,7 @@ export async function sendWhatsAppMessage(options: SendMessageOptions): Promise<
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: toFormBody(payload),
+      body: toFormBody(payload as unknown as Record<string, string | number | undefined>),
       signal: controller.signal,
     })
 
@@ -290,7 +290,7 @@ export async function sendWhatsAppGroupMessage(options: Omit<SendMessageOptions,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: toFormBody(payload),
+      body: toFormBody(payload as unknown as Record<string, string | number | undefined>),
       signal: controller.signal,
     })
 

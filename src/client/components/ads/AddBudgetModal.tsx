@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Modal, ModalBody, ModalFooter } from '@/client/components/ui/Modal'
-import { Input } from '@/client/components/ui/Input'
 
 interface Client {
   id: string

@@ -42,7 +42,8 @@ export const POST = withAuth(async (req, { user }) => {
     },
   })
 
-  return NextResponse.json({ ticket: { id: ticket.ticketNumber, ...ticket } }, { status: 201 })
+  const ticketData = { ...ticket, id: ticket.ticketNumber }
+  return NextResponse.json({ ticket: ticketData }, { status: 201 })
 })
 
 async function getDefaultClient(): Promise<string> {

@@ -59,11 +59,19 @@ async function getBugs(userId: string, userRole: string) {
   // Map the long relation names to shorter ones for the client component
   const mappedBugs = bugs.map(bug => ({
     ...bug,
+    createdAt: bug.createdAt.toISOString(),
+    updatedAt: bug.updatedAt.toISOString(),
+    resolvedAt: bug.resolvedAt?.toISOString() || null,
     assignedTo: (bug as any).User_WebBugReport_assignedToIdToUser,
     resolvedBy: (bug as any).User_WebBugReport_resolvedByIdToUser,
   }))
 
-  return { bugs: mappedBugs, projects, teamMembers, stats, isManager }
+  const mappedTeamMembers = teamMembers.map(m => ({
+    ...m,
+    lastName: m.lastName || ''
+  }))
+
+  return { bugs: mappedBugs, projects, teamMembers: mappedTeamMembers, stats, isManager }
 }
 
 export default async function WebBugsPage() {

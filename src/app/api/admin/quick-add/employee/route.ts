@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
-import { hashPassword } from '@/server/security/password'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth/withAuth'
 
@@ -26,15 +25,39 @@ if (!['SUPER_ADMIN', 'MANAGER'].includes(user.role)) {
     if (!result.success) return NextResponse.json({ error: result.error.issues[0]?.message || 'Invalid input' }, { status: 400 })
     Object.assign(data, result.data)
 
-    // Generate next empId atomically inside a transaction to prevent race conditions
-    // Generate a random temporary password -- employee must use magic link to set their own
-    const { randomBytes } = await import('crypto')
-    const tempPassword = randomBytes(16).toString('hex')
-    const hashedPassword = await hashPassword(tempPassword)
-
+    // Generate next empId and create user atomically
     const dbUser = await prisma.$transaction(async (tx) => {
+      // Block if phone/email belongs to an active user
+      if (data.phone) {
+        const active = await tx.user.findFirst({
+          where: { phone: data.phone, deletedAt: null },
+          select: { id: true, firstName: true, lastName: true },
+        })
+        if (active) {
+          throw new Error(`Phone number already in use by ${active.firstName} ${active.lastName || ''}.`)
+        }
+      }
+      if (data.email) {
+        const active = await tx.user.findFirst({
+          where: { email: data.email, deletedAt: null },
+          select: { id: true, firstName: true, lastName: true },
+        })
+        if (active) {
+          throw new Error(`Email already in use by ${active.firstName} ${active.lastName || ''}.`)
+        }
+      }
+
+      // Permanently remove any soft-deleted records holding the same unique values
+      if (data.phone) {
+        await tx.user.deleteMany({ where: { phone: data.phone, deletedAt: { not: null } } })
+      }
+      if (data.email) {
+        await tx.user.deleteMany({ where: { email: data.email, deletedAt: { not: null } } })
+      }
+
+      // Generate next empId (excluding soft-deleted)
       const usersWithBPId = await tx.user.findMany({
-        where: { empId: { startsWith: 'BP-' } },
+        where: { empId: { startsWith: 'BP-' }, deletedAt: null },
         select: { empId: true },
       })
 
@@ -64,13 +87,16 @@ if (!['SUPER_ADMIN', 'MANAGER'].includes(user.role)) {
           joiningDate: data.joiningDate ? new Date(data.joiningDate) : new Date(),
           dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
           status: 'ACTIVE',
-          password: hashedPassword,
         },
       })
     })
 
     return NextResponse.json({ success: true, employee: dbUser })
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to add employee'
+    if (message.includes('already in use')) {
+      return NextResponse.json({ error: message }, { status: 409 })
+    }
     console.error('Quick add employee error:', error)
     return NextResponse.json({ error: 'Failed to add employee' }, { status: 500 })
   }

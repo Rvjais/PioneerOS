@@ -72,6 +72,8 @@ export function InternDashboard({
   const [meetingAgenda, setMeetingAgenda] = useState('')
   const [isScheduling, setIsScheduling] = useState(false)
 
+  const [showSkillsModal, setShowSkillsModal] = useState(false)
+
   const internshipProgress = (stats.daysCompleted / stats.totalDays) * 100
   const daysRemaining = stats.totalDays - stats.daysCompleted
 
@@ -245,11 +247,11 @@ export function InternDashboard({
             skillsRoadmap.slice(0, 3).map((skill, idx) => (
               <div key={idx} className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-100">{skill.skillName}</p>
-                  <p className="text-xs text-slate-400">{skill.category}</p>
+                  <p className="font-medium text-slate-100">{skill.skill}</p>
+                  <p className="text-xs text-slate-400">{skill.level}</p>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${skill.status === 'COMPLETED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                  {skill.status}
+                <span className={`text-xs px-2 py-1 rounded-full ${skill.progress === 100 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                  {skill.progress === 100 ? 'COMPLETED' : 'IN_PROGRESS'}
                 </span>
               </div>
             ))

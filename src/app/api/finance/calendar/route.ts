@@ -118,7 +118,7 @@ export const GET = withAuth(async (req, { user }) => {
       // Payment collections (limited to 100 per month)
       prisma.paymentCollection.findMany({
         where: {
-          paymentDate: {
+          collectedAt: {
             gte: startOfMonth,
             lte: endOfMonth,
           },
@@ -126,10 +126,9 @@ export const GET = withAuth(async (req, { user }) => {
         include: {
           client: { select: { id: true, name: true } },
         },
-        orderBy: { paymentDate: 'asc' },
+        orderBy: { collectedAt: 'asc' },
         take: 100,
       }),
-
       // Expenses (limited to 100 per month)
       prisma.expense.findMany({
         where: {
@@ -187,8 +186,8 @@ export const GET = withAuth(async (req, { user }) => {
     const serializedPayments = payments.map(payment => ({
       id: payment.id,
       title: `Payment from ${payment.client?.name || 'Client'}`,
-      date: serializeDate(payment.paymentDate),
-      amount: payment.amount,
+      date: serializeDate(payment.collectedAt),
+      amount: payment.netAmount,
       status: payment.status,
     }))
 

@@ -167,7 +167,7 @@ export async function parseCSV(
 
         resolve({ rows, headers })
       },
-      error: (error) => reject(error),
+      error: (error: unknown) => reject(error),
     })
   })
 }

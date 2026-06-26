@@ -23,7 +23,8 @@ export const GET = withAuth(async (req, { user, params }) => {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { userId } = await params
+    const p = await params
+    const userId = p!['userId']
     const dbUser = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -58,7 +59,8 @@ export const PATCH = withAuth(async (req, { user, params }) => {
       return NextResponse.json({ error: 'Unauthorized. Only Super Admins can edit users.' }, { status: 401 })
     }
 
-    const { userId } = await params
+    const p = await params
+    const userId = p!['userId']
     const body = await req.json()
 
     // Validate input
@@ -135,50 +137,61 @@ export const PATCH = withAuth(async (req, { user, params }) => {
   }
 })
 
-// DELETE - Deactivate user (soft delete)
+// DELETE - Permanently delete user
 export const DELETE = withAuth(async (req, { user, params }) => {
   try {
     if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { userId } = (await params) as { userId: string }
+    const p2 = await params
+    const userId = p2!['userId']
 
     // Don't allow deleting yourself
     if (userId === user.id) {
-      return NextResponse.json({ error: 'Cannot deactivate your own account' }, { status: 400 })
+      return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 })
     }
 
-    // Fetch user info before deactivation for audit log
+    // Fetch user info before deletion for audit log
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { empId: true, firstName: true, lastName: true },
+      select: { empId: true, firstName: true, lastName: true, phone: true, email: true },
     })
 
-    const dbUser = await prisma.user.update({
-      where: { id: userId },
-      data: { 
-        status: 'INACTIVE',
-        deletedAt: new Date()
-      },
+    if (!targetUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Delete user and all related data in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Nullify employee proposals referencing this user (no cascade)
+      await tx.employeeProposal.updateMany({
+        where: { createdById: userId },
+        data: { createdById: '' },
+      })
+      await tx.employeeProposal.updateMany({
+        where: { userId },
+        data: { userId: null },
+      })
+
+      // Delete the user (cascades to most related tables)
+      await tx.user.delete({ where: { id: userId } })
     })
 
     // Audit log
     await logAdminAction({
       userId: user.id,
-      action: 'USER_DEACTIVATE',
-      title: 'User deactivated',
-      message: `Deactivated ${targetUser?.firstName || ''} ${targetUser?.lastName || ''} (${targetUser?.empId || userId})`,
-      link: `/admin/users/${userId}`,
+      action: 'USER_DELETE',
+      title: 'User permanently deleted',
+      message: `Deleted ${targetUser.firstName || ''} ${targetUser.lastName || ''} (${targetUser.empId || userId})`,
     })
 
     return NextResponse.json({
       success: true,
-      message: 'User deactivated',
-      user: dbUser,
+      message: 'User permanently deleted',
     })
   } catch (error) {
-    console.error('Error deactivating user:', error)
+    console.error('Error deleting user:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 })

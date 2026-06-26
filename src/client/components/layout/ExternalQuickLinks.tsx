@@ -15,17 +15,7 @@ export function ExternalQuickLinks({ userRole }: ExternalQuickLinksProps) {
     <div className="p-3 mx-3 mb-3 border border-orange-500/20 rounded-xl bg-orange-500/5">
       <p className="text-[10px] uppercase tracking-widest text-orange-400/60 font-semibold mb-2 px-1">External Forms</p>
       <div className="grid grid-cols-3 gap-2">
-        {isSuperAdmin && (
-          <Link
-            href="/hr/employee-onboarding"
-            className="flex flex-col items-center gap-1 px-1 py-2 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg hover:bg-emerald-500/20 transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
-            Hire
-          </Link>
-        )}
+
         {isSuperAdmin && (
           <Link
             href="/accounts/client-onboarding"

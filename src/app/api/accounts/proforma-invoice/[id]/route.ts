@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/server/db/prisma';
 import { withAuth } from '@/server/auth/withAuth';
 
-export const GET = withAuth(async (request: Request, context: { params: Promise<{ id: string }> }) => {
-  const { id } = await context.params;
+export const GET = withAuth(async (request: Request, { params }) => {
+  const { id } = await params!;
   const inv = await prisma.invoice.findUnique({
     where: { id },
     include: { client: { select: { id: true, name: true } } },
@@ -31,8 +31,8 @@ export const GET = withAuth(async (request: Request, context: { params: Promise<
   });
 });
 
-export const PATCH = withAuth(async (request: Request, context: { params: Promise<{ id: string }> }) => {
-  const { id } = await context.params;
+export const PATCH = withAuth(async (request: Request, { params }) => {
+  const { id } = await params!;
   const body = await request.json();
 
   const validStatuses = ['draft', 'sent', 'accepted', 'rejected'] as const;

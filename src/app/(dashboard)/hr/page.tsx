@@ -212,15 +212,7 @@ export default async function HRPage() {
             </svg>
             Hiring
           </Link>
-          <Link
-            href="/employee-onboarding"
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            New Employee
-          </Link>
+
         </div>
       </div>
 

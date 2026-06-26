@@ -808,10 +808,6 @@
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
     ],
-    "[project]/src/app/(dashboard)/hr/employee-onboarding/page": [
-      "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
-      "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
-    ],
     "[project]/src/app/(dashboard)/hr/employer-branding/page": [
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
@@ -1776,10 +1772,6 @@
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
     ],
-    "[project]/src/app/admin-test-ae53850ab564f71a/page": [
-      "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
-      "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
-    ],
     "[project]/src/app/assessment/[token]/page": [
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
@@ -1868,19 +1860,7 @@
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
     ],
-    "[project]/src/app/employee-onboarding/page": [
-      "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
-      "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
-    ],
-    "[project]/src/app/employee-onboarding/success/page": [
-      "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
-      "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
-    ],
     "[project]/src/app/exit-interview/page": [
-      "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
-      "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
-    ],
-    "[project]/src/app/join-team/[token]/page": [
       "static/media/Geist_Variable-s.p.0-te~ja_gpvcf.woff2",
       "static/media/GeistMono_Variable.p.17jn9btb_52pq.woff2"
     ],

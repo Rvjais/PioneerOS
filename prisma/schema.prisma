@@ -198,6 +198,7 @@ model User {
   workDeliverables                                      WorkDeliverable[]
   workEntries                                           WorkEntry[]
   loginSessions                                         LoginSession[]
+  passwordResetTokens                                   PasswordResetToken[]
 
   @@index([role])
   @@index([department])
@@ -1751,6 +1752,7 @@ model ClientUser {
   lastLoginAt           DateTime?
   otpCode               String?
   otpExpiresAt          DateTime?
+  otpAttempts           Int                    @default(0)
   sessionToken          String?                @unique
   sessionExpiresAt      DateTime?
   passwordHash          String?
@@ -4735,6 +4737,22 @@ model MagicLinkToken {
   token     String    @unique
   userId    String
   channel   String    @default("EMAIL")
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  channel   String    @default("EMAIL")
+  purpose   String    @default("RESET")
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

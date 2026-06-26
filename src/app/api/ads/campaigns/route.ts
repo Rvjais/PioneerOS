@@ -27,6 +27,7 @@ const createCampaignSchema = z.object({
   targetAudience: z.string().optional(),
   keywords: z.string().optional(),
   placements: z.string().optional(),
+  assignedToId: z.string().optional(),
   startDate: z.string().optional().refine(
     (val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val) || !isNaN(Date.parse(val)),
     { message: 'Invalid start date format' }

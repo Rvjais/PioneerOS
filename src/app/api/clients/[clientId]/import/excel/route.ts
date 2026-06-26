@@ -36,7 +36,7 @@ export const POST = withAuth(async (req, { user, params }) => {
   }
 
   // Validate file upload (size, type, extension)
-  const fileValidation = validateFileUpload(file, { category: 'excel' })
+  const fileValidation = await validateFileUpload(file, { category: 'excel' })
   if (!fileValidation.valid) {
     return NextResponse.json(
       { error: fileValidation.error },

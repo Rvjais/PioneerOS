@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { getTermOfTheDay, getQuoteOfTheDay, GLOSSARY_TERMS } from '@/shared/constants/glossary'
+import { getTermOfTheDay, getQuoteOfTheDay, GLOSSARY_TERMS, GlossaryTerm } from '@/shared/constants/glossary'
 
 const CATEGORY_COLORS: Record<string, string> = {
   healthcare: 'text-red-400 bg-red-500/10',

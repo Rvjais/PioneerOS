@@ -44,7 +44,7 @@ export const EMBEDDABLE_FORMS: Record<string, EmbeddableForm> = {
     category: 'lead',
     defaultHeight: 700,
   },
-  clientOnboarding: {
+  'client-onboarding': {
     id: 'client-onboarding',
     name: 'Client Onboarding',
     description: 'Comprehensive client intake form',

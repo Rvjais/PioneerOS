@@ -74,30 +74,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/admin-test-ae53850ab564f71a": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/admin-test-ae53850ab564f71a",
-      "dataRoute": "/admin-test-ae53850ab564f71a.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/auth/client-test-links": {
       "experimentalBypassFor": [
         {
@@ -593,54 +569,6 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/embed/welcome",
       "dataRoute": "/embed/welcome.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/employee-onboarding": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/employee-onboarding",
-      "dataRoute": "/employee-onboarding.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/employee-onboarding/success": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "next-action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/employee-onboarding/success",
-      "dataRoute": "/employee-onboarding/success.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -1456,8 +1384,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "1399f51013eb26d81863f195bcfb9052",
-    "previewModeSigningKey": "30bbdea20202036188745978b410a90698e62bb7c0ed423673666cdd4c6d2791",
-    "previewModeEncryptionKey": "3611c92517fab24f1626641b8b5b2801876e844ec8b1e478c3116da8bd8d75f8"
+    "previewModeId": "c4c8961e987f9a531c6d3bb89eaacdf3",
+    "previewModeSigningKey": "0ae60242f4926f027f9b093506b455ace1c1aa3140dca675032e3726246adb0d",
+    "previewModeEncryptionKey": "f9dee12f062d22155d002cc2ddb4637ac45526c5202e875a0c3e6a3e03ea48d7"
   }
 }

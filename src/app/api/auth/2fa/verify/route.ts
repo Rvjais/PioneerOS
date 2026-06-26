@@ -65,7 +65,7 @@ export const POST = withAuth(async (req, { user, params }) => {
 
     return NextResponse.json({
       success: true,
-      usedBackupCode: result.usedBackupCode || false,
+      usedBackupCode: (result as any).usedBackupCode || false,
     })
   } catch (error) {
     console.error('Failed to verify 2FA token:', error)

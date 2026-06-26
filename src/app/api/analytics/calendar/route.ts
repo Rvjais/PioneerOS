@@ -207,8 +207,9 @@ export const POST = withAuth(async (req, { user }) => {
           isOnline: true,
           participants: {
             create: Array.from(allParticipantIds).map((userId, idx) => ({
-              userId,
+              userId: userId as string,
               role: idx === 0 && userId === user.id ? 'ORGANIZER' : 'ATTENDEE',
+              user: { connect: { id: userId as string } },
             })),
           },
         },

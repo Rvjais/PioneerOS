@@ -88,18 +88,18 @@ export const GET = withAuth(async (req, { user }) => {
       }),
 
       // Client deliverables
-      prisma.clientDeliverable.findMany({
+      (prisma.clientDeliverable as any).findMany({
         where: {
           dueDate: {
             gte: startOfMonth,
             lte: endOfMonth,
           },
-        },
+        } as any,
         include: {
           client: { select: { id: true, name: true } },
           assignedTo: { select: { id: true, firstName: true, lastName: true } },
-        },
-        orderBy: { dueDate: 'asc' },
+        } as any,
+        orderBy: { dueDate: 'asc' as any },
         take: 50,
       }),
     ])
@@ -145,9 +145,9 @@ export const GET = withAuth(async (req, { user }) => {
         client: task.client,
       })),
 
-      ...deliverables.map(del => ({
+      ...(deliverables as any[]).map((del: any) => ({
         id: del.id,
-        title: del.title,
+        title: del.title || del.workItem,
         type: 'DELIVERY' as const,
         date: serializeDate(del.dueDate),
         status: del.status,
@@ -227,8 +227,9 @@ export const POST = withAuth(async (req, { user }) => {
           isOnline: type === 'CALL',
           participants: {
             create: Array.from(allParticipantIds).map((userId, idx) => ({
-              userId,
+              userId: userId as string,
               role: idx === 0 && userId === user.id ? 'ORGANIZER' : 'ATTENDEE',
+              user: { connect: { id: userId as string } },
             })),
           },
         },

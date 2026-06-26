@@ -13,7 +13,7 @@ const createEscalationSchema = z.object({
   clientId: z.string().min(1, 'Client is required'),
   projectId: z.string().optional(),
   title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().min(1, 'Description is required').max,
+  description: z.string().min(1, 'Description is required').max(2000),
   type: z.enum(['CLIENT_COMPLAINT', 'DELIVERY_ISSUE', 'QUALITY', 'OTHER']).default('CLIENT_COMPLAINT'),
   severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).default('HIGH'),
   assignedToId: z.string().optional(),

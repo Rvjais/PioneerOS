@@ -28,8 +28,7 @@ export const GET = withAuth(async (req, { user, params }) => {
         },
         reviewedBy: {
           select: {
-            firstName: true,
-            lastName: true,
+            name: true,
           },
         },
       },
@@ -68,7 +67,7 @@ export const GET = withAuth(async (req, { user, params }) => {
           minute: '2-digit',
           hour12: true
         }),
-        personName: approval.client?.name,
+        personName: (approval as any).client?.name,
         personId: approval.clientId,
         status: approval.status,
         priority: approval.priority,

@@ -198,6 +198,7 @@ model User {
   workDeliverables                                      WorkDeliverable[]
   workEntries                                           WorkEntry[]
   loginSessions                                         LoginSession[]
+  passwordResetTokens                                   PasswordResetToken[]
 
   @@index([role])
   @@index([department])
@@ -908,6 +909,7 @@ model Invoice {
   total            Float
   paidAmount       Float               @default(0)
   status           String              @default("DRAFT")
+  invoiceType      String              @default("STANDARD")
   dueDate          DateTime
   paidAt           DateTime?
   items            String?
@@ -927,6 +929,7 @@ model Invoice {
   @@index([status])
   @@index([dueDate])
   @@index([entityType])
+  @@index([invoiceType])
 }
 
 model PaymentCollection {
@@ -956,7 +959,7 @@ model PaymentCollection {
   updatedAt        DateTime          @updatedAt
   bankTransactions BankTransaction[]
   client           Client            @relation(fields: [clientId], references: [id])
-  invoice          Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  invoice          Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 
   @@index([clientId])
   @@index([collectedAt])
@@ -1749,6 +1752,7 @@ model ClientUser {
   lastLoginAt           DateTime?
   otpCode               String?
   otpExpiresAt          DateTime?
+  otpAttempts           Int                    @default(0)
   sessionToken          String?                @unique
   sessionExpiresAt      DateTime?
   passwordHash          String?
@@ -4733,6 +4737,22 @@ model MagicLinkToken {
   token     String    @unique
   userId    String
   channel   String    @default("EMAIL")
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  channel   String    @default("EMAIL")
+  purpose   String    @default("RESET")
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())

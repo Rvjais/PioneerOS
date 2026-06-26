@@ -7,8 +7,8 @@ import { WebDesignQueueClient } from './WebDesignQueueClient'
 async function getDesignQueue(userId: string, userRole: string) {
   const isManager = ['SUPER_ADMIN', 'MANAGER', 'WEB_MANAGER', 'OPERATIONS_HEAD'].includes(userRole)
 
-  const [queue, projects] = await Promise.all([
-    prisma.webProjectPhaseItem.findMany({
+  const [queueItems, projects] = await Promise.all([
+    (prisma.webProjectPhaseItem as any).findMany({
       where: {
         phase: 'DESIGN',
         status: { in: ['PENDING', 'IN_PROGRESS'] },
@@ -34,13 +34,27 @@ async function getDesignQueue(userId: string, userRole: string) {
     }),
   ])
 
+  const queue: any[] = queueItems
+
   const stats = {
-    pending: queue.filter(i => i.status === 'PENDING').length,
-    inProgress: queue.filter(i => i.status === 'IN_PROGRESS').length,
+    pending: queue.filter((i: any) => i.status === 'PENDING').length,
+    inProgress: queue.filter((i: any) => i.status === 'IN_PROGRESS').length,
     total: queue.length,
   }
 
-  return { queue, projects, stats, isManager }
+  const mappedQueue = queue.map((item: any) => ({
+    ...item,
+    title: `${item.project.name} - ${item.phase.replace(/_/g, ' ')}`,
+    description: item.notes,
+    createdAt: item.createdAt.toISOString(),
+    assignedTo: item.assignedTo ? {
+      id: item.assignedTo.id,
+      firstName: item.assignedTo.firstName,
+      lastName: item.assignedTo.lastName || ''
+    } : null
+  }))
+
+  return { queue: mappedQueue, projects, stats, isManager }
 }
 
 export default async function WebDesignQueuePage() {

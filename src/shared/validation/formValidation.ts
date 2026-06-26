@@ -17,8 +17,8 @@ export {
   validateForm,
   getFieldError,
   hasFieldError,
-  FormFieldConfig,
   createFieldValidator,
   validators,
-  ValidationError,
 } from './validation'
+
+export type { FormFieldConfig, ValidationError } from './validation'

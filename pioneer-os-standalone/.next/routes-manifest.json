@@ -32,18 +32,6 @@
       "regex": "^(?!/_next)/expenses(?:/)?$"
     },
     {
-      "source": "/employee-onboarding/v2",
-      "destination": "/hr/employee-onboarding",
-      "statusCode": 308,
-      "regex": "^(?!/_next)/employee-onboarding/v2(?:/)?$"
-    },
-    {
-      "source": "/employee-onboarding/v3",
-      "destination": "/hr/employee-onboarding",
-      "statusCode": 308,
-      "regex": "^(?!/_next)/employee-onboarding/v3(?:/)?$"
-    },
-    {
       "source": "/client-onboarding/v2",
       "destination": "/accounts/onboarding/create",
       "statusCode": 308,
@@ -851,54 +839,6 @@
       "namedRegex": "^/api/design/requests/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
-      "page": "/api/employee-onboarding/[token]",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/[token]/bond",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)/bond(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)/bond(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/[token]/complete",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)/complete(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)/complete(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/[token]/documents",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)/documents(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)/documents(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/[token]/nda",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)/nda(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)/nda(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/[token]/policies",
-      "regex": "^/api/employee\\-onboarding/([^/]+?)/policies(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/api/employee\\-onboarding/(?<nxtPtoken>[^/]+?)/policies(?:/)?$"
-    },
-    {
       "page": "/api/expenses/recurring/[id]",
       "regex": "^/api/expenses/recurring/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -1691,14 +1631,6 @@
       "namedRegex": "^/issues/(?<nxtPissueId>[^/]+?)(?:/)?$"
     },
     {
-      "page": "/join-team/[token]",
-      "regex": "^/join\\-team/([^/]+?)(?:/)?$",
-      "routeKeys": {
-        "nxtPtoken": "nxtPtoken"
-      },
-      "namedRegex": "^/join\\-team/(?<nxtPtoken>[^/]+?)(?:/)?$"
-    },
-    {
       "page": "/mykohi-portal/[clientId]",
       "regex": "^/mykohi\\-portal/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -2367,12 +2299,6 @@
       "namedRegex": "^/admin\\-login(?:/)?$"
     },
     {
-      "page": "/admin-test-ae53850ab564f71a",
-      "regex": "^/admin\\-test\\-ae53850ab564f71a(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/admin\\-test\\-ae53850ab564f71a(?:/)?$"
-    },
-    {
       "page": "/ads",
       "regex": "^/ads(?:/)?$",
       "routeKeys": {},
@@ -2949,12 +2875,6 @@
       "namedRegex": "^/api/admin/terminations(?:/)?$"
     },
     {
-      "page": "/api/admin/test-access",
-      "regex": "^/api/admin/test\\-access(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/admin/test\\-access(?:/)?$"
-    },
-    {
       "page": "/api/admin/users",
       "regex": "^/api/admin/users(?:/)?$",
       "routeKeys": {},
@@ -3145,12 +3065,6 @@
       "regex": "^/api/auth/sessions/history(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/auth/sessions/history(?:/)?$"
-    },
-    {
-      "page": "/api/auth/test-login",
-      "regex": "^/api/auth/test\\-login(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/auth/test\\-login(?:/)?$"
     },
     {
       "page": "/api/budget-alerts",
@@ -3453,6 +3367,18 @@
       "namedRegex": "^/api/clients(?:/)?$"
     },
     {
+      "page": "/api/clients/operations-log",
+      "regex": "^/api/clients/operations\\-log(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/clients/operations\\-log(?:/)?$"
+    },
+    {
+      "page": "/api/clients/operations-overview",
+      "regex": "^/api/clients/operations\\-overview(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/clients/operations\\-overview(?:/)?$"
+    },
+    {
       "page": "/api/clients/rfp",
       "regex": "^/api/clients/rfp(?:/)?$",
       "routeKeys": {},
@@ -3607,18 +3533,6 @@
       "regex": "^/api/documents(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/documents(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/create",
-      "regex": "^/api/employee\\-onboarding/create(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/employee\\-onboarding/create(?:/)?$"
-    },
-    {
-      "page": "/api/employee-onboarding/list",
-      "regex": "^/api/employee\\-onboarding/list(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/employee\\-onboarding/list(?:/)?$"
     },
     {
       "page": "/api/expenses",
@@ -4201,12 +4115,6 @@
       "regex": "^/api/projects(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/projects(?:/)?$"
-    },
-    {
-      "page": "/api/public/employee-onboarding",
-      "regex": "^/api/public/employee\\-onboarding(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/api/public/employee\\-onboarding(?:/)?$"
     },
     {
       "page": "/api/public/rfp",
@@ -5109,18 +5017,6 @@
       "namedRegex": "^/embed/welcome(?:/)?$"
     },
     {
-      "page": "/employee-onboarding",
-      "regex": "^/employee\\-onboarding(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/employee\\-onboarding(?:/)?$"
-    },
-    {
-      "page": "/employee-onboarding/success",
-      "regex": "^/employee\\-onboarding/success(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/employee\\-onboarding/success(?:/)?$"
-    },
-    {
       "page": "/employees",
       "regex": "^/employees(?:/)?$",
       "routeKeys": {},
@@ -5329,12 +5225,6 @@
       "regex": "^/hr/daily\\-planner(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/hr/daily\\-planner(?:/)?$"
-    },
-    {
-      "page": "/hr/employee-onboarding",
-      "regex": "^/hr/employee\\-onboarding(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/hr/employee\\-onboarding(?:/)?$"
     },
     {
       "page": "/hr/employer-branding",

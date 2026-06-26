@@ -63,15 +63,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">User Management</h1>
           <p className="text-sm text-slate-500 mt-1">Manage all organization users, roles, and permissions.</p>
         </div>
-        <Link
-          href="/employee-onboarding"
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#c96442] hover:bg-[#b5563a] text-white rounded-xl shadow-sm hover:shadow-md transition-all font-bold text-sm"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Employee
-        </Link>
+
       </div>
 
       {/* Summary */}

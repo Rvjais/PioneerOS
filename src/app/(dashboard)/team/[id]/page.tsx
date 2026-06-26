@@ -252,12 +252,12 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
           )}
 
           {/* Daily Tasks - Shows employee's daily planner tasks */}
-          {(user.todayPlan?.tasks?.length > 0 || user.recentDailyTasks?.length > 0) && (
+          {((user.todayPlan?.tasks?.length ?? 0) > 0 || (user.recentDailyTasks?.length ?? 0) > 0) && (
             <div className="glass-card rounded-xl border border-white/10 p-6">
               <h2 className="text-lg font-semibold text-white mb-4">Daily Tasks</h2>
 
               {/* Today's Tasks */}
-              {user.todayPlan?.tasks?.length > 0 && (
+              {(user.todayPlan?.tasks?.length ?? 0) > 0 && (
                 <div className="mb-6">
                   <h3 className="text-sm font-medium text-slate-400 mb-3 flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,15 +265,15 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
                     </svg>
                     Today&apos;s Plan
                     <span className={`px-2 py-0.5 text-xs rounded-full ${
-                      user.todayPlan.status === 'SUBMITTED' ? 'bg-green-500/20 text-green-400' :
-                      user.todayPlan.status === 'DRAFT' ? 'bg-amber-500/20 text-amber-400' :
+                      user.todayPlan?.status === 'SUBMITTED' ? 'bg-green-500/20 text-green-400' :
+                      user.todayPlan?.status === 'DRAFT' ? 'bg-amber-500/20 text-amber-400' :
                       'bg-slate-800/50 text-slate-300'
                     }`}>
-                      {user.todayPlan.status}
+                      {user.todayPlan?.status}
                     </span>
                   </h3>
                   <div className="space-y-2">
-                    {user.todayPlan.tasks.map((task: any) => (
+                    {user.todayPlan?.tasks?.map((task: any) => (
                       <div key={task.id} className="flex items-center justify-between p-3 bg-slate-900/40 rounded-lg border border-white/5">
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-white text-sm truncate">{task.description}</p>
@@ -308,14 +308,14 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
                     ))}
                   </div>
                   <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
-                    <span>{user.todayPlan.totalPlannedHours}h planned</span>
-                    <span>{user.todayPlan.totalActualHours}h actual</span>
+                    <span>{user.todayPlan?.totalPlannedHours}h planned</span>
+                    <span>{user.todayPlan?.totalActualHours}h actual</span>
                   </div>
                 </div>
               )}
 
               {/* Recent Tasks (if no today tasks or additional) */}
-              {user.todayPlan?.tasks?.length === 0 && user.recentDailyTasks?.length > 0 && (
+              {(user.todayPlan?.tasks?.length ?? 0) === 0 && (user.recentDailyTasks?.length ?? 0) > 0 && (
                 <div>
                   <h3 className="text-sm font-medium text-slate-400 mb-3">Recent Tasks (Last 30 Days)</h3>
                   <div className="space-y-2">

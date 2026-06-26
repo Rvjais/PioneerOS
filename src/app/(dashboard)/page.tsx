@@ -53,7 +53,7 @@ async function getDashboardData(userId: string, userRole: string) {
       select: { id: true, firstName: true, lastName: true, department: true, role: true, email: true, profile: { select: { profilePicture: true } } },
       take: 50,
     }),
-    prisma.client.findMany({ where: clientWhere, orderBy: { updatedAt: 'desc' }, take: 20, select: { id: true, name: true, status: true, tier: true, monthlyFee: true, updatedAt: true, healthStatus: true } }),
+    prisma.client.findMany({ where: clientWhere, orderBy: { updatedAt: 'desc' }, take: 20, select: { id: true, name: true, status: true, tier: true, monthlyFee: true, updatedAt: true, healthStatus: true, createdAt: true, projectStatus: true, progress: true, paymentStatus: true, paymentDueDay: true, bankAccount: true, advanceAmount: true, pendingAmount: true } }),
     prisma.companyNews.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
     prisma.event.findMany({ where: { date: { gte: new Date() } }, orderBy: { date: 'asc' }, take: 5 }),
     prisma.performanceScore.findMany({
@@ -63,7 +63,13 @@ async function getDashboardData(userId: string, userRole: string) {
     })
   ])
 
-  return { targets, quotes, employees, clients, news, events, scores }
+  const mappedClients = clients.map(c => ({
+    ...c,
+    createdAt: c.createdAt.toISOString(),
+    updatedAt: c.updatedAt.toISOString(),
+  }))
+
+  return { targets, quotes, employees, clients: mappedClients, news, events, scores }
 }
 
 // Fetch HR-specific dashboard data
@@ -1122,20 +1128,7 @@ export default async function DashboardPage() {
               <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">External Protocol</p>
             </div>
           </Link>
-          <Link
-            href="/hr/employee-onboarding"
-            className="flex items-center gap-4 px-5 py-4 bg-[#141A25]/50 border border-white/5 hover:border-blue-500/30 rounded-xl hover:bg-blue-500/5 hover:-translate-y-1 transition-all group/item shadow-inner"
-          >
-            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 group-hover/item:scale-110 transition-transform shadow-[0_0_15px_rgba(59,130,246,0.15)]">
-              <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-bold text-slate-200 group-hover/item:text-blue-400 transition-colors">New Hire Form</p>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Public Gateway</p>
-            </div>
-          </Link>
+
           <Link
             href="/accounts/onboarding/create"
             className="flex items-center gap-4 px-5 py-4 bg-[#141A25]/50 border border-white/5 hover:border-amber-500/30 rounded-xl hover:bg-amber-500/5 hover:-translate-y-1 transition-all group/item shadow-inner"

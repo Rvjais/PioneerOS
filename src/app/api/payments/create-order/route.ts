@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create Razorpay order with server-calculated amount
-    const order = await razorpay.orders.create({
+    const order = await razorpay!.orders.create({
       amount: Math.round(serverAmount * 100), // Convert to paise
       currency: 'INR',
       receipt: `rcpt_${proposal.id}`,

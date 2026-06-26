@@ -34,6 +34,7 @@ export default async function NewProjectPage() {
   if (!session) redirect('/login')
 
   const [clients, employees] = await Promise.all([getClients(), getEmployees()])
+  const mappedEmployees = employees.map(e => ({ ...e, lastName: e.lastName || '' }))
 
   return (
     <div className="space-y-6">
@@ -50,7 +51,7 @@ export default async function NewProjectPage() {
         <p className="text-slate-500 mt-1">Create a new web development project</p>
       </div>
 
-      <WebProjectForm clients={clients} employees={employees} userId={session.user.id} />
+      <WebProjectForm clients={clients} employees={mappedEmployees} userId={session.user.id} />
     </div>
   )
 }
