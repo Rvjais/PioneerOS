@@ -47,12 +47,6 @@ export default async function ProfileWizardPage() {
       profile={user.profile ? {
         emergencyContactName: user.profile.emergencyContactName || '',
         emergencyContactPhone: user.profile.emergencyContactPhone || '',
-        panCard: user.profile.panCard || '',
-        aadhaar: user.profile.aadhaar || '',
-        panCardUrl: user.profile.panCardUrl || '',
-        aadhaarUrl: user.profile.aadhaarUrl || '',
-        bankDetailsUrl: user.profile.bankDetailsUrl || '',
-        educationCertUrl: user.profile.educationCertUrl || '',
         linkedIn: user.profile.linkedIn || '',
         skills: user.profile.skills || '',
         bio: user.profile.bio || '',

@@ -21,10 +21,10 @@ interface Props {
 export function PersonalStep({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
-      {/* Profile Picture Upload - Mandatory */}
+      {/* Profile Picture Upload */}
       <div className="flex flex-col items-center pb-6 border-b border-white/10">
         <label className="block text-sm font-medium text-slate-200 mb-4 text-center">
-          Profile Picture <span className="text-red-500">*</span>
+          Profile Picture
           <span className="block text-xs text-slate-400 font-normal mt-1">Upload your profile photo</span>
         </label>
 
@@ -36,18 +36,12 @@ export function PersonalStep({ data, onChange }: Props) {
           maxSizeMB={5}
           hint="JPG, PNG or WebP. Max 5MB."
         />
-
-        {!data.profilePicture && (
-          <p className="mt-3 text-xs text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
-            Profile photo is required to continue
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-200 mb-2">
-            First Name <span className="text-red-500">*</span>
+            First Name
           </label>
           <input
             type="text"
@@ -55,7 +49,6 @@ export function PersonalStep({ data, onChange }: Props) {
             onChange={(e) => onChange({ firstName: e.target.value })}
             className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             placeholder="Enter first name"
-            required
           />
         </div>
 
@@ -76,7 +69,7 @@ export function PersonalStep({ data, onChange }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-200 mb-2">
-            Email <span className="text-red-500">*</span>
+            Email
           </label>
           <input
             type="email"
@@ -84,13 +77,12 @@ export function PersonalStep({ data, onChange }: Props) {
             onChange={(e) => onChange({ email: e.target.value })}
             className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             placeholder="you@example.com"
-            required
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-200 mb-2">
-            Phone <span className="text-red-500">*</span>
+            Phone
           </label>
           <input
             type="tel"
@@ -107,26 +99,24 @@ export function PersonalStep({ data, onChange }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-slate-200 mb-2">
-            Date of Birth <span className="text-red-500">*</span>
+            Date of Birth
           </label>
           <input
             type="date"
             value={data.dateOfBirth ? data.dateOfBirth.split('T')[0] : ''}
             onChange={(e) => onChange({ dateOfBirth: e.target.value })}
             className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            required
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-200 mb-2">
-            Blood Group <span className="text-red-500">*</span>
+            Blood Group
           </label>
           <select
             value={data.bloodGroup}
             onChange={(e) => onChange({ bloodGroup: e.target.value })}
             className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-            required
           >
             <option value="">Select blood group</option>
             <option value="A+">A+</option>
@@ -143,7 +133,7 @@ export function PersonalStep({ data, onChange }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-slate-200 mb-2">
-          Current Address <span className="text-red-500">*</span>
+          Current Address
         </label>
         <textarea
           value={data.address}
@@ -151,7 +141,6 @@ export function PersonalStep({ data, onChange }: Props) {
           className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           rows={3}
           placeholder="Enter your current residential address"
-          required
         />
       </div>
 
@@ -160,7 +149,7 @@ export function PersonalStep({ data, onChange }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-200 mb-2">
-              Contact Name <span className="text-red-500">*</span>
+              Contact Name
             </label>
             <input
               type="text"
@@ -168,13 +157,12 @@ export function PersonalStep({ data, onChange }: Props) {
               onChange={(e) => onChange({ emergencyContactName: e.target.value })}
               className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="Parent/Guardian name"
-              required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-200 mb-2">
-              Contact Phone <span className="text-red-500">*</span>
+              Contact Phone
             </label>
             <input
               type="tel"
@@ -182,7 +170,6 @@ export function PersonalStep({ data, onChange }: Props) {
               onChange={(e) => onChange({ emergencyContactPhone: e.target.value })}
               className="w-full px-4 py-3 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="+91 XXXXXXXXXX"
-              required
             />
           </div>
         </div>

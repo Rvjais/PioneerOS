@@ -83,7 +83,7 @@ export function WorkStep({ data, onChange }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-slate-200 mb-2">
-          Skills <span className="text-red-500">*</span>
+          Skills
         </label>
         <p className="text-sm text-slate-400 mb-3">Select your key skills (minimum 3)</p>
         <div className="flex flex-wrap gap-2">

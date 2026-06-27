@@ -22,13 +22,6 @@ interface WizardFormData {
   linkedIn: string
   skills: string
   bio: string
-  // Documents
-  panCard: string
-  aadhaar: string
-  panCardUrl: string
-  aadhaarUrl: string
-  bankDetailsUrl: string
-  educationCertUrl: string
   // Tools
   toolsConfirmed: boolean
   // Policies
@@ -80,16 +73,8 @@ export async function saveWizardStep(step: number, data: WizardFormData) {
     if (data.skills) profileData.skills = data.skills
     if (data.bio) profileData.bio = data.bio
 
-    // Step 3: Documents
-    if (data.panCard) profileData.panCard = data.panCard
-    if (data.aadhaar) profileData.aadhaar = data.aadhaar
-    if (data.panCardUrl) profileData.panCardUrl = data.panCardUrl
-    if (data.aadhaarUrl) profileData.aadhaarUrl = data.aadhaarUrl
-    if (data.bankDetailsUrl) profileData.bankDetailsUrl = data.bankDetailsUrl
-    if (data.educationCertUrl) profileData.educationCertUrl = data.educationCertUrl
-
-    // Step 5: Policies
-    if (step >= 5) {
+    // Step 4: Policies
+    if (step >= 4) {
       profileData.employeeHandbookAccepted = data.employeeHandbookAccepted
       profileData.socialMediaPolicyAccepted = data.socialMediaPolicyAccepted
       profileData.clientConfidentialityAccepted = data.clientConfidentialityAccepted
@@ -145,7 +130,7 @@ export async function submitForVerification(data: WizardFormData) {
   const userId = session.user.id
 
   // Final save
-  await saveWizardStep(5, data)
+  await saveWizardStep(4, data)
 
   // Get user details for notification
   const user = await prisma.user.findUnique({
@@ -158,7 +143,7 @@ export async function submitForVerification(data: WizardFormData) {
     where: { id: userId },
     data: {
       profileCompletionStatus: 'PENDING_HR',
-      onboardingStep: 5,
+      onboardingStep: 4,
     },
   })
 
@@ -200,7 +185,7 @@ export async function submitForVerification(data: WizardFormData) {
 
 function calculateCompletionPercentage(data: WizardFormData, step: number): number {
   let completed = 0
-  const total = 21 // Total fields to track
+  const total = 16 // Total fields to track
 
   // Personal (9 fields including profile picture)
   if (data.profilePicture) completed++
@@ -217,13 +202,6 @@ function calculateCompletionPercentage(data: WizardFormData, step: number): numb
   if (data.linkedIn) completed++
   if (data.skills) completed++
   if (data.bio) completed++
-
-  // Documents (5 fields)
-  if (data.panCard) completed++
-  if (data.aadhaar) completed++
-  if (data.panCardUrl) completed++
-  if (data.aadhaarUrl) completed++
-  if (data.bankDetailsUrl) completed++
 
   // Policies (4 fields)
   if (data.employeeHandbookAccepted) completed++

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { PersonalStep } from './steps/PersonalStep'
 import { WorkStep } from './steps/WorkStep'
-import { DocumentsStep } from './steps/DocumentsStep'
 import { ToolsStep } from './steps/ToolsStep'
 import { PolicyStep } from './steps/PolicyStep'
 import { saveWizardStep, submitForVerification } from './actions'
@@ -24,12 +23,6 @@ interface UserData {
 interface ProfileData {
   emergencyContactName: string
   emergencyContactPhone: string
-  panCard: string
-  aadhaar: string
-  panCardUrl: string
-  aadhaarUrl: string
-  bankDetailsUrl: string
-  educationCertUrl: string
   linkedIn: string
   skills: string
   bio: string
@@ -47,13 +40,12 @@ interface Props {
 const steps = [
   { id: 1, name: 'Personal Details', description: 'Basic information' },
   { id: 2, name: 'Work Details', description: 'Professional info' },
-  { id: 3, name: 'Documents', description: 'Upload documents' },
-  { id: 4, name: 'Tools Access', description: 'Confirm tools' },
-  { id: 5, name: 'Policies', description: 'Accept & sign' },
+  { id: 3, name: 'Tools Access', description: 'Confirm tools' },
+  { id: 4, name: 'Policies', description: 'Accept & sign' },
 ]
 
 export function ProfileWizard({ user, profile }: Props) {
-  const [currentStep, setCurrentStep] = useState(user.onboardingStep || 1)
+  const [currentStep, setCurrentStep] = useState(Math.min(user.onboardingStep || 1, steps.length))
   const [formData, setFormData] = useState({
     // Personal
     firstName: user.firstName,
@@ -71,13 +63,6 @@ export function ProfileWizard({ user, profile }: Props) {
     linkedIn: profile?.linkedIn || '',
     skills: profile?.skills || '',
     bio: profile?.bio || '',
-    // Documents
-    panCard: profile?.panCard || '',
-    aadhaar: profile?.aadhaar || '',
-    panCardUrl: profile?.panCardUrl || '',
-    aadhaarUrl: profile?.aadhaarUrl || '',
-    bankDetailsUrl: profile?.bankDetailsUrl || '',
-    educationCertUrl: profile?.educationCertUrl || '',
     // Tools
     toolsConfirmed: false,
     // Policies
@@ -97,32 +82,10 @@ export function ProfileWizard({ user, profile }: Props) {
   const getValidationErrors = (step: number): string[] => {
     const errors: string[] = []
     switch (step) {
-      case 1:
-        if (!formData.profilePicture) errors.push('Profile picture is required')
-        if (!formData.firstName) errors.push('First name is required')
-        if (!formData.email) errors.push('Email is required')
-        if (!formData.dateOfBirth) errors.push('Date of birth is required')
-        if (!formData.bloodGroup) errors.push('Blood group is required')
-        if (!formData.address) errors.push('Current address is required')
-        if (!formData.emergencyContactName) errors.push('Emergency contact name is required')
-        if (!formData.emergencyContactPhone) errors.push('Emergency contact phone is required')
-        break
-      case 2:
-        if (!formData.linkedIn) errors.push('LinkedIn profile URL is required')
-        if (!formData.skills) errors.push('Skills are required')
-        if (!formData.bio) errors.push('Short bio is required')
-        break
       case 3:
-        if (!formData.panCard) errors.push('PAN card number is required')
-        if (!formData.aadhaar) errors.push('Aadhaar number is required')
-        if (!formData.panCardUrl) errors.push('PAN card document upload is required')
-        if (!formData.aadhaarUrl) errors.push('Aadhaar card document upload is required')
-        if (!formData.bankDetailsUrl) errors.push('Bank details document upload is required')
-        break
-      case 4:
         if (!formData.toolsConfirmed) errors.push('Please confirm you have access to the required tools')
         break
-      case 5:
+      case 4:
         if (!formData.employeeHandbookAccepted) errors.push('Please accept the Employee Handbook')
         if (!formData.socialMediaPolicyAccepted) errors.push('Please accept the Social Media Policy')
         if (!formData.clientConfidentialityAccepted) errors.push('Please accept the Client Confidentiality Agreement')
@@ -149,7 +112,7 @@ export function ProfileWizard({ user, profile }: Props) {
     try {
       await saveWizardStep(currentStep, formData)
 
-      if (currentStep < 5) {
+      if (currentStep < 4) {
         setCurrentStep(prev => prev + 1)
       }
     } catch (err) {
@@ -252,12 +215,9 @@ export function ProfileWizard({ user, profile }: Props) {
             <WorkStep data={formData} onChange={updateFormData} />
           )}
           {currentStep === 3 && (
-            <DocumentsStep data={formData} onChange={updateFormData} />
-          )}
-          {currentStep === 4 && (
             <ToolsStep data={formData} onChange={updateFormData} />
           )}
-          {currentStep === 5 && (
+          {currentStep === 4 && (
             <PolicyStep data={formData} onChange={updateFormData} />
           )}
         </div>
@@ -272,7 +232,7 @@ export function ProfileWizard({ user, profile }: Props) {
             Back
           </button>
 
-          {currentStep < 5 ? (
+          {currentStep < 4 ? (
             <button
               onClick={handleNext}
               disabled={isLoading}
