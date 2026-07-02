@@ -71,7 +71,7 @@ export default async function ClientsPage() {
     redirect('/hr')
   }
 
-  // OM (OPERATIONS_HEAD or OPERATIONS department) should see all clients like managers
+  // OPERATIONS_HEAD or OPERATIONS department should see all clients like managers
   const isManagerOrAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'ACCOUNTS'].includes(userRole) || ['OPERATIONS', 'ACCOUNTS'].includes(userDepartment)
   let clients = await getClients(userId, isManagerOrAdmin)
 

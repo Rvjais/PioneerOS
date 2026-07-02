@@ -68,7 +68,7 @@ export default function EmbedWelcomePage() {
     setError('')
 
     try {
-      const res = await fetch('/api/client-onboarding', {
+      const res = await fetch('/api/accounts/client-onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

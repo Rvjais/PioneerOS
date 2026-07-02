@@ -156,8 +156,13 @@ export async function submitForVerification(data: WizardFormData) {
   // Notify all HR users about the new verification request
   const hrUsers = await prisma.user.findMany({
     where: {
-      role: { in: ['HR', 'SUPER_ADMIN'] },
+      OR: [
+        { role: 'HR' },
+        { role: 'SUPER_ADMIN' },
+        { department: 'HR' },
+      ],
       status: 'ACTIVE',
+      deletedAt: null,
     },
     select: { id: true },
   })

@@ -70,27 +70,6 @@ export const INTERNAL_ROLE_DEFINITIONS: Record<string, InternalRoleDefinition> =
     clientVisible: true,
     escalationContact: true
   },
-  OM: {
-    title: 'Operations Manager',
-    level: 2,
-    description: 'HR + Operations blended role',
-    responsibilities: [
-      'Employee onboarding coordination',
-      'HR policy enforcement',
-      'Cross-team coordination',
-      'Process improvement'
-    ],
-    workTypes: ['forms', 'reviews', 'daily_tracker'],
-    appFunctions: {
-      sendsforms: true,
-      approvesWork: true,
-      fillsDailyTracker: true,
-      reviewsDeliverables: false,
-      managesClients: false,
-      handlesEscalations: true
-    },
-    clientVisible: false
-  },
   EMPLOYEE: {
     title: 'Team Member',
     level: 3,

@@ -90,8 +90,18 @@ export function CredentialCard({
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-lg bg-${color}-100 flex items-center justify-center`}>
-            <span className={`text-${color}-600 font-bold text-sm`}>
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+            color === 'blue' ? 'bg-blue-100' :
+            color === 'green' ? 'bg-green-100' :
+            color === 'purple' ? 'bg-purple-100' :
+            'bg-orange-100'
+          }`}>
+            <span className={`font-bold text-sm ${
+              color === 'blue' ? 'text-blue-600' :
+              color === 'green' ? 'text-green-600' :
+              color === 'purple' ? 'text-purple-600' :
+              'text-orange-600'
+            }`}>
               {provider.name.slice(0, 2).toUpperCase()}
             </span>
           </div>

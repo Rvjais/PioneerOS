@@ -24,7 +24,7 @@ const createUserSchema = z.object({
   lastName: z.string().max(100).trim().optional().nullable(),
   email: z.string().email().optional().nullable().or(z.literal('')),
   phone: z.string().min(10).max(15).regex(/^[0-9+\-\s]+$/, 'Invalid phone number format'),
-  role: z.enum(['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM', 'EMPLOYEE', 'FREELANCER', 'SALES', 'ACCOUNTS', 'HR', 'INTERN', 'WEB_MANAGER', 'WEB_DESIGNER', 'WEB_DEVELOPER', 'CONTENT_WRITER', 'QA_TESTER']),
+  role: z.enum(['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'EMPLOYEE', 'FREELANCER', 'SALES', 'ACCOUNTS', 'HR', 'INTERN', 'WEB_MANAGER', 'WEB_DESIGNER', 'WEB_DEVELOPER', 'CONTENT_WRITER', 'QA_TESTER']),
   department: z.enum(['WEB', 'SEO', 'ADS', 'SOCIAL', 'HR', 'ACCOUNTS', 'SALES', 'OPERATIONS']),
   employeeType: z.enum(['FULL_TIME', 'PART_TIME', 'FREELANCER', 'INTERN']).optional().default('FULL_TIME'),
   joiningDate: z.string().datetime().optional(),

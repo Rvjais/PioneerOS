@@ -1,41 +1,55 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/server/auth/auth'
+import { withClientAuth } from '@/server/auth/withClientAuth'
+import { prisma } from '@/server/db/prisma'
 
-export const GET = async () => {
-  const session = await getServerSession(authOptions)
+export const GET = withClientAuth(async (req, { user }) => {
+  const clientId = user.clientId
 
-  if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const [activeProjects, pendingInvoices, recentSupportTickets] = await Promise.all([
+    prisma.webProject.count({ where: { clientId, status: { in: ['PIPELINE', 'IN_PROGRESS', 'REVISION'] } } }),
+    prisma.invoice.count({ where: { clientId, status: { in: ['SENT', 'OVERDUE'] } } }),
+    prisma.supportTicket.findMany({
+      where: { clientId },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: { id: true, title: true, status: true, createdAt: true },
+    }),
+  ])
+
+  const recentActivity = recentSupportTickets.map(t => ({
+    id: t.id,
+    type: 'support_ticket',
+    description: `Support ticket: ${t.title}`,
+    date: t.createdAt.toISOString(),
+  }))
+
+  // Try to get recent invoice activity
+  const recentInvoices = await prisma.invoice.findMany({
+    where: { clientId },
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+    select: { id: true, invoiceNumber: true, amount: true, status: true, createdAt: true },
+  })
+
+  for (const inv of recentInvoices) {
+    recentActivity.push({
+      id: inv.id,
+      type: inv.status === 'PAID' ? 'payment_received' : 'invoice_created',
+      description: inv.status === 'PAID'
+        ? `Payment of Rs. ${inv.amount.toLocaleString()} received for invoice ${inv.invoiceNumber}`
+        : `Invoice ${inv.invoiceNumber} created for Rs. ${inv.amount.toLocaleString()}`,
+      date: inv.createdAt.toISOString(),
+    })
   }
 
-  const dashboardData = {
+  recentActivity.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  return NextResponse.json({
     stats: {
-      activeProjects: 3,
-      pendingInvoices: 2,
-      upcomingPayments: 1,
+      activeProjects,
+      pendingInvoices,
+      upcomingPayments: pendingInvoices, // approximate
     },
-    recentActivity: [
-      {
-        id: 'ACT-001',
-        type: 'project_update',
-        description: 'Project "Website Redesign" status updated to In Progress',
-        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'ACT-002',
-        type: 'invoice_created',
-        description: 'Invoice #INV-2024-001 created for $5,000',
-        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'ACT-003',
-        type: 'payment_received',
-        description: 'Payment of $2,500 received for Project "Mobile App"',
-        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  }
-
-  return NextResponse.json(dashboardData)
-}
+    recentActivity,
+  })
+})

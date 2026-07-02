@@ -143,7 +143,7 @@ export function WebDashboard({
                       <div
                         className={`h-full rounded-full ${
                           project.progress >= 80 ? 'bg-emerald-500' :
-                          project.progress >= 50 ? 'bg-blue-500/100' : 'bg-amber-500/100'
+                          project.progress >= 50 ? 'bg-blue-500' : 'bg-amber-500'
                         }`}
                         style={{ width: `${project.progress}%` }}
                       />
@@ -214,7 +214,7 @@ export function WebDashboard({
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${
                       deployment.status === 'SUCCESS' ? 'bg-emerald-500' :
-                      deployment.status === 'PENDING' ? 'bg-amber-500/100' : 'bg-red-500/100'
+                      deployment.status === 'PENDING' ? 'bg-amber-500' : 'bg-red-500'
                     }`} />
                     <div>
                       <p className="font-medium text-white">{deployment.project}</p>

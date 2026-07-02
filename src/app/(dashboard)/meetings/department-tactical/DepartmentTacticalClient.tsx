@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   BarChart3,
   TrendingUp,
@@ -170,7 +171,7 @@ export default function DepartmentTacticalClient({
 
   // Calculate growth percentage
   const calcGrowth = (current: number | null, previous: number | null, isInverted = false) => {
-    if (!current || !previous || previous === 0) return null
+    if (current === null || current === undefined || previous === null || previous === undefined || previous === 0) return null
     const growth = ((current - previous) / previous) * 100
     return isInverted ? -growth : growth
   }
@@ -243,10 +244,15 @@ export default function DepartmentTacticalClient({
       })
 
       if (res.ok) {
+        toast.success('KPIs saved')
         router.refresh()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Failed to save KPIs')
       }
     } catch (error) {
       console.error('Failed to save KPIs:', error)
+      toast.error('Network error')
     }
     setSaving(false)
   }

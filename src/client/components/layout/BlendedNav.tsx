@@ -155,7 +155,13 @@ export function BlendedNav({ departments, userName = 'Specialist' }: BlendedNavP
               return (
                 <span
                   key={dept}
-                  className={`px-2 py-0.5 rounded text-xs font-medium bg-${config?.color || 'slate'}-500/20 text-${config?.color || 'slate'}-400 border border-${config?.color || 'slate'}-500/30`}
+                  className={`px-2 py-0.5 rounded text-xs font-medium border ${
+                    config?.color === 'teal'
+                      ? 'bg-teal-500/20 text-teal-400 border-teal-500/30'
+                      : config?.color === 'red'
+                        ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                        : 'bg-slate-500/20 text-slate-400 border-slate-500/30'
+                  }`}
                 >
                   {config?.label || dept}
                 </span>
@@ -240,7 +246,9 @@ export function BlendedNav({ departments, userName = 'Specialist' }: BlendedNavP
                             href={item.href}
                             className={`flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all ${
                               isActive
-                                ? `bg-${config.color}-500/20 text-${config.color}-400 border-l-2 border-${config.color}-500`
+                                ? config.color === 'teal'
+                                  ? 'bg-teal-500/20 text-teal-400 border-l-2 border-teal-500'
+                                  : 'bg-red-500/20 text-red-400 border-l-2 border-red-500'
                                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
                             }`}
                           >

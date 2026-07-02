@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '@/server/db/prisma'
 import { calculateGrowthScore, saveGrowthScore } from '@/server/services/growthScore'
 import { isAdmin } from '@/shared/constants/roles'
@@ -79,6 +79,57 @@ const body = await req.json()
       })
     }
 
+    // Update TacticalMeeting status to SUBMITTED
+    await prisma.tacticalMeeting.updateMany({
+      where: {
+        userId,
+        month: monthStart,
+      },
+      data: {
+        status: 'SUBMITTED',
+        submittedAt: now,
+        submittedOnTime,
+        performanceScore: scores.performanceScore,
+        accountabilityScore: scores.accountabilityScore,
+        overallScore: scores.finalScore,
+      },
+    })
+
+    // Update MeetingCompliance
+    await prisma.meetingCompliance.upsert({
+      where: {
+        userId_month: {
+          userId,
+          month: monthStart,
+        },
+      },
+      update: {
+        tacticalFilled: true,
+        tacticalFilledAt: now,
+        tacticalIsLate: !submittedOnTime,
+      },
+      create: {
+        userId,
+        month: monthStart,
+        tacticalFilled: true,
+        tacticalFilledAt: now,
+        tacticalIsLate: !submittedOnTime,
+      },
+    })
+
+    // Get user department for notification link
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, lastName: true, department: true },
+    })
+
+    const dept = dbUser?.department || ''
+    const tacticalLink = dept === 'SOCIAL'
+      ? '/meetings/tactical-sheet'
+      : ['ACCOUNTS', 'SALES', 'HR', 'OPERATIONS'].includes(dept)
+        ? '/meetings/ops-tactical'
+        : '/meetings/tactical'
+
     // Notify managers about submission
     const managers = await prisma.user.findMany({
       where: {
@@ -93,11 +144,6 @@ const body = await req.json()
       select: { id: true },
     })
 
-    const dbUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { firstName: true, lastName: true },
-    })
-
     const notificationPromises = managers.map(manager =>
       prisma.notification.create({
         data: {
@@ -105,7 +151,7 @@ const body = await req.json()
           type: 'TACTICAL',
           title: 'Tactical Data Submitted',
           message: `${dbUser?.firstName} ${dbUser?.lastName || ''} submitted their tactical data for ${now.toLocaleString('en-IN', { month: 'long' })}`,
-          link: `/meetings/tactical-sheet`,
+          link: tacticalLink,
         },
       })
     )

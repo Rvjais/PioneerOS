@@ -265,7 +265,7 @@ export default function EmployeeJoinPage() {
     setError('')
 
     try {
-      const res = await fetch('/api/users', {
+      const res = await fetch('/api/public/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

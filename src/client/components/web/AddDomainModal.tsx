@@ -380,7 +380,16 @@ export function AddDomainModal() {
                 icon="📅"
                 defaultOpen={true}
                 badge={formData.expiryDate && (
-                  <span className={`px-2 py-0.5 text-xs rounded-full bg-${domainExpiry.color}-500/20 text-${domainExpiry.color}-400`}>
+                  <span className={`px-2 py-0.5 text-xs rounded-full ${
+                    (() => {
+                      const c = domainExpiry.color
+                      return c === 'red' ? 'bg-red-500/20 text-red-400' :
+                             c === 'amber' ? 'bg-amber-500/20 text-amber-400' :
+                             c === 'yellow' ? 'bg-yellow-500/20 text-yellow-400' :
+                             c === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' :
+                             'bg-slate-500/20 text-slate-400'
+                    })()
+                  }`}>
                     {domainExpiry.label}
                   </span>
                 )}
@@ -417,12 +426,33 @@ export function AddDomainModal() {
 
                 {/* Expiry Indicator */}
                 {formData.expiryDate && (
-                  <div className={`p-3 rounded-xl bg-${domainExpiry.color}-500/10 border border-${domainExpiry.color}-500/30`}>
+                  <div className={`p-3 rounded-xl border ${
+                    (() => {
+                      const c = domainExpiry.color
+                      return c === 'red' ? 'bg-red-500/10 border-red-500/30' :
+                             c === 'amber' ? 'bg-amber-500/10 border-amber-500/30' :
+                             c === 'yellow' ? 'bg-yellow-500/10 border-yellow-500/30' :
+                             c === 'emerald' ? 'bg-emerald-500/10 border-emerald-500/30' :
+                             'bg-slate-500/10 border-slate-500/30'
+                    })()
+                  }`}>
                     <div className="flex items-center gap-2">
-                      <span className={`text-${domainExpiry.color}-400 text-lg`}>
+                      <span className={`text-lg ${
+                        domainExpiry.color === 'red' ? 'text-red-400' :
+                        domainExpiry.color === 'amber' ? 'text-amber-400' :
+                        domainExpiry.color === 'yellow' ? 'text-yellow-400' :
+                        domainExpiry.color === 'emerald' ? 'text-emerald-400' :
+                        'text-slate-400'
+                      }`}>
                         {domainExpiry.days < 0 ? '⚠️' : domainExpiry.days <= 30 ? '🔴' : domainExpiry.days <= 60 ? '🟡' : '🟢'}
                       </span>
-                      <span className={`text-sm font-medium text-${domainExpiry.color}-400`}>
+                      <span className={`text-sm font-medium ${
+                        domainExpiry.color === 'red' ? 'text-red-400' :
+                        domainExpiry.color === 'amber' ? 'text-amber-400' :
+                        domainExpiry.color === 'yellow' ? 'text-yellow-400' :
+                        domainExpiry.color === 'emerald' ? 'text-emerald-400' :
+                        'text-slate-400'
+                      }`}>
                         {domainExpiry.label}
                       </span>
                     </div>

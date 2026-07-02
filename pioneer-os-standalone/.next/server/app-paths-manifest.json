@@ -841,6 +841,7 @@
   "/api/projects/route": "app/api/projects/route.js",
   "/api/proposal/[token]/accept/route": "app/api/proposal/[token]/accept/route.js",
   "/api/proposal/[token]/route": "app/api/proposal/[token]/route.js",
+  "/api/public/join/route": "app/api/public/join/route.js",
   "/api/public/rfp-v2/route": "app/api/public/rfp-v2/route.js",
   "/api/public/rfp/route": "app/api/public/rfp/route.js",
   "/api/qc/reviews/route": "app/api/qc/reviews/route.js",

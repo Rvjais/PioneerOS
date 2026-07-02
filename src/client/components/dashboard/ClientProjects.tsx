@@ -18,7 +18,7 @@ interface ClientProjectsProps {
 const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string }> = {
   PLANNING: { label: 'Not Started', color: 'text-amber-400', bgColor: 'bg-amber-500/20' },
   IN_PROGRESS: { label: 'Working On It', color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
-  COMPLETED: { label: 'Done', color: 'text-emerald-600', bgColor: 'bg-emerald-100' },
+  COMPLETED: { label: 'Done', color: 'text-emerald-400', bgColor: 'bg-emerald-500/20' },
   ON_HOLD: { label: 'Paused', color: 'text-slate-300', bgColor: 'bg-slate-800/50' },
 }
 
@@ -47,7 +47,7 @@ export function ClientProjects({ clients }: ClientProjectsProps) {
         </div>
         <div className="flex items-center gap-4 text-sm">
           <span className="text-blue-400 font-medium">{counts.inProgress} active</span>
-          <span className="text-emerald-600 font-medium">{counts.completed} done</span>
+          <span className="text-emerald-400 font-medium">{counts.completed} done</span>
         </div>
       </div>
 

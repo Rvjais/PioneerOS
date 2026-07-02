@@ -36,10 +36,15 @@ export default async function BlendedLayout({
     } catch (e) { console.error('Failed to parse departments:', e); }
   }
 
-  // If user doesn't have multiple departments, redirect
+  // If user doesn't have multiple departments, redirect to their primary department
   if (departments.length <= 1) {
-    const primaryDept = user.department?.toLowerCase() || '/'
-    redirect(`/${primaryDept}`)
+    const primaryDept = user.department?.toLowerCase() || ''
+    const target = primaryDept ? `/${primaryDept}` : '/'
+    // Avoid redirect loop — if the target is the blended page itself, just render children
+    if (target === '/blended') {
+      return <>{children}</>
+    }
+    redirect(target)
   }
 
   // Sidebar is handled by UnifiedSidebar in root DashboardLayout

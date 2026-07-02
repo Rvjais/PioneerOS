@@ -4,7 +4,7 @@ import { withAuth } from '@/server/auth/withAuth'
 import { z } from 'zod'
 
 // Exclude FREELANCER and INTERN from daily meeting task access
-const MEETING_TASK_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR']
+const MEETING_TASK_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR']
 
 const createDailyTaskSchema = z.object({
   activity: z.string().min(1).max(200),

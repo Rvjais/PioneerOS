@@ -55,4 +55,4 @@ export const GET = withAuth(async (req) => {
     console.error('Failed to fetch assessment pipeline:', error)
     return NextResponse.json({ error: 'Failed to fetch pipeline' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD'] })

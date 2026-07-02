@@ -9,6 +9,27 @@ export async function proxy(req: NextRequest) {
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set('x-request-id', requestId)
 
+  // Sanitize Origin header — Next.js 16 action handler crashes on comma-joined
+  // duplicate origins from reverse proxy header forwarding
+  const originValue = requestHeaders.get('origin')
+  if (originValue && originValue.includes(',')) {
+    requestHeaders.set('origin', originValue.split(',')[0].trim())
+  }
+
+  const forward = () => {
+    const resp = NextResponse.next({
+      request: { headers: requestHeaders },
+    })
+    resp.headers.set('x-request-id', requestId)
+    resp.headers.set('X-Content-Type-Options', 'nosniff')
+    resp.headers.set('X-Frame-Options', 'DENY')
+    resp.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    resp.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
+    resp.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+    logResponse(requestId, resp.status, startTime)
+    return resp
+  }
+
   // Merge header logic from old middleware.ts
   // This ensures Next.js correctly interprets the Host header
   // when running behind a reverse proxy (LiteSpeed/CyberPanel)
@@ -54,7 +75,8 @@ export async function proxy(req: NextRequest) {
     '/api/clients/rfp',
     '/api/rfp',
     '/api/careers',
-    '/api/client-portal',
+    '/api/client-portal/magic-login',
+    '/api/client-portal/survey/public',
     '/api/health',
     '/api/public',
     '/api/magic-link',
@@ -106,12 +128,12 @@ export async function proxy(req: NextRequest) {
 
   // Allow onboarding routes for authenticated users
   if (isOnboardingRoute && token) {
-    return NextResponse.next();
+    return forward();
   }
 
   // SUPER_ADMIN bypass - founders should never be blocked by profile wizard
   if (token?.role === 'SUPER_ADMIN') {
-    return NextResponse.next();
+    return forward();
   }
 
   // Profile completion check for authenticated users - MANDATORY for all routes
@@ -138,8 +160,12 @@ export async function proxy(req: NextRequest) {
     if (!clientSession) {
       return NextResponse.redirect(new URL('/client-login', req.url));
     }
+    // If there's also an employee token, don't bypass — employee should use their own routes
+    if (token) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
     // Client session exists, allow access
-    return NextResponse.next();
+    return forward();
   }
 
   // ALL routes require authentication by default (except public routes handled above)
@@ -148,20 +174,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  const response = NextResponse.next({
-    request: { headers: requestHeaders },
-  })
-  response.headers.set('x-request-id', requestId)
-  logResponse(requestId, response.status, startTime)
-
-  // Security headers
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('X-Frame-Options', 'DENY')
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-
-  return response;
+  return forward();
 }
 
 export const config = {

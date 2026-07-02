@@ -95,7 +95,7 @@ export default async function TasksPage() {
 
   const userDepartment = session.user.department || 'WEB'
   const userRole = session.user.role || 'EMPLOYEE'
-  // OM (OPERATIONS_HEAD or OPERATIONS department) sees all tasks like managers
+  // OPERATIONS_HEAD or OPERATIONS department sees all tasks like managers
   const isManager = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(userRole) || userDepartment === 'OPERATIONS'
 
   const [tasks, stats, users, assignedClients, leads] = await Promise.all([

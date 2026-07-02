@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   BarChart3,
   TrendingUp,
@@ -104,7 +105,7 @@ export default function OpsTacticalClient({
 
   // Calculate growth
   const calcGrowth = (current: number | null | undefined, previous: number | null | undefined, isInverted = false) => {
-    if (!current || !previous || previous === 0) return null
+    if (current === null || current === undefined || previous === null || previous === undefined || previous === 0) return null
     const growth = ((current - previous) / previous) * 100
     return isInverted ? -growth : growth
   }
@@ -159,10 +160,15 @@ export default function OpsTacticalClient({
       })
 
       if (res.ok) {
+        toast.success('Draft saved')
         router.refresh()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Failed to save')
       }
     } catch (error) {
       console.error('Failed to save:', error)
+      toast.error('Network error')
     }
     setSaving(false)
   }
@@ -170,17 +176,51 @@ export default function OpsTacticalClient({
   const handleSubmit = async () => {
     setSaving(true)
     try {
+      // First save KPIs to ensure they're persisted
+      const saveRes = await fetch('/api/tactical/ops-kpis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          department,
+          kpis: {
+            ...Object.fromEntries(
+              kpiDefinitions.map(kpi => [kpi.id, getValue(kpi.id)])
+            ),
+          },
+          notes,
+        }),
+      })
+
+      if (!saveRes.ok) {
+        toast.error('Failed to save KPIs before submit')
+        setSaving(false)
+        return
+      }
+
+      const saveData = await saveRes.json()
+
       const res = await fetch('/api/tactical/ops-kpis/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, meetingId }),
+        body: JSON.stringify({ userId, meetingId: saveData.meetingId }),
       })
 
       if (res.ok) {
+        const data = await res.json()
+        if (data.submittedOnTime === false) {
+          toast.warning('Submitted late — -5 penalty applied')
+        } else {
+          toast.success('KPIs submitted for review')
+        }
         router.refresh()
+      } else {
+        const err = await res.json()
+        toast.error(err.error || 'Failed to submit')
       }
     } catch (error) {
       console.error('Failed to submit:', error)
+      toast.error('Network error')
     }
     setSaving(false)
   }

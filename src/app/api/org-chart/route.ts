@@ -93,7 +93,7 @@ export const GET = withAuth(async (req: NextRequest) => {
 
       // Calculate direct reports for managers
       let directReportsCount = 0
-      if (user.role === 'MANAGER' || user.role === 'OM') {
+      if (user.role === 'MANAGER') {
         directReportsCount = deptCountMap.get(user.department) || 0
       }
 

@@ -142,7 +142,7 @@ async function getYearlyData(userId: string, year: number) {
         gte: startOfYear,
         lte: endOfYear,
       },
-      status: 'SUBMITTED',
+      status: { in: ['SUBMITTED', 'REVIEWED', 'APPROVED'] },
     },
     include: {
       kpiEntries: true,
@@ -199,8 +199,8 @@ export default async function TacticalMeetingPage() {
 
   // Calculate deadline status
   const now = new Date()
-  const isBeforeDeadline = now.getDate() <= 3
-  const daysUntilDeadline = isBeforeDeadline ? 3 - now.getDate() : 0
+  const isBeforeDeadline = now.getDate() <= 5
+  const daysUntilDeadline = isBeforeDeadline ? 5 - now.getDate() : 0
 
   return (
     <TacticalMeetingClient

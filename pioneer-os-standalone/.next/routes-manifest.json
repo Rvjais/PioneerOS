@@ -116,6 +116,12 @@
       "regex": "^(?!/_next)/design/metrics(?:/)?$"
     },
     {
+      "source": "/design/turnaround",
+      "destination": "/design",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/design/turnaround(?:/)?$"
+    },
+    {
       "source": "/design/metrics/turnaround",
       "destination": "/design",
       "statusCode": 307,
@@ -4115,6 +4121,12 @@
       "regex": "^/api/projects(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/projects(?:/)?$"
+    },
+    {
+      "page": "/api/public/join",
+      "regex": "^/api/public/join(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/public/join(?:/)?$"
     },
     {
       "page": "/api/public/rfp",

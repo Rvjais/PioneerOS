@@ -338,6 +338,11 @@
         "react-icons/vsc",
         "react-icons/wi"
       ],
+      "serverActions": {
+        "allowedOrigins": [
+          "brandingpioneers.in"
+        ]
+      },
       "trustHostHeader": false,
       "isExperimentalCompile": false
     },
@@ -438,6 +443,11 @@
       },
       {
         "source": "/design/metrics",
+        "destination": "/design",
+        "permanent": false
+      },
+      {
+        "source": "/design/turnaround",
         "destination": "/design",
         "permanent": false
       },

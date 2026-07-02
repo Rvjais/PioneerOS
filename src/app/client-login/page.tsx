@@ -344,8 +344,8 @@ export default function ClientLoginPage() {
             <form onSubmit={handleRequestOTP} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Email Address
-                  <InfoTip text="Use the email registered during onboarding" type="action" />
+                  Registered Email
+                  <InfoTip text="OTP will be sent via WhatsApp to the phone linked to this email" type="action" />
                 </label>
                 <input
                   type="email"
@@ -392,19 +392,20 @@ export default function ClientLoginPage() {
                   </svg>
                 </div>
                 <p className="text-green-400 text-sm">{message}</p>
+              <p className="text-slate-400 text-xs -mt-2">Check your WhatsApp — OTP sent to your registered phone</p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Enter OTP
-                  <InfoTip text="Check your email for the 6-character code" type="action" />
+                  <InfoTip text="Check your WhatsApp for the 8-character code" type="action" />
                 </label>
                 <input
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.toUpperCase())}
-                  maxLength={6}
-                  placeholder="Enter 6-digit OTP"
+                  maxLength={8}
+                  placeholder="Enter 8-character OTP"
                   className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-xl tracking-widest"
                 />
               </div>

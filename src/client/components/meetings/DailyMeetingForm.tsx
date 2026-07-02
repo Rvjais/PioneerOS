@@ -291,10 +291,11 @@ export function DailyMeetingForm({ onComplete, isBlocking = false }: DailyMeetin
                     key={w.value}
                     type="button"
                     onClick={() => setWorkload(w.value)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${workload === w.value
-                        ? `bg-${w.color}-600 text-white`
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      workload === w.value
+                        ? 'text-white'
                         : 'bg-slate-900 text-slate-400 hover:bg-slate-700 border border-white/10'
-                      }`}
+                    }`}
                     style={workload === w.value ? {
                       backgroundColor: w.color === 'emerald' ? '#059669' :
                         w.color === 'blue' ? '#2563eb' :

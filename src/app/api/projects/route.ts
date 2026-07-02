@@ -1,72 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/server/auth/withAuth';
+import { prisma } from '@/server/db/prisma';
 
 export const GET = withAuth(async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const includeBilling = searchParams.get('includeBilling') === 'true';
 
-  const projects = [
-    {
-      id: 'proj_001',
-      name: 'Enterprise CRM Integration',
-      client: 'Acme Corp',
-      status: 'active' as const,
-      progress: 68,
-      startDate: '2026-01-15',
-      endDate: '2026-06-30',
-      billing: includeBilling
-        ? { total: 125000, paid: 75000, pending: 30000 }
-        : null,
+  const webProjects = await prisma.webProject.findMany({
+    include: {
+      client: { select: { id: true, name: true } },
     },
-    {
-      id: 'proj_002',
-      name: 'E-Commerce Platform Redesign',
-      client: 'RetailMax',
-      status: 'active' as const,
-      progress: 42,
-      startDate: '2026-02-01',
-      endDate: '2026-08-15',
-      billing: includeBilling
-        ? { total: 85000, paid: 34000, pending: 17000 }
-        : null,
-    },
-    {
-      id: 'proj_003',
-      name: 'Data Analytics Dashboard',
-      client: 'FinServe Inc.',
-      status: 'completed' as const,
-      progress: 100,
-      startDate: '2025-09-01',
-      endDate: '2026-02-28',
-      billing: includeBilling
-        ? { total: 60000, paid: 60000, pending: 0 }
-        : null,
-    },
-    {
-      id: 'proj_004',
-      name: 'Mobile App Development',
-      client: 'HealthFirst',
-      status: 'on_hold' as const,
-      progress: 25,
-      startDate: '2026-03-01',
-      endDate: '2026-09-01',
-      billing: includeBilling
-        ? { total: 150000, paid: 37500, pending: 0 }
-        : null,
-    },
-    {
-      id: 'proj_005',
-      name: 'Cloud Migration Project',
-      client: 'LogiTech Solutions',
-      status: 'active' as const,
-      progress: 85,
-      startDate: '2025-11-01',
-      endDate: '2026-05-15',
-      billing: includeBilling
-        ? { total: 200000, paid: 170000, pending: 30000 }
-        : null,
-    },
-  ];
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const projects = await Promise.all(webProjects.map(async (p) => {
+    const statusMap: Record<string, string> = {
+      'PIPELINE': 'active',
+      'IN_PROGRESS': 'active',
+      'REVISION': 'active',
+      'COMPLETED': 'completed',
+      'ON_HOLD': 'on_hold',
+      'CANCELLED': 'on_hold',
+    };
+
+    let billing = null;
+    if (includeBilling) {
+      const invoices = await prisma.invoice.findMany({
+        where: { clientId: p.clientId },
+        select: { amount: true, total: true, paidAmount: true, status: true },
+      });
+      const total = invoices.reduce((s, i) => s + i.total, 0);
+      const paid = invoices.reduce((s, i) => s + i.paidAmount, 0);
+      const pending = invoices
+        .filter(i => !['PAID', 'CANCELLED', 'DRAFT'].includes(i.status))
+        .reduce((s, i) => s + i.total - i.paidAmount, 0);
+
+      billing = { total, paid, pending };
+    }
+
+    return {
+      id: p.id,
+      name: p.name,
+      client: p.client.name,
+      clientId: p.client.id,
+      status: statusMap[p.status] || 'active',
+      progress: p.currentPhase ? 50 : 0,
+      startDate: p.startDate?.toISOString().split('T')[0] || '',
+      endDate: p.targetEndDate?.toISOString().split('T')[0] || '',
+      totalValue: billing?.total || 0,
+      billedAmount: billing?.total || 0,
+      paidAmount: billing?.paid || 0,
+      billingType: billing ? 'MILESTONE' : 'FIXED',
+      billing,
+    };
+  }));
 
   return NextResponse.json({ projects });
 });

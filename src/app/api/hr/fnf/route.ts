@@ -29,7 +29,7 @@ const createSchema = z.object({
 // ---------- GET /api/hr/fnf ----------
 export const GET = withAuth(async (req, { user, params }) => {
   try {
-const allowedRoles = ['SUPER_ADMIN', 'MANAGER', 'HR', 'ACCOUNTS', 'OPERATIONS_HEAD', 'OM']
+const allowedRoles = ['SUPER_ADMIN', 'MANAGER', 'HR', 'ACCOUNTS', 'OPERATIONS_HEAD']
     if (!allowedRoles.includes(user.role || '')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }

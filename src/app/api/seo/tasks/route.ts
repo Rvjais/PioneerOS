@@ -82,16 +82,11 @@ export const POST = withAuth(async (req) => {
 
   const data = result.data
 
-  let finalClientId = data.clientId
-  let client = await prisma.client.findUnique({ where: { id: finalClientId } }).catch(() => null)
-  
+  const client = await prisma.client.findUnique({ where: { id: data.clientId } })
   if (!client) {
-    client = await prisma.client.findFirst({ where: { name: { contains: finalClientId, mode: 'insensitive' } } })
-    if (!client) {
-      client = await prisma.client.create({ data: { name: finalClientId } })
-    }
-    finalClientId = client.id
+    return NextResponse.json({ error: 'Client not found. Please select a valid client.' }, { status: 404 })
   }
+  const finalClientId = client.id
 
   const task = await prisma.seoTask.create({
     data: {

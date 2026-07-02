@@ -17,6 +17,9 @@ export default async function OpsTacticalPage() {
   // Only allow operations roles (non-client-facing KPIs)
   const opsRoles = ['ACCOUNTS', 'SALES', 'HR', 'OPERATIONS']
   const isOpsRole = opsRoles.includes(userDept) || opsRoles.includes(userRole)
+  if (!isOpsRole && !isManager) {
+    redirect('/meetings/tactical')
+  }
 
   // Get month boundaries
   const now = new Date()
@@ -56,8 +59,21 @@ export default async function OpsTacticalPage() {
     },
   })
 
+  // Load saved KPI values from managerNotes if previously saved
+  let savedKpis: Record<string, unknown> = {}
+  if (meeting?.managerNotes) {
+    try {
+      const parsed = JSON.parse(meeting.managerNotes)
+      if (parsed.kpis && typeof parsed.kpis === 'object') {
+        savedKpis = parsed.kpis as Record<string, unknown>
+      }
+    } catch {
+      // managerNotes is not JSON (legacy data) — ignore
+    }
+  }
+
   // Department-specific data fetching
-  let deptData: Record<string, unknown> = {}
+  let deptData: Record<string, unknown> = { ...savedKpis }
 
   if (userDept === 'ACCOUNTS') {
     // Accounts KPIs
@@ -126,17 +142,22 @@ export default async function OpsTacticalPage() {
     }
   } else if (userDept === 'HR') {
     // HR KPIs
-    const candidates = await prisma.candidate?.count?.({
-      where: {
-        createdAt: { gte: currentMonthStart, lte: currentMonthEnd },
-      },
-    }) || 0
-
-    const interviews = await prisma.interview?.count?.({
-      where: {
-        scheduledAt: { gte: currentMonthStart, lte: currentMonthEnd },
-      },
-    }) || 0
+    let candidates = 0
+    let interviews = 0
+    if (prisma.candidate) {
+      candidates = await prisma.candidate.count({
+        where: {
+          createdAt: { gte: currentMonthStart, lte: currentMonthEnd },
+        },
+      })
+    }
+    if (prisma.interview) {
+      interviews = await prisma.interview.count({
+        where: {
+          scheduledAt: { gte: currentMonthStart, lte: currentMonthEnd },
+        },
+      })
+    }
 
     const newHires = await prisma.user.count({
       where: {

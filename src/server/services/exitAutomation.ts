@@ -150,7 +150,7 @@ export async function checkAndAdvanceExitStatus(exitProcessId: string) {
 
       // Notify HR
       const hrUsers = await tx.user.findMany({
-        where: { OR: [{ role: 'HR' }, { role: 'SUPER_ADMIN' }], status: 'ACTIVE', deletedAt: null },
+        where: { OR: [{ role: 'HR' }, { role: 'SUPER_ADMIN' }, { department: 'HR' }], status: 'ACTIVE', deletedAt: null },
         select: { id: true },
       })
 

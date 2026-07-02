@@ -113,10 +113,17 @@ const now = new Date()
       const previousQuarter = getPreviousQuarter(now)
       result.compliance.strategic.deadline = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-07`
 
+      const prevQNum = parseInt(previousQuarter.split('-')[0].replace('Q', ''))
+      const prevYear = parseInt(previousQuarter.split('-')[1])
+      if (isNaN(prevQNum) || isNaN(prevYear)) {
+        result.compliance.strategic.filled = false
+        return NextResponse.json(result)
+      }
+
       const strategicMeeting = await prisma.strategicMeeting.findFirst({
         where: {
-          quarter: parseInt(previousQuarter.split('-')[0].replace('Q', '')),
-          year: parseInt(previousQuarter.split('-')[1]),
+          quarter: prevQNum,
+          year: prevYear,
           // Check if user has submitted their review (has overall rating means completed)
           peerReviews: {
             some: {

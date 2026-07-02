@@ -344,6 +344,9 @@ export const NotificationTemplates = {
 
   salaryProcessed: (employeeName: string, month: string, amount: number) =>
     `Hi ${employeeName},\n\nYour salary for ${month} (₹${amount.toLocaleString('en-IN')}) has been processed.\n\nPlease check your bank account.\n\nBest regards,\nHR Team`,
+
+  passwordResetOtp: (employeeName: string, otpCode: string) =>
+    `🔑 *Pioneer OS Password Reset OTP*\n\nHey ${employeeName}!\n\nYour OTP to reset your password is: *${otpCode}*\n\n⏰ This code expires in 10 minutes.\n\nDo not share this code with anyone. If you didn't request this, please ignore this message.`,
 }
 
 /**

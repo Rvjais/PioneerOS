@@ -258,7 +258,17 @@ export default function ROIDashboardPage() {
           expenses.map((expense) => (
             <div key={expense.id} className={`glass-card rounded-xl border p-5 ${getROIBgColor(expense.roi)}`}>
               <div className="flex items-center justify-between mb-4">
-                <span className={`px-2 py-1 text-xs font-bold rounded bg-${getDeptColor(expense.department)}-100 text-${getDeptColor(expense.department)}-700`}>
+                <span className={`px-2 py-1 text-xs font-bold rounded ${
+                  (() => {
+                    const c = getDeptColor(expense.department)
+                    return c === 'emerald' ? 'bg-emerald-100 text-emerald-700' :
+                           c === 'blue' ? 'bg-blue-100 text-blue-700' :
+                           c === 'amber' ? 'bg-amber-100 text-amber-700' :
+                           c === 'purple' ? 'bg-purple-100 text-purple-700' :
+                           c === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
+                           'bg-slate-100 text-slate-700'
+                  })()
+                }`}>
                   {getDeptLabel(expense.department)}
                 </span>
                 <span className={`text-lg font-bold ${getROIColor(expense.roi)}`}>

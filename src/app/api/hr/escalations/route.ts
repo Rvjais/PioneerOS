@@ -108,7 +108,7 @@ export const GET = withAuth(async (req) => {
     console.error('Error fetching escalations:', error)
     return NextResponse.json({ error: 'Failed to fetch escalations' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD'] })
 
 // POST: Create a new escalation
 export const POST = withAuth(async (req, { user }) => {
@@ -199,4 +199,4 @@ export const POST = withAuth(async (req, { user }) => {
     console.error('Error creating escalation:', error)
     return NextResponse.json({ error: 'Failed to create escalation' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD'] })

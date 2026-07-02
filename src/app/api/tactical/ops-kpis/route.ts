@@ -44,33 +44,25 @@ const body = await req.json()
       })
     }
 
-    // Calculate performance score from KPIs
-    let filledKpis = 0
-    let totalKpis = Object.keys(kpis).length
+    // Store KPIs and notes as structured JSON in managerNotes
+    const storedData = JSON.stringify({
+      kpis,
+      notes: notes || '',
+      updatedAt: now.toISOString(),
+    })
 
-    for (const [key, value] of Object.entries(kpis)) {
-      if (value !== null && value !== undefined) {
-        filledKpis++
-      }
-    }
-
-    const completionRate = totalKpis > 0 ? (filledKpis / totalKpis) * 100 : 0
-
-    // Store KPIs as JSON in tactical meeting
-    // In production, would have dedicated fields per department
     await prisma.tacticalMeeting.update({
       where: { id: meeting.id },
       data: {
-        performanceScore: completionRate,
-        managerNotes: notes || null,
-        updatedAt: new Date(),
+        managerNotes: storedData,
+        updatedAt: now,
       },
     })
 
     return NextResponse.json({
       success: true,
       meetingId: meeting.id,
-      completionRate,
+      saved: true,
     })
   } catch (error) {
     console.error('Failed to save ops KPIs:', error)

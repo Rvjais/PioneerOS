@@ -132,12 +132,14 @@ export function DailyTaskPlannerClient({
   }
 
   useEffect(() => {
+    let cancelled = false
     if (selectedDate !== new Date().toISOString().split('T')[0]) {
-      fetchPlan(selectedDate)
+      fetchPlan(selectedDate, () => cancelled)
     }
+    return () => { cancelled = true }
   }, [selectedDate])
 
-  const fetchPlan = async (date: string) => {
+  const fetchPlan = async (date: string, isCancelled?: () => boolean) => {
     setLoading(true)
     try {
       const url = viewAsUserId
@@ -146,6 +148,7 @@ export function DailyTaskPlannerClient({
       const res = await fetch(url)
       if (res.ok) {
         const data = await res.json()
+        if (isCancelled?.()) return
         setPlan(data.plan)
         setTasks(data.plan?.tasks || [])
       }
@@ -153,7 +156,7 @@ export function DailyTaskPlannerClient({
       console.error('Failed to fetch plan:', error)
       showToast('Failed to fetch plan', 'error')
     } finally {
-      setLoading(false)
+      if (!isCancelled?.()) setLoading(false)
     }
   }
 
@@ -563,6 +566,19 @@ export function DailyTaskPlannerClient({
         const data = await res.json()
         setPlan(data.plan)
         showToast('Plan submitted successfully', 'success')
+        
+        // Check if tactical meeting is required and redirect if needed
+        try {
+          const compRes = await fetch('/api/meetings/compliance')
+          if (compRes.ok) {
+            const compData = await compRes.json()
+            if (compData.compliance?.tactical?.required && !compData.compliance?.tactical?.filled) {
+              window.location.href = '/meetings/tactical'
+            }
+          }
+        } catch (e) {
+          console.error('Failed to check compliance', e)
+        }
       } else {
         showToast('Failed to submit plan', 'error')
       }

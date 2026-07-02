@@ -50,7 +50,7 @@ export default function AppraisalWorkflowPage() {
   async function fetchAppraisals() {
     setLoading(true)
     try {
-      const empRes = await fetch('/api/employees')
+      const empRes = await fetch('/api/hr/employees')
       if (empRes.ok) {
         const data = await empRes.json()
         const employees = Array.isArray(data) ? data : data.employees || []

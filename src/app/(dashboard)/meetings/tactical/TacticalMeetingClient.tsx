@@ -204,6 +204,7 @@ export function TacticalMeetingClient({
       })
 
       if (res.ok) {
+        toast.success(submit ? 'Submitted for review' : 'Draft saved')
         router.refresh()
       } else {
         const data = await res.json()
@@ -262,13 +263,22 @@ export function TacticalMeetingClient({
       reelsPublished: 'reelsPublished',
       reels: 'reelsPublished',
       reels_published: 'reelsPublished',
-      followerGrowth: 'followerGrowth',
-      followers: 'followerGrowth',
-      follower_growth: 'followerGrowth',
-      engagementRate: 'engagementRate',
-      engagement: 'engagementRate',
-      engagement_rate: 'engagementRate',
-      reach: 'reach',
+      followerGrowth: 'followers',
+      followers: 'followers',
+      follower_growth: 'followers',
+      engagementRate: 'engagement',
+      engagement: 'engagement',
+      engagement_rate: 'engagement',
+      reach: 'reachTotal',
+      totalReach: 'reachTotal',
+      total_reach: 'reachTotal',
+      reach_total: 'reachTotal',
+      costPerConversion: 'costPerConversion',
+      cost_per_conversion: 'costPerConversion',
+      pageSpeed: 'pageSpeed',
+      page_speed: 'pageSpeed',
+      bounceRate: 'bounceRate',
+      bounce_rate: 'bounceRate',
     }
 
     // Apply extracted data
@@ -397,7 +407,7 @@ export function TacticalMeetingClient({
               <p className={`text-xs ${
                 isBeforeDeadline ? 'text-amber-400' : isSubmitted ? 'text-green-400' : 'text-red-400'
               }`}>
-                Due 3rd of month
+                Due 5th of month
               </p>
             </div>
           </div>
@@ -808,9 +818,11 @@ export function TacticalMeetingClient({
                   </tr>
                 ) : (
                   teamMeetings.map(meeting => {
+                    const growthFields = ['trafficGrowth', 'leadsGrowth', 'callsGrowth', 'keywordsGrowth',
+                      'roasGrowth', 'conversionGrowth', 'followerGrowth', 'engagementGrowth']
                     const growthVals = meeting.kpiEntries
-                      .map(e => e.trafficGrowth as number | null)
-                      .filter(v => v !== null) as number[]
+                      .flatMap(e => growthFields.map(f => e[f] as number | null))
+                      .filter((v): v is number => v !== null)
                     const avgGrowth = growthVals.length > 0
                       ? growthVals.reduce((a, b) => a + b, 0) / growthVals.length
                       : null

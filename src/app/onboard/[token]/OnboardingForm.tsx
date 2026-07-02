@@ -241,7 +241,7 @@ export function OnboardingForm({ token, client }: Props) {
     field: keyof typeof formData,
     columns: number = 2
   ) => (
-    <div className={`grid grid-cols-1 md:grid-cols-${columns} gap-3`}>
+    <div className="grid grid-cols-1 gap-3" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(250px, 1fr))` }}>
       {options.map(option => {
         const isSelected = (formData[field] as string[]).includes(option.value)
         return (

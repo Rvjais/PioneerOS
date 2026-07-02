@@ -7,7 +7,7 @@ import { z } from 'zod'
 import type { Prisma } from '@prisma/client'
 
 // Roles allowed to submit expenses (excludes FREELANCER and INTERN)
-const EXPENSE_SUBMIT_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR']
+const EXPENSE_SUBMIT_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR']
 
 // Validation schema for expense creation
 const createExpenseSchema = z.object({

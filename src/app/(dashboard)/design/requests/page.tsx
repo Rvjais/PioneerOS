@@ -20,7 +20,7 @@ export default async function DesignRequestsPage() {
   if (!session) redirect('/login')
 
   const user = session.user
-  const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(user.role as string)
+  const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(user.role as string)
 
   // Fetch all CREATIVE type approvals
   const rawRequests = await prisma.contentApproval.findMany({

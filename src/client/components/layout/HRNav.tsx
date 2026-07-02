@@ -378,8 +378,7 @@ export function HRNav() {
 
             <div className={`space-y-0.5 mt-1 overflow-hidden transition-all duration-300 ${expandedCategories.includes(category.category) ? 'opacity-100 max-h-[1000px]' : 'opacity-0 max-h-0'}`}>
               {category.items.map(item => {
-                const isActive = pathname === item.href ||
-                  (item.href !== '/hr' && pathname.startsWith(item.href))
+                const isActive = pathname === item.href
 
                 return (
                   <Link

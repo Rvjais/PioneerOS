@@ -70,14 +70,13 @@ export interface Client {
   accountManager: string | null
 }
 
-export const ROLES = ['SUPER_ADMIN', 'MANAGER', 'OM', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR', 'FREELANCER', 'INTERN']
+export const ROLES = ['SUPER_ADMIN', 'MANAGER', 'EMPLOYEE', 'SALES', 'ACCOUNTS', 'HR', 'FREELANCER', 'INTERN']
 export const DEPARTMENTS = ['OPERATIONS', 'SEO', 'SOCIAL', 'DESIGN', 'ADS', 'WEB', 'SALES', 'ACCOUNTS', 'HR', 'CONTENT']
 export const STATUSES = ['ACTIVE', 'PROBATION', 'PIP', 'INACTIVE']
 
 export const roleColors: Record<string, string> = {
   SUPER_ADMIN: 'bg-purple-100 text-purple-700',
   MANAGER: 'bg-blue-100 text-blue-700',
-  OM: 'bg-indigo-100 text-indigo-700',
   EMPLOYEE: 'bg-green-100 text-green-700',
   SALES: 'bg-amber-100 text-amber-700',
   ACCOUNTS: 'bg-cyan-100 text-cyan-700',

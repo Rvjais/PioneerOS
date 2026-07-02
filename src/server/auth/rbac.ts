@@ -151,13 +151,12 @@ export function isAuthError(result: AuthResult | AuthError): result is AuthError
 
 // Common role combinations for convenience
 export const ADMIN_ROLES: UserRole[] = ['SUPER_ADMIN']
-export const MANAGEMENT_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM']
+export const MANAGEMENT_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD']
 export const LEADERSHIP_ROLES = MANAGEMENT_ROLES
 export const SALES_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'SALES']
-export const HR_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'HR', 'OM']
+export const HR_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'HR']
 export const ACCOUNTS_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'ACCOUNTS']
-export const SOCIAL_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OM']
-export const OM_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OM'] // OM has HR + Social access
+export const SOCIAL_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER']
 
 // Web Team role combinations
 export const WEB_MANAGEMENT_ROLES: UserRole[] = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'WEB_MANAGER']
@@ -179,7 +178,6 @@ export const ALL_STAFF_ROLES: UserRole[] = [
   'SUPER_ADMIN',
   'MANAGER',
   'OPERATIONS_HEAD',
-  'OM',
   'EMPLOYEE',
   'FREELANCER',
   'SALES',
@@ -213,28 +211,28 @@ export function canAccessResource(
  * Helper to check if user is admin, manager, or operations head
  */
 export function isAdminOrManager(role: string): boolean {
-  return ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(role)
+  return ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(role)
 }
 
 /**
  * Helper to check if user is in leadership (can see all data)
  */
 export function isLeadership(role: string, department?: string): boolean {
-  return ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(role) || department === 'OPERATIONS'
+  return ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(role) || department === 'OPERATIONS'
 }
 
 /**
- * Helper to check if user has HR access (OM has HR access)
+ * Helper to check if user has HR access
  */
 export function hasHRAccess(role: string): boolean {
-  return ['SUPER_ADMIN', 'MANAGER', 'HR', 'OM'].includes(role)
+  return ['SUPER_ADMIN', 'MANAGER', 'HR'].includes(role)
 }
 
 /**
- * Helper to check if user has Social Media access (OM has Social access)
+ * Helper to check if user has Social Media access
  */
 export function hasSocialAccess(role: string, department?: string): boolean {
-  return ['SUPER_ADMIN', 'MANAGER', 'OM'].includes(role) || department === 'SOCIAL'
+  return ['SUPER_ADMIN', 'MANAGER'].includes(role) || department === 'SOCIAL'
 }
 
 /**

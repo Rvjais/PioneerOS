@@ -193,7 +193,7 @@ export function SEODashboard({
                   <div className="text-right">
                     <div className={`w-3 h-3 rounded-full inline-block ${
                       client.healthScore >= 80 ? 'bg-emerald-500' :
-                      client.healthScore >= 60 ? 'bg-amber-500/100' : 'bg-red-500/100'
+                      client.healthScore >= 60 ? 'bg-amber-500' : 'bg-red-500'
                     }`} />
                     <p className="text-xs text-slate-400 mt-1">{client.keywordsRanked} keywords</p>
                   </div>

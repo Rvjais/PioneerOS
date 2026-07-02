@@ -53,7 +53,7 @@ export const GET = withAuth(async (
 
     // Get direct reports count (for managers - count users in same department)
     let directReportsCount = 0
-    if (user.role === 'MANAGER' || user.role === 'OM' || user.role === 'SUPER_ADMIN') {
+    if (user.role === 'MANAGER' || user.role === 'SUPER_ADMIN') {
       const reportsCount = await prisma.user.count({
         where: {
           department: user.department,

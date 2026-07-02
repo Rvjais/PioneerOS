@@ -204,7 +204,7 @@ export function AccountsNav() {
             <div className={`overflow-hidden transition-all duration-300 ease-in-out ${collapsed[section.category] ? 'max-h-0 opacity-0' : 'max-h-[1000px] opacity-100'}`}>
               <div className="space-y-1 mt-1">
                 {section.items.map((item) => {
-                  const isActive = pathname === item.href || (item.href !== '/accounts' && pathname.startsWith(item.href))
+                  const isActive = pathname === item.href
                   return (
                     <Link
                       key={item.name}

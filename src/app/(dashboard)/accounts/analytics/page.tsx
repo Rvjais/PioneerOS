@@ -273,7 +273,12 @@ export default function AccountsAnalyticsPage() {
                 <div key={segment.key} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 text-xs font-bold rounded bg-${segment.color}-100 text-${segment.color}-700`}>
+                      <span className={`px-2 py-1 text-xs font-bold rounded ${
+                        segment.color === 'blue' ? 'bg-blue-100 text-blue-700' :
+                        segment.color === 'purple' ? 'bg-purple-100 text-purple-700' :
+                        segment.color === 'cyan' ? 'bg-cyan-100 text-cyan-700' :
+                        'bg-amber-100 text-amber-700'
+                      }`}>
                         {segment.label}
                       </span>
                       <span className="text-sm text-slate-300">{segment.clients} clients</span>
@@ -282,7 +287,12 @@ export default function AccountsAnalyticsPage() {
                   </div>
                   <div className="h-3 bg-slate-800/50 rounded-full overflow-hidden">
                     <div
-                      className={`h-full bg-gradient-to-r from-${segment.color}-400 to-${segment.color}-500`}
+                      className={`h-full bg-gradient-to-r ${
+                        segment.color === 'blue' ? 'from-blue-400 to-blue-500' :
+                        segment.color === 'purple' ? 'from-purple-400 to-purple-500' :
+                        segment.color === 'cyan' ? 'from-cyan-400 to-cyan-500' :
+                        'from-amber-400 to-amber-500'
+                      }`}
                       style={{ width: `${(segment.collected / segment.revenue) * 100 || 0}%` }}
                     />
                   </div>

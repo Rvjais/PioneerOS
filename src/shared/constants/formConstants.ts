@@ -10,7 +10,6 @@
 export const USER_ROLES = [
   { value: 'SUPER_ADMIN', label: 'Super Admin', description: 'Full system access, founders only' },
   { value: 'MANAGER', label: 'Manager', description: 'Department/team management access' },
-  { value: 'OM', label: 'Operations Manager', description: 'HR + Social Media blended role' },
   { value: 'EMPLOYEE', label: 'Employee', description: 'Standard employee access' },
   { value: 'FREELANCER', label: 'Freelancer', description: 'External contractor access' },
   { value: 'SALES', label: 'Sales', description: 'Sales/BD team member' },

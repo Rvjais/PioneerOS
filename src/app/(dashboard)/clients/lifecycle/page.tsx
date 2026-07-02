@@ -84,7 +84,7 @@ export default async function ClientLifecyclePage() {
 
   const userRole = session.user.role as string
   const userDepartment = session.user.department as string
-  // OM (OPERATIONS_HEAD or OPERATIONS department) sees all clients like managers
+  // OPERATIONS_HEAD or OPERATIONS department sees all clients like managers
   const canSeeAllClients = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(userRole) || userDepartment === 'OPERATIONS'
   const clients = await getClientsWithLifecycle(session.user.id, canSeeAllClients)
 

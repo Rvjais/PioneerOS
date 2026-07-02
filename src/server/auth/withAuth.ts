@@ -134,7 +134,7 @@ export function withAuth(handler: AuthenticatedHandler, options?: AuthOptions) {
 
       // SECURITY FIX: Check user status AND deletedAt from database
       const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { status: true, deletedAt: true } })
-      if (dbUser && (dbUser.deletedAt || !['ACTIVE', 'PROBATION'].includes(dbUser.status))) {
+      if (!dbUser || dbUser.deletedAt || !['ACTIVE', 'PROBATION'].includes(dbUser.status)) {
         return forbidden('Account is inactive or deleted')
       }
 

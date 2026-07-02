@@ -7,19 +7,67 @@ import { withAuth } from '@/server/auth/withAuth'
 export const POST = withAuth(async (req, { user, params }) => {
   try {
 const body = await req.json()
+    const kpiEntrySchema = z.object({
+      clientId: z.string().min(1),
+      propertyId: z.string().optional(),
+      organicTraffic: z.number().nullable().optional(),
+      prevOrganicTraffic: z.number().nullable().optional(),
+      leads: z.number().nullable().optional(),
+      prevLeads: z.number().nullable().optional(),
+      gbpCalls: z.number().nullable().optional(),
+      prevGbpCalls: z.number().nullable().optional(),
+      gbpDirections: z.number().nullable().optional(),
+      prevGbpDirections: z.number().nullable().optional(),
+      keywordsTop3: z.number().nullable().optional(),
+      prevKeywordsTop3: z.number().nullable().optional(),
+      keywordsTop10: z.number().nullable().optional(),
+      prevKeywordsTop10: z.number().nullable().optional(),
+      keywordsTop20: z.number().nullable().optional(),
+      prevKeywordsTop20: z.number().nullable().optional(),
+      backlinksBuilt: z.number().nullable().optional(),
+      prevBacklinksBuilt: z.number().nullable().optional(),
+      adSpend: z.number().nullable().optional(),
+      prevAdSpend: z.number().nullable().optional(),
+      impressions: z.number().nullable().optional(),
+      prevImpressions: z.number().nullable().optional(),
+      clicks: z.number().nullable().optional(),
+      prevClicks: z.number().nullable().optional(),
+      conversions: z.number().nullable().optional(),
+      prevConversions: z.number().nullable().optional(),
+      costPerConversion: z.number().nullable().optional(),
+      prevCostPerConversion: z.number().nullable().optional(),
+      roas: z.number().nullable().optional(),
+      prevRoas: z.number().nullable().optional(),
+      followers: z.number().nullable().optional(),
+      prevFollowers: z.number().nullable().optional(),
+      engagement: z.number().nullable().optional(),
+      prevEngagement: z.number().nullable().optional(),
+      postsPublished: z.number().nullable().optional(),
+      prevPostsPublished: z.number().nullable().optional(),
+      reachTotal: z.number().nullable().optional(),
+      prevReachTotal: z.number().nullable().optional(),
+      videoViews: z.number().nullable().optional(),
+      prevVideoViews: z.number().nullable().optional(),
+      pageSpeed: z.number().nullable().optional(),
+      prevPageSpeed: z.number().nullable().optional(),
+      bounceRate: z.number().nullable().optional(),
+      prevBounceRate: z.number().nullable().optional(),
+      avgSessionDuration: z.number().nullable().optional(),
+      prevAvgSessionDuration: z.number().nullable().optional(),
+      pagesBuilt: z.number().nullable().optional(),
+      prevPagesBuilt: z.number().nullable().optional(),
+      bugsFixed: z.number().nullable().optional(),
+      prevBugsFixed: z.number().nullable().optional(),
+      customMetrics: z.string().nullable().optional(),
+      achievements: z.string().nullable().optional(),
+      challenges: z.string().nullable().optional(),
+      nextMonthPlan: z.string().nullable().optional(),
+    }).passthrough()
+
     const schema = z.object({
       userId: z.string().min(1),
       department: z.string().min(1).max(100),
-      kpiEntries: z.array(z.object({
-        clientId: z.string().min(1),
-        organicTraffic: z.number().optional(),
-        leads: z.number().optional(),
-        followers: z.number().optional(),
-        reachTotal: z.number().optional(),
-        engagement: z.number().optional(),
-        conversions: z.number().optional(),
-        roas: z.number().optional(),
-      })).min(1),
+      kpiEntries: z.array(kpiEntrySchema).min(1),
     })
     const result = schema.safeParse(body)
     if (!result.success) return NextResponse.json({ error: result.error.issues[0]?.message || 'Invalid input' }, { status: 400 })
@@ -78,51 +126,22 @@ const body = await req.json()
 
     for (const entry of kpiEntries) {
       const { clientId, ...kpiValues } = entry
-
-      // Calculate growth values
       const prevEntry = prevKpis[clientId]
-      const growthValues: Record<string, number | null> = {}
 
-      // SEO growth
-      if (kpiValues.organicTraffic && prevEntry?.organicTraffic) {
-        growthValues.trafficGrowth = calculateGrowth(kpiValues.organicTraffic, prevEntry.organicTraffic)
-        if (growthValues.trafficGrowth !== null) {
-          totalGrowth += growthValues.trafficGrowth
-          growthCount++
+      // Calculate growth for performance score (not stored, computed by growthScore service)
+      const calcAndTrack = (current: number | null | undefined, prev: number | null | undefined) => {
+        if (current !== null && current !== undefined && prev !== null && prev !== undefined && prev !== 0) {
+          const growth = calculateGrowth(current, prev)
+          if (growth !== null) {
+            totalGrowth += growth
+            growthCount++
+          }
         }
       }
-
-      // ADS growth
-      if (kpiValues.conversions && prevEntry?.conversions) {
-        growthValues.conversionGrowth = calculateGrowth(kpiValues.conversions, prevEntry.conversions)
-        if (growthValues.conversionGrowth !== null) {
-          totalGrowth += growthValues.conversionGrowth
-          growthCount++
-        }
-      }
-      if (kpiValues.roas && prevEntry?.roas) {
-        growthValues.roasGrowth = calculateGrowth(kpiValues.roas, prevEntry.roas)
-        if (growthValues.roasGrowth !== null) {
-          totalGrowth += growthValues.roasGrowth
-          growthCount++
-        }
-      }
-
-      // Social growth
-      if (kpiValues.followers && prevEntry?.followers) {
-        growthValues.followerGrowth = calculateGrowth(kpiValues.followers, prevEntry.followers)
-        if (growthValues.followerGrowth !== null) {
-          totalGrowth += growthValues.followerGrowth
-          growthCount++
-        }
-      }
-      if (kpiValues.reachTotal && prevEntry?.reachTotal) {
-        growthValues.reachGrowth = calculateGrowth(kpiValues.reachTotal, prevEntry.reachTotal)
-        if (growthValues.reachGrowth !== null) {
-          totalGrowth += growthValues.reachGrowth
-          growthCount++
-        }
-      }
+      calcAndTrack(kpiValues.organicTraffic, prevEntry?.organicTraffic)
+      calcAndTrack(kpiValues.conversions, prevEntry?.conversions)
+      calcAndTrack(kpiValues.roas, prevEntry?.roas)
+      calcAndTrack(kpiValues.followers, prevEntry?.followers)
 
       // Upsert KPI entry
       const existingEntry = await prisma.tacticalKPIEntry.findFirst({
@@ -134,16 +153,14 @@ const body = await req.json()
 
       const entryData = {
         ...kpiValues,
-        ...growthValues,
         department,
-        // Store previous values for reference
-        prevOrganicTraffic: prevEntry?.organicTraffic || null,
-        prevLeads: prevEntry?.leads || null,
-        prevFollowers: prevEntry?.followers || null,
-        prevReachTotal: prevEntry?.reachTotal || null,
-        prevEngagement: prevEntry?.engagement || null,
-        prevConversions: prevEntry?.conversions || null,
-        prevRoas: prevEntry?.roas || null,
+        prevOrganicTraffic: prevEntry?.organicTraffic ?? null,
+        prevLeads: prevEntry?.leads ?? null,
+        prevFollowers: prevEntry?.followers ?? null,
+        prevReachTotal: prevEntry?.reachTotal ?? null,
+        prevEngagement: prevEntry?.engagement ?? null,
+        prevConversions: prevEntry?.conversions ?? null,
+        prevRoas: prevEntry?.roas ?? null,
       }
 
       if (existingEntry) {

@@ -64,7 +64,7 @@ export const POST = withAuth(async (req) => {
     console.error('Failed to create assessment:', error)
     return NextResponse.json({ error: 'Failed to send assessment' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD'] })
 
 // POST /api/hr/assessment/send - Bulk send
 export const PUT = withAuth(async (req) => {
@@ -110,4 +110,4 @@ export const PUT = withAuth(async (req) => {
     console.error('Failed to bulk send assessments:', error)
     return NextResponse.json({ error: 'Failed to send assessments' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'OPERATIONS_HEAD'] })

@@ -15,7 +15,6 @@ export type UserRole =
   | 'SUPER_ADMIN'
   | 'MANAGER'
   | 'OPERATIONS_HEAD'
-  | 'OM'
   | 'EMPLOYEE'
   | 'FREELANCER'
   | 'SALES'

@@ -33,7 +33,6 @@ export function QuickAccessPanel({ isLoggedIn }: QuickAccessPanelProps) {
   const links = [
     { label: 'Arcade Program', href: '/arcade', icon: 'gamepad', requiresAuth: true },
     { label: 'Company Guidebook', href: '/policies', icon: 'book', requiresAuth: false },
-    { label: 'Policies', href: '/policies', icon: 'clipboard', requiresAuth: false },
     { label: 'Team Directory', href: '/directory', icon: 'users', requiresAuth: true },
   ]
 

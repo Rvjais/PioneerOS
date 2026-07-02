@@ -11,7 +11,7 @@ const createFeedbackSchema = z.object({
   content: z.string().min(1),
 })
 
-const HR_FEEDBACK_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR', 'OM'] as const
+const HR_FEEDBACK_ROLES = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR'] as const
 
 // GET - Fetch all employee client feedbacks
 export const GET = withAuth(async () => {

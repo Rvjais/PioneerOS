@@ -155,9 +155,6 @@ const roleMenuConfig: Record<string, string[]> = {
   MANAGER: ['Main', 'Workspace', 'People', 'Performance', 'Finance', 'Growth', 'Culture', 'Knowledge'],
   OPERATIONS_HEAD: ['Main', 'Workspace', 'People', 'Performance', 'Finance', 'Growth', 'Culture', 'Knowledge'],
 
-  // Blended role: HR + Social access
-  OM: ['Main', 'Workspace', 'People', 'Performance', 'Finance', 'Culture', 'Knowledge'],
-
   // Department-specific roles - all have access to People for org chart/team directory
   HR: ['Main', 'People', 'Performance', 'Culture', 'Knowledge'],
   SALES: ['Main', 'People', 'Growth', 'Performance', 'Culture', 'Knowledge'],
@@ -343,7 +340,7 @@ function getEffectiveCategories(
     return Array.from(categories);
   }
 
-  // If user is in OPERATIONS department (even with EMPLOYEE role), give them OM access
+  // If user is in OPERATIONS department (even with EMPLOYEE role), give them OPERATIONS_HEAD access
   if (department === 'OPERATIONS') {
     const opCategories = roleMenuConfig.OPERATIONS_HEAD || [];
     opCategories.forEach(cat => categories.add(cat));
@@ -512,7 +509,7 @@ export function DashboardNav() {
             <div className={`overflow-hidden transition-all duration-300 ease-in-out ${collapsed[section.category] ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
               <div className="space-y-1 mt-1">
                 {section.items.map((item) => {
-                  const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+                  const isActive = pathname === item.href
                   return (
                     <Link
                       key={item.name}

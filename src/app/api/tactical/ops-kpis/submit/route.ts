@@ -21,6 +21,7 @@ const body = await req.json()
     }
 
     const now = new Date()
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
     const dayOfMonth = now.getDate()
     const submittedOnTime = dayOfMonth <= 5
 
@@ -31,6 +32,28 @@ const body = await req.json()
         status: 'SUBMITTED',
         submittedAt: now,
         submittedOnTime,
+      },
+    })
+
+    // Update MeetingCompliance
+    await prisma.meetingCompliance.upsert({
+      where: {
+        userId_month: {
+          userId,
+          month: monthStart,
+        },
+      },
+      update: {
+        tacticalFilled: true,
+        tacticalFilledAt: now,
+        tacticalIsLate: !submittedOnTime,
+      },
+      create: {
+        userId,
+        month: monthStart,
+        tacticalFilled: true,
+        tacticalFilledAt: now,
+        tacticalIsLate: !submittedOnTime,
       },
     })
 

@@ -34,6 +34,13 @@ export default async function DashboardLayout({
 
   const user = await getUserProfile(session.user.id)
 
+  // Redirect users who haven't completed their profiles
+  if (user?.profileCompletionStatus === 'INCOMPLETE') {
+    redirect('/profile-wizard')
+  } else if (user?.profileCompletionStatus === 'PENDING_HR') {
+    redirect('/pending-verification')
+  }
+
   // Check for viewAs param in cookies (set when admin clicks "Access Dashboard")
   const cookieStore = await cookies()
   const viewAsUserId = cookieStore.get('viewAsUserId')?.value || undefined

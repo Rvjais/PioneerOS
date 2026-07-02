@@ -180,7 +180,7 @@ function EmbedBugReportContent() {
         formData.append(`screenshot_${index}`, file)
       })
 
-      const res = await fetch('/api/bugs', {
+      const res = await fetch('/api/web/bugs', {
         method: 'POST',
         body: formData,
       })

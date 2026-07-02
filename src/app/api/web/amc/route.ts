@@ -23,20 +23,9 @@ export const POST = withAuth(async (req, { user }) => {
 
     const data = result.data
 
-    // Try to find the client by ID first, then by name
-    let client = await prisma.client.findUnique({ where: { id: data.client } })
+    const client = await prisma.client.findUnique({ where: { id: data.client } })
     if (!client) {
-      // Find by name
-      client = await prisma.client.findFirst({ where: { name: { contains: data.client, mode: 'insensitive' } } })
-      
-      // If still not found, create a placeholder client (or return error)
-      if (!client) {
-        client = await prisma.client.create({
-          data: {
-            name: data.client,
-          }
-        })
-      }
+      return NextResponse.json({ error: 'Client not found. Please provide a valid client ID.' }, { status: 404 })
     }
 
     const startDate = new Date(data.startDate)

@@ -43,7 +43,7 @@ export const GET = withAuth(async (req: NextRequest, { user }) => {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '50')))
     const skip = (page - 1) * limit
 
-    const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(user.role)
+    const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(user.role)
 
     // Build status filter
     let statusFilter: Record<string, unknown> | undefined

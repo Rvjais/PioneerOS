@@ -206,11 +206,27 @@ export const DEPARTMENT_KPIS: Record<string, DepartmentKPIs> = {
       { id: 'projectContributions', label: 'Project Contributions', type: 'number', hasComparison: true },
     ],
   },
+  // Content Writing
+  CONTENT: {
+    label: 'Content Writing',
+    kpis: [
+      { id: 'articlesWritten', label: 'Articles/Blogs Written', type: 'number', hasComparison: true },
+      { id: 'wordsWritten', label: 'Words Written', type: 'number', hasComparison: true },
+      { id: 'pagesOptimized', label: 'Pages Optimized', type: 'number', hasComparison: true },
+      { id: 'socialCopies', label: 'Social Media Copies', type: 'number', hasComparison: true },
+      { id: 'adCopies', label: 'Ad Copies', type: 'number', hasComparison: true },
+      { id: 'revisions', label: 'Revisions', type: 'number', hasComparison: true },
+    ],
+  },
 }
 
 // Get KPIs for a specific department
 export function getKPIsForDepartment(department: string): KPIField[] {
-  return DEPARTMENT_KPIS[department]?.kpis || []
+  let mappedDept = department
+  if (mappedDept === 'VIDEO') mappedDept = 'VIDEO_EDITING'
+  if (mappedDept === 'CONTENT_WRITING' || mappedDept === 'CONTENT_WRITER') mappedDept = 'CONTENT'
+  
+  return DEPARTMENT_KPIS[mappedDept]?.kpis || []
 }
 
 // Calculate growth percentage

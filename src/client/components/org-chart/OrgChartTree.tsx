@@ -73,7 +73,7 @@ export default function OrgChartTree({
 
   // Separate members by level
   const founders = filteredMembers.filter((m) => m.role === 'SUPER_ADMIN')
-  const managers = filteredMembers.filter((m) => m.role === 'MANAGER' || m.role === 'OM')
+  const managers = filteredMembers.filter((m) => m.role === 'MANAGER')
   const employees = filteredMembers.filter((m) => getRoleLevel(m.role) >= 3)
 
   // Group employees by department

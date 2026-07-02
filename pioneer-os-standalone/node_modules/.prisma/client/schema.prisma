@@ -2174,6 +2174,8 @@ model Achievement {
   type           String
   title          String
   description    String?
+  icon           String?
+  category       String?
   clientId       String?
   proofUrl       String?
   pointsAwarded  Int       @default(0)
@@ -2182,6 +2184,10 @@ model Achievement {
   addedBy        String
   approvedBy     String?
   approvedAt     DateTime?
+  earnedAt       DateTime?
+  progress       Int?
+  target         Int?
+  rarity         String?
   month          DateTime
   createdAt      DateTime  @default(now())
   updatedAt      DateTime? @updatedAt

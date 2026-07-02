@@ -7,11 +7,10 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode
 }) {
-  // TEMPORARILY DISABLED FOR LOCAL TESTING
-  // const session = await getServerSession(authOptions)
-  // if (session?.user) {
-  //   redirect('/dashboard')
-  // }
+  const session = await getServerSession(authOptions)
+  if (session?.user) {
+    redirect('/dashboard')
+  }
 
   return (
     <div className="min-h-screen bg-slate-950">

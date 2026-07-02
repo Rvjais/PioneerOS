@@ -17,15 +17,11 @@ export const POST = withAuth(async (req) => {
       return NextResponse.json({ error: 'Validation failed', details: result.error.flatten() }, { status: 400 })
     }
 
-    const { client: clientNameOrId, monthlyGoal } = result.data
+    const { client: clientId, monthlyGoal } = result.data
 
-    let client = await prisma.client.findUnique({ where: { id: clientNameOrId } }).catch(() => null)
-    
+    const client = await prisma.client.findUnique({ where: { id: clientId } })
     if (!client) {
-      client = await prisma.client.findFirst({ where: { name: { contains: clientNameOrId, mode: 'insensitive' } } })
-      if (!client) {
-        client = await prisma.client.create({ data: { name: clientNameOrId } })
-      }
+      return NextResponse.json({ error: 'Client not found. Please select a valid client.' }, { status: 404 })
     }
 
     // Save the plan as a ClientDeliverable

@@ -67,7 +67,7 @@ export function SalesNav() {
 
       <nav className="p-4 space-y-1 pb-32">
         {salesNavigation.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/sales' && pathname.startsWith(item.href))
+          const isActive = pathname === item.href
           return (
             <Link
               key={item.name}

@@ -109,7 +109,7 @@ export async function UnifiedSidebar({ viewAsUserId }: { viewAsUserId?: string }
   }
 
   // Blended users (multiple departments) — get their departments
-  if (role === 'OM' || role === 'BLENDED_USER') {
+  if (role === 'BLENDED_USER') {
     const user = await prisma.user.findUnique({
       where: { id: viewAsUserId || session.user.id },
       include: { customRoles: { include: { customRole: true } } },

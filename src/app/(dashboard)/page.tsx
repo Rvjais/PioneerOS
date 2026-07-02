@@ -1,11 +1,10 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
-import prisma from '@/server/db/prisma'
+import { prisma } from '@/server/db/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/server/auth/auth'
 import Link from 'next/link'
 import { DepartmentTargets } from '@/client/components/dashboard/DepartmentTargets'
-import { InspirationWidget } from '@/client/components/dashboard/InspirationWidget'
 import { QuickAccessPanel } from '@/client/components/dashboard/QuickAccessPanel'
 import { PerformanceLeaderboard } from '@/client/components/dashboard/PerformanceLeaderboard'
 import { CompanyNews } from '@/client/components/dashboard/CompanyNews'
@@ -978,7 +977,6 @@ export default async function DashboardPage() {
           </DashboardWithCelebrations>
         )
       }
-      case 'OM':
       case 'BLENDED_USER': {
         const defaultData = await getDefaultEmployeeDashboardData(userId)
         return (

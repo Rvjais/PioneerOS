@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 import { useSession } from 'next-auth/react'
 
@@ -85,6 +85,8 @@ export default function WorkTrackerPage() {
   const [view, setView] = useState<'daily' | 'monthly'>('daily')
 
   // Form state
+  const cancelledRef = useRef(false)
+
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     clientId: '',
@@ -113,7 +115,7 @@ export default function WorkTrackerPage() {
 
       const res = await fetch(`/api/work-entries?${params}`)
       const data = await res.json()
-      setEntries(data.entries || [])
+      if (!cancelledRef.current) setEntries(data.entries || [])
     } catch (error) {
       console.error('Failed to fetch entries:', error)
     }
@@ -123,7 +125,7 @@ export default function WorkTrackerPage() {
     try {
       const res = await fetch('/api/clients?status=ACTIVE&limit=100')
       const data = await res.json()
-      setClients(data.clients || [])
+      if (!cancelledRef.current) setClients(data.clients || [])
     } catch (error) {
       console.error('Failed to fetch clients:', error)
     }
@@ -133,15 +135,17 @@ export default function WorkTrackerPage() {
     try {
       const res = await fetch('/api/google-drive/status')
       const data = await res.json()
-      setDriveConnected(data.connected || false)
+      if (!cancelledRef.current) setDriveConnected(data.connected || false)
     } catch (error) {
       console.error('Failed to check Drive status:', error)
     }
   }
 
   useEffect(() => {
+    cancelledRef.current = false
     Promise.all([fetchEntries(), fetchClients(), checkDriveStatus()])
-      .finally(() => setLoading(false))
+      .finally(() => { if (!cancelledRef.current) setLoading(false) })
+    return () => { cancelledRef.current = true }
   }, [fetchEntries])
 
   // Handle form submission

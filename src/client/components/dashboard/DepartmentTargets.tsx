@@ -11,12 +11,12 @@ interface DepartmentTargetsProps {
   targets: Target[]
 }
 
-const deptColors: Record<string, string> = {
-  AGENCY: 'blue',
-  SEO: 'green',
-  ADS: 'orange',
-  WEB: 'purple',
-  SOCIAL: 'pink',
+const deptStyles: Record<string, { badge: string; text: string; bg: string; bar: string }> = {
+  AGENCY: { badge: 'bg-blue-500/20 text-blue-400 border-blue-500/30', text: 'text-blue-400 bg-blue-500/10', bg: 'bg-blue-500/10', bar: 'from-blue-500 to-blue-400' },
+  SEO: { badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', text: 'text-emerald-400 bg-emerald-500/10', bg: 'bg-emerald-500/10', bar: 'from-emerald-500 to-emerald-400' },
+  ADS: { badge: 'bg-orange-500/20 text-orange-400 border-orange-500/30', text: 'text-orange-400 bg-orange-500/10', bg: 'bg-orange-500/10', bar: 'from-orange-500 to-orange-400' },
+  WEB: { badge: 'bg-purple-500/20 text-purple-400 border-purple-500/30', text: 'text-purple-400 bg-purple-500/10', bg: 'bg-purple-500/10', bar: 'from-purple-500 to-purple-400' },
+  SOCIAL: { badge: 'bg-pink-500/20 text-pink-400 border-pink-500/30', text: 'text-pink-400 bg-pink-500/10', bg: 'bg-pink-500/10', bar: 'from-pink-500 to-pink-400' },
 }
 
 export function DepartmentTargets({ targets }: DepartmentTargetsProps) {
@@ -52,13 +52,13 @@ export function DepartmentTargets({ targets }: DepartmentTargetsProps) {
         ) : (
           targets.map((target) => {
             const progress = Math.round((target.completed / target.target) * 100)
-            const color = deptColors[target.department] || 'blue'
+            const style = deptStyles[target.department] || deptStyles.AGENCY
 
             return (
               <div key={target.id} className="space-y-3 group/target">
                 <div className="flex items-end justify-between">
                   <div className="flex flex-col gap-1.5">
-                    <span className={`inline-flex items-center w-fit px-2.5 py-1 bg-${color}-500/20 text-${color}-400 text-[10px] uppercase tracking-widest font-bold rounded-lg border border-${color}-500/30 group-hover/target:bg-${color}-500/30 transition-colors shadow-[0_0_10px_rgba(255,255,255,0.02)]`}>
+                    <span className={`inline-flex items-center w-fit px-2.5 py-1 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-colors shadow-[0_0_10px_rgba(255,255,255,0.02)] group-hover/target:opacity-80 ${style.badge}`}>
                       {target.department}
                     </span>
                     <span className="text-sm font-semibold text-slate-200">{target.metric}</span>
@@ -67,13 +67,13 @@ export function DepartmentTargets({ targets }: DepartmentTargetsProps) {
                     <span className="text-lg font-bold text-white tracking-tight">
                       {target.completed} <span className="text-slate-400 text-sm font-medium">/ {target.target}</span>
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-${color}-400 bg-${color}-500/10 uppercase tracking-wider`}>{progress}% Achieved</span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${style.text}`}>{progress}% Achieved</span>
                   </div>
                 </div>
 
                 <div className="relative h-2.5 bg-black/40 rounded-full overflow-hidden border border-white/5 shadow-inner">
                   <div
-                    className={`absolute left-0 top-0 h-full bg-gradient-to-r from-${color}-500 to-${color}-400 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,0,0,0.5)]`}
+                    className={`absolute left-0 top-0 h-full bg-gradient-to-r rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,0,0,0.5)] ${style.bar}`}
                     style={{ width: `${Math.min(progress, 100)}%` }}
                   >
                     <div className="absolute inset-0 bg-white/20 backdrop-blur-sm animate-pulse-glow"></div>

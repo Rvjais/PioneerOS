@@ -31,7 +31,7 @@ export const PATCH = withAuth(async (req: NextRequest, { user, params }) => {
     if (!existing) return NextResponse.json({ error: 'Request not found' }, { status: 404 })
 
     const specs = parseSpecs(existing.specifications)
-    const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(user.role)
+    const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(user.role)
     const isAssigned = specs.assignedDesignerId === user.id
     const isCreator = existing.createdById === user.id
     const isDesigner = ['DESIGNER', 'DESIGN_LEAD'].includes(user.role)

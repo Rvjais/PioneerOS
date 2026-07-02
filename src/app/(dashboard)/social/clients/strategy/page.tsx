@@ -24,6 +24,7 @@ export default function ContentStrategyPage() {
 
   const [strategies, setStrategies] = useState<ContentStrategy[]>([])
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState<string | null>(null)
   const [showStrategyModal, setShowStrategyModal] = useState(false)
   const [editingClient, setEditingClient] = useState<string | null>(null)
   const [strategyFormData, setStrategyFormData] = useState({ client: '', audience: '', tone: '' })
@@ -67,7 +68,10 @@ export default function ContentStrategyPage() {
         }))
         setStrategies(mapped)
       })
-      .catch(() => {})
+      .catch((err) => {
+        setFetchError('Failed to load strategies. Please try again.')
+        console.error('Failed to fetch strategies:', err)
+      })
       .finally(() => setLoading(false))
   }, [])
   const getGoalColor = (goal: string) => {
@@ -76,6 +80,19 @@ export default function ContentStrategyPage() {
     if (goal.includes('Education') || goal.includes('Trust')) return 'bg-blue-500/20 text-blue-400'
     if (goal.includes('Engagement')) return 'bg-pink-500/20 text-pink-400'
     return 'bg-slate-800/50 text-slate-200'
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">{fetchError}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {

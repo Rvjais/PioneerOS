@@ -42,11 +42,11 @@ interface SalesDashboardProps {
 
 const stageColors: Record<string, string> = {
   'NEW': 'bg-white/5',
-  'CONTACTED': 'bg-blue-500/100',
+  'CONTACTED': 'bg-blue-500',
   'QUALIFIED': 'bg-cyan-500',
-  'PROPOSAL': 'bg-purple-500/100',
-  'NEGOTIATION': 'bg-amber-500/100',
-  'WON': 'bg-green-500/100',
+  'PROPOSAL': 'bg-purple-500',
+  'NEGOTIATION': 'bg-amber-500',
+  'WON': 'bg-green-500',
 }
 
 export default function SalesDashboard({

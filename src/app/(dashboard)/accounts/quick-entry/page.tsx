@@ -538,7 +538,12 @@ export default function QuickEntryPage() {
                   onClick={() => setExpenseCategory(preset.category)}
                   className={`p-4 rounded-xl border-2 transition-all ${
                     expenseCategory === preset.category
-                      ? `border-${preset.color}-500 bg-${preset.color}-500/20`
+                      ? preset.color === 'blue' ? 'border-blue-500 bg-blue-500/20' :
+                        preset.color === 'purple' ? 'border-purple-500 bg-purple-500/20' :
+                        preset.color === 'amber' ? 'border-amber-500 bg-amber-500/20' :
+                        preset.color === 'cyan' ? 'border-cyan-500 bg-cyan-500/20' :
+                        preset.color === 'pink' ? 'border-pink-500 bg-pink-500/20' :
+                        'border-emerald-500 bg-emerald-500/20'
                       : 'border-slate-600 hover:border-slate-500 bg-slate-900/30'
                   }`}
                 >

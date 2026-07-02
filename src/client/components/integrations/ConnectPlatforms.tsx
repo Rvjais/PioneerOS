@@ -247,7 +247,11 @@ export function ConnectPlatforms({ clientId, onConnect }: ConnectPlatformsProps)
                 <button
                   onClick={() => handleConnect(platform.id)}
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 bg-${platform.color}-600 hover:bg-${platform.color}-700 disabled:opacity-50 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2`}
+                   className={`w-full px-4 py-3 disabled:opacity-50 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${
+                     platform.color === 'blue' ? 'bg-blue-600 hover:bg-blue-700' :
+                     platform.color === 'indigo' ? 'bg-indigo-600 hover:bg-indigo-700' :
+                     'bg-sky-600 hover:bg-sky-700'
+                   }`}
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

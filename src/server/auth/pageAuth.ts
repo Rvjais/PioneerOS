@@ -52,19 +52,16 @@ export async function requirePageAuth(options: PageAuthOptions = {}) {
 
   // Check department-based access
   if (options.departments && options.departments.length > 0) {
-    // SUPER_ADMIN, MANAGER, OPERATIONS_HEAD, and OM always have access
-    if (!['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(userRole) && !options.departments.includes(userDepartment)) {
-      // Also allow users in OPERATIONS department to bypass department checks
-      if (userDepartment !== 'OPERATIONS') {
-        // Check custom roles for any matching department
-        const customRoles = session.user?.customRoles || []
-        const hasMatchingDepartment = customRoles.some(
-          (cr: { departments: string[] }) => cr.departments.some(d => options.departments?.includes(d))
-        )
+    // SUPER_ADMIN, MANAGER, OPERATIONS_HEAD always have access
+    if (!['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(userRole) && !options.departments.includes(userDepartment)) {
+      // Check custom roles for any matching department (no blanket bypass for OPERATIONS)
+      const customRoles = session.user?.customRoles || []
+      const hasMatchingDepartment = customRoles.some(
+        (cr: { departments: string[] }) => cr.departments.some(d => options.departments?.includes(d))
+      )
 
-        if (!hasMatchingDepartment) {
-          redirect(options.redirectTo || '/')
-        }
+      if (!hasMatchingDepartment) {
+        redirect(options.redirectTo || '/')
       }
     }
   }
@@ -84,18 +81,19 @@ export const FINANCE_ACCESS: PageAuthOptions = {
 }
 
 export const HR_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR', 'OM'],
+  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'HR', 'INTERN'],
   redirectTo: '/'
 }
 
 export const SOCIAL_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM', 'EMPLOYEE', 'INTERN'],
+  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'EMPLOYEE', 'INTERN'],
   departments: ['SOCIAL'],
   redirectTo: '/'
 }
 
 export const SALES_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'SALES', 'EMPLOYEE', 'INTERN'],
+  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'SALES'],
+  departments: ['SALES'],
   redirectTo: '/'
 }
 
@@ -110,20 +108,14 @@ export const MANAGEMENT_ACCESS: PageAuthOptions = {
 }
 
 export const OPERATIONS_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM', 'EMPLOYEE', 'INTERN'],
+  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'EMPLOYEE', 'INTERN'],
   departments: ['OPERATIONS'],
   redirectTo: '/'
 }
 
-// Broader management access that includes Operations Head and OM
+// Broader management access that includes Operations Head
 export const LEADERSHIP_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'],
-  redirectTo: '/'
-}
-
-// OM has blended HR + Social Media access
-export const OM_ACCESS: PageAuthOptions = {
-  roles: ['SUPER_ADMIN', 'MANAGER', 'OM'],
+  roles: ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'],
   redirectTo: '/'
 }
 

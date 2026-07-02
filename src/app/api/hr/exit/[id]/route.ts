@@ -141,7 +141,7 @@ export const PATCH = withAuth(async (req, { user, params: routeParams }) => {
 
       // Notify HR and the employee
       const hrUsers = await prisma.user.findMany({
-        where: { OR: [{ role: 'HR' }, { role: 'SUPER_ADMIN' }], status: 'ACTIVE', deletedAt: null },
+        where: { OR: [{ role: 'HR' }, { role: 'SUPER_ADMIN' }, { department: 'HR' }], status: 'ACTIVE', deletedAt: null },
         select: { id: true },
       })
 

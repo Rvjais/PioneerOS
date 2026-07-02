@@ -158,7 +158,11 @@ export default function OnboardingListClient({ initialProposals, stats }: Props)
         ].map(stat => (
           <div key={stat.label} className="glass-card rounded-lg border border-white/10 p-4">
             <p className="text-sm text-gray-400">{stat.label}</p>
-            <p className={`text-2xl font-bold text-${stat.color}-600`}>{stat.value}</p>
+            <p className={`text-2xl font-bold ${
+              stat.color === 'blue' ? 'text-blue-600' :
+              stat.color === 'purple' ? 'text-purple-600' :
+              'text-green-600'
+            }`}>{stat.value}</p>
           </div>
         ))}
       </div>

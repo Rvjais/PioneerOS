@@ -63,18 +63,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    if (!user) {
-      // Don't reveal if user exists
+    if (!user || user.password) {
+      // Use the same generic message for both cases to prevent phone enumeration
       return NextResponse.json(
-        { error: 'No account found with this phone number. Please contact HR.' },
-        { status: 404 }
-      )
-    }
-
-    if (user.password) {
-      return NextResponse.json(
-        { error: 'Password already set. Please use login with your existing password.' },
-        { status: 400 }
+        { error: 'Could not verify your account. Please contact HR.' },
+        { status: 403 }
       )
     }
 

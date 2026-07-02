@@ -30,7 +30,7 @@ export default function PortalPageSkeleton({
 
       {/* Stat cards */}
       {statCards > 0 && (
-        <div className={`grid grid-cols-1 md:grid-cols-${Math.min(statCards, 4)} gap-4`}>
+        <div className="grid grid-cols-1 gap-4" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(200px, 1fr))` }}>
           {Array.from({ length: statCards }).map((_, i) => (
             <div key={i} className="glass-card rounded-xl border border-white/10 p-4 space-y-3">
               <Skeleton className="h-4 w-20" />

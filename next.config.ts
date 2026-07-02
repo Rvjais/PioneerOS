@@ -101,6 +101,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['recharts', 'date-fns', 'lucide-react', 'framer-motion', 'zod'],
     // Limit concurrency to 1 to save memory on build (prevents OOM/Killed errors)
     staticGenerationMaxConcurrency: 1,
+    serverActions: {
+      allowedOrigins: ['brandingpioneers.in'],
+    },
   },
   // Security headers + iframe embedding for /embed routes
   async headers() {
@@ -217,6 +220,11 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/design/metrics',
+        destination: '/design',
+        permanent: false,
+      },
+      {
+        source: '/design/turnaround',
         destination: '/design',
         permanent: false,
       },

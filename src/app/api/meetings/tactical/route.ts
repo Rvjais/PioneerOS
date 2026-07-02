@@ -81,9 +81,9 @@ export const POST = withAuth(async (req, { user }) => {
 
     const userId = user.id
     const monthDate = new Date(month)
-    monthDate.setHours(0, 0, 0, 0)
+    monthDate.setUTCHours(0, 0, 0, 0)
     const reportingMonthDate = new Date(reportingMonth)
-    reportingMonthDate.setHours(0, 0, 0, 0)
+    reportingMonthDate.setUTCHours(0, 0, 0, 0)
 
     // Check if meeting already exists
     const existingMeeting = await prisma.tacticalMeeting.findUnique({
@@ -95,21 +95,21 @@ export const POST = withAuth(async (req, { user }) => {
       },
     })
 
-    // Check if before deadline (3rd of the month AFTER the target month)
+    // Check if before deadline (5th of the month AFTER the target month)
     const now = new Date()
     const targetMonth = monthDate.getMonth()
     const targetYear = monthDate.getFullYear()
-    // Deadline is the 3rd of the month following the target month
+    // Deadline is the 5th of the month following the target month
     const deadlineMonth = targetMonth === 11 ? 0 : targetMonth + 1
     const deadlineYear = targetMonth === 11 ? targetYear + 1 : targetYear
-    const deadline = new Date(deadlineYear, deadlineMonth, 3, 23, 59, 59, 999)
+    const deadline = new Date(deadlineYear, deadlineMonth, 5, 23, 59, 59, 999)
     const isBeforeDeadline = now <= deadline
 
     if (existingMeeting && existingMeeting.status === 'SUBMITTED') {
       return NextResponse.json({ error: 'Meeting already submitted' }, { status: 400 })
     }
 
-    // Calculate growth percentages for each entry
+    // Calculate growth percentages for each entry across all departments
     const processedEntries = kpiEntries.map((entry: Record<string, unknown>) => {
       const trafficGrowth = calculateGrowth(
         entry.organicTraffic as number | null,
@@ -127,6 +127,22 @@ export const POST = withAuth(async (req, { user }) => {
         entry.keywordsTop3 as number | null,
         entry.prevKeywordsTop3 as number | null
       )
+      const roasGrowth = calculateGrowth(
+        entry.roas as number | null,
+        entry.prevRoas as number | null
+      )
+      const conversionGrowth = calculateGrowth(
+        entry.conversions as number | null,
+        entry.prevConversions as number | null
+      )
+      const followerGrowth = calculateGrowth(
+        entry.followers as number | null,
+        entry.prevFollowers as number | null
+      )
+      const engagementGrowth = calculateGrowth(
+        entry.engagement as number | null,
+        entry.prevEngagement as number | null
+      )
 
       return {
         ...entry,
@@ -137,12 +153,13 @@ export const POST = withAuth(async (req, { user }) => {
       }
     })
 
-    // Calculate average performance score
-    const growthValues = processedEntries
-      .map((e: Record<string, number | null>) => e.trafficGrowth)
-      .filter((v: number | null) => v !== null)
-    const avgPerformance = growthValues.length > 0
-      ? growthValues.reduce((a: number, b: number | null) => a + (b || 0), 0) / growthValues.length
+    // Calculate average performance score from stored growth values
+    const allGrowthValues = processedEntries.flatMap((e: Record<string, unknown>) =>
+      [e.trafficGrowth, e.leadsGrowth, e.callsGrowth, e.keywordsGrowth]
+        .filter((v): v is number => v !== null && v !== undefined)
+    )
+    const avgPerformance = allGrowthValues.length > 0
+      ? allGrowthValues.reduce((a: number, b: number) => a + b, 0) / allGrowthValues.length
       : null
 
     // Upsert the meeting

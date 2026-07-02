@@ -75,4 +75,4 @@ export const GET = withAuth(async (req, { user }) => {
     console.error('Error fetching employees:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'ACCOUNTS', 'OPERATIONS_HEAD', 'OM'] })
+}, { roles: ['SUPER_ADMIN', 'MANAGER', 'HR', 'ACCOUNTS', 'OPERATIONS_HEAD'] })

@@ -74,7 +74,11 @@ export default function EmbedIndexPage() {
                       href={embed.path}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`px-4 py-2 bg-${embed.color}-500 text-white rounded-lg text-sm font-medium hover:bg-${embed.color}-600 transition-colors`}
+                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors ${
+                        embed.color === 'blue' ? 'bg-blue-500 hover:bg-blue-600' :
+                        embed.color === 'orange' ? 'bg-orange-500 hover:bg-orange-600' :
+                        'bg-purple-500 hover:bg-purple-600'
+                      }`}
                     >
                       Preview
                     </a>

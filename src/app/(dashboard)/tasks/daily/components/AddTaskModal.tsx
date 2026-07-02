@@ -76,7 +76,7 @@ export function AddTaskModal({
           )
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error('Failed to load team members:', err))
       .finally(() => setLoadingMembers(false))
   }, [isManagerRole, department, seesAllDepartments])
   return (

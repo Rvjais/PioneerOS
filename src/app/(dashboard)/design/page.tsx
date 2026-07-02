@@ -19,7 +19,7 @@ export default async function DesignDashboardPage() {
   if (!session) redirect('/login')
 
   const user = session.user
-  const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD', 'OM'].includes(user.role as string)
+  const isAdmin = ['SUPER_ADMIN', 'MANAGER', 'OPERATIONS_HEAD'].includes(user.role as string)
 
   // Fetch creative requests for dashboard stats and recent list
   const requests = await prisma.contentApproval.findMany({

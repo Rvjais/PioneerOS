@@ -225,7 +225,18 @@ export function TemplatesPage() {
               <div key={category}>
                 <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-3 flex items-center gap-2">
                   <span
-                    className={`w-2 h-2 rounded-full bg-${categoryInfo?.color || 'slate'}-500`}
+                    className={`w-2 h-2 rounded-full ${
+                      (() => {
+                        const c = categoryInfo?.color || 'slate'
+                        return c === 'blue' ? 'bg-blue-500' :
+                               c === 'green' ? 'bg-green-500' :
+                               c === 'amber' ? 'bg-amber-500' :
+                               c === 'purple' ? 'bg-purple-500' :
+                               c === 'pink' ? 'bg-pink-500' :
+                               c === 'cyan' ? 'bg-cyan-500' :
+                               'bg-slate-500'
+                      })()
+                    }`}
                   ></span>
                   {categoryInfo?.label || category}
                   <span className="text-slate-400 font-normal">({categoryTemplates.length})</span>
